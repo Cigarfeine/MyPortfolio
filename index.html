@@ -720,6 +720,83 @@
             opacity: 0;
         }
 
+        /* --- MEDIA QUERIES (Mobile Optimization) --- */
+        @media (max-width: 1024px) {
+            .hero-desc { font-size: 1.1rem; max-width: 100%; }
+            .hero-svg-text { margin-bottom: -4vw; }
+            .about-text { font-size: 2.5rem; }
+            
+            /* Adjust Works HUD for tablet/mobile */
+            .work-visual-container { width: 80vw; height: 50vw; }
+            .hud-title { font-size: 4rem; }
+            .hud-num { font-size: 80px; }
+            .hud-details { 
+                top: auto; 
+                bottom: 10%; 
+                right: 5%; 
+                text-align: right; 
+                max-width: 250px; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            /* Navigation */
+            nav { padding: 1.5rem 5vw; }
+            .nav-links { gap: 1.5rem; }
+            .nav-links a { font-size: 10px; }
+
+            /* Hero */
+            header { padding: 6rem 5vw 2rem 5vw; }
+            .hero-svg-text svg text { font-size: 220px; } /* Make 'ARSHAD' fit nicely */
+
+            /* About */
+            .section-padding { padding: 6rem 5vw; }
+            .about-text { font-size: 2rem; }
+
+            /* Works (Horizontal to Vertical or Adjusted Horizontal) */
+            /* Keeping horizontal but adjusting proportions for mobile */
+            .work-visual-container { width: 90vw; height: 60vw; }
+            .hud-title { font-size: 3rem; }
+            .hud-num { font-size: 60px; top: 5%; }
+            .hud-details { 
+                bottom: 5%; 
+                font-size: 0.8rem; 
+                max-width: 200px; 
+            }
+
+            /* Disciplines */
+            .discipline-card { padding: 4rem 5vw; }
+            .disc-title { font-size: 3.5rem; }
+            .disc-info { font-size: 1rem; }
+
+            /* Footer */
+            footer { padding: 6rem 5vw 3rem 5vw; min-height: 60vh; }
+            .contact-cta { font-size: 2.5rem; margin-bottom: 3rem; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
+            .social-links { flex-wrap: wrap; gap: 1rem; }
+
+            /* Disable Custom Cursor on Touch */
+            @media (hover: none) and (pointer: coarse) {
+                #cursor-viewfinder, #cursor-label, #cursor-dot { display: none !important; }
+                body, a { cursor: auto !important; }
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Mobile tweaks */
+            .nav-links { display: none; } /* Consider a hamburger menu for very small screens if needed, or keep minimal */
+            .nav-logo { font-size: 1rem; }
+            
+            /* If keeping nav links on small screens, stack them or make them tiny */
+            /* .nav-links { display: flex; gap: 0.8rem; } */
+            /* .nav-links a { font-size: 9px; } */
+
+            .hero-desc { font-size: 1rem; }
+            .about-text { font-size: 1.5rem; }
+            .hud-title { font-size: 2.5rem; }
+            .disc-title { font-size: 3rem; }
+        }
+
         /* Utility */
         .reveal { opacity: 0; transform: translateY(40px); }
     </style>
@@ -892,7 +969,7 @@
             <span class="section-tag reveal">( Contact )</span>
             <h2 class="contact-cta reveal">
                 Got a project?<br>
-                <a href="mailto:hello@example.com" data-cursor="SEND MAIL">Let's build it.</a>
+                <a href="mailto:arshadrafi566@gmail.com" data-cursor="SEND MAIL">Let's build it.</a>
             </h2>
         </div>
 
@@ -902,9 +979,10 @@
                 © 2026 ARSHAD
             </div>
             <div class="social-links">
-                <a href="#" class="scramble-link" data-text="GITHUB">GITHUB</a>
-                <a href="#" class="scramble-link" data-text="LINKEDIN">LINKEDIN</a>
-                <a href="#" class="scramble-link" data-text="TWITTER">TWITTER</a>
+                <a href="https://github.com/Cigarfeine" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="GITHUB">GITHUB</a>
+                <a href="https://www.linkedin.com/in/arshad-rafi-204458351?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="LINKEDIN">LINKEDIN</a>
+                <a href="https://www.instagram.com/sisyphar" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="INSTAGRAM">INSTAGRAM</a>
+                <a href="https://wa.me/917736889417" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="WHATSAPP">WHATSAPP</a>
             </div>
         </div>
     </footer>
