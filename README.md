@@ -2,7 +2,7 @@
 
 Hey there! 👋 Welcome to the repository for my personal portfolio. I built this space to showcase my work, document my journey as an AI Researcher & Builder, and share the projects I'm most passionate about. 
 
-Check out the live site here: [Insert Live Link Here] *(I'll update this once the custom domain is live!)*
+Check out the live site here:[@MyPortfolio]https://cigarfeine.github.io/MyPortfolio/
 
 ## ✨ What's Inside
 
@@ -38,7 +38,7 @@ If you want to poke around the code or run it on your own machine, it's super si
 I'm always open to talking about AI, interesting side projects, or just chatting about tech in general. 
 
 - **GitHub:** [@Cigarfeine](https://github.com/Cigarfeine)
-- **Email:** 191840746+Cigarfeine@users.noreply.github.com
+- **Email:** arshadrafi566@gmail.com 
 
 ---
 *Designed & built by Arshad.*
