@@ -952,7 +952,7 @@
             /* Mobile tweaks */
             .nav-links { display: none; } /* Consider a hamburger menu for very small screens if needed, or keep minimal */
             .nav-logo { font-size: 1rem; }
-            
+
             /* If keeping nav links on small screens, stack them or make them tiny */
             /* .nav-links { display: flex; gap: 0.8rem; } */
             /* .nav-links a { font-size: 9px; } */
@@ -961,8 +961,10 @@
             .about-text { font-size: 1.5rem; }
             .hud-title { font-size: 2.5rem; }
             .disc-title { font-size: 3rem; }
-        }
 
+            /* Hide telemetry on very small screens to avoid clutter */
+            .system-telemetry { display: none; }
+        }
         /* Utility */
         .reveal { opacity: 0; transform: translateY(40px); }
     </style>
