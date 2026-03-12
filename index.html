@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arshad | AI Researcher & Builder</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet" />
@@ -27,7 +26,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- FILM GRAIN OVERLAY --- */
         .noise {
             position: fixed;
             top: -50%; left: -50%;
@@ -56,7 +54,6 @@
             100% { transform: translate3d(0,0,0); }
         }
 
-        /* --- MILITARY VIEWFINDER --- */
         #cursor-viewfinder {
             position: fixed;
             top: 0; left: 0;
@@ -119,12 +116,11 @@
             scroll-behavior: auto !important;
         }
 
-        /* --- INTERACTIVE BACKGROUND --- */
         #bg-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -2; /* Behind everything */
+            z-index: -2;
             background: var(--black);
             pointer-events: none;
             will-change: transform;
@@ -132,7 +128,7 @@
         }
 
         body {
-            background-color: transparent; /* Show canvas */
+            background-color: transparent;
             color: var(--white);
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 300;
@@ -147,7 +143,6 @@
             cursor: none;
         }
 
-        /* --- CUSTOM CURSOR --- */
         #cursor-dot {
             position: fixed;
             top: 0; left: 0;
@@ -186,7 +181,6 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
-        /* --- PRELOADER --- */
         #preloader {
             position: fixed;
             inset: 0;
@@ -213,7 +207,6 @@
             font-weight: 400;
         }
 
-        /* --- NAVIGATION --- */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -245,7 +238,6 @@
             position: relative;
         }
 
-        /* --- HEADER / HERO --- */
         header {
             height: 100vh;
             display: flex;
@@ -283,7 +275,7 @@
             background: #111;
             z-index: -1;
             overflow: hidden;
-            opacity: 0; /* GSAP reveals this */
+            opacity: 0;
         }
         
         .hero-video-placeholder::after {
@@ -307,7 +299,6 @@
             fill: var(--white);
         }
 
-        /* --- AXIS LINES --- */
         .axis-x, .axis-y {
             position: fixed;
             background: var(--line);
@@ -329,7 +320,6 @@
             transform: translateX(50vw);
         }
 
-        /* --- WORKS (Layered HUD Style) --- */
         .works-horizontal-section {
             overflow: hidden;
             background: #000;
@@ -380,7 +370,6 @@
             filter: grayscale(0%);
         }
 
-        /* HUD ELEMENTS */
         .hud-num {
             position: absolute;
             top: 10%; left: 5%;
@@ -425,7 +414,6 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* RGB GLITCH HOVER */
         .work-card:hover .work-visual-container::after {
             content: '';
             position: absolute;
@@ -446,7 +434,6 @@
             100% { transform: translate(0); }
         }
 
-        /* --- HOVER IMAGE REVEAL --- */
         .hover-reveal {
             position: fixed;
             width: 400px;
@@ -489,9 +476,8 @@
             .hover-reveal { display: none; }
         }
 
-        /* --- DISCIPLINES (Horizontal Scroll) --- */
         .disciplines-wrapper {
-            width: 400%; /* 4 cards */
+            width: 400%;
             height: 100vh;
             display: flex;
             background: #000;
@@ -533,7 +519,6 @@
             line-height: 1.5;
         }
 
-        /* SCANNER EFFECT */
         .scanner-line {
             position: absolute;
             top: 0; left: 0;
@@ -552,7 +537,6 @@
             overflow: hidden;
         }
 
-        /* --- FOOTER / CONTACT --- */
         footer {
             padding: 10rem 4vw 4vw 4vw;
             display: flex;
@@ -607,7 +591,6 @@
             color: var(--white);
         }
 
-        /* --- ABOUT --- */
         .section-padding {
             padding: 10rem 4vw;
         }
@@ -666,7 +649,7 @@
         }
 
         .char {
-            opacity: 0.1; /* Dim when not "typed" */
+            opacity: 0.1;
             transition: color 0.3s;
         }
 
@@ -697,7 +680,6 @@
             .profile-visual { aspect-ratio: 1/1; margin-bottom: 3rem; }
         }
 
-        /* --- NAV TRANSITION SHUTTER --- */
         #nav-shutter {
             position: fixed;
             inset: 0;
@@ -728,13 +710,11 @@
             opacity: 0;
         }
 
-        /* --- MEDIA QUERIES (Mobile Optimization) --- */
         @media (max-width: 1024px) {
             .hero-desc { font-size: 1.1rem; max-width: 100%; }
             .hero-svg-text { margin-bottom: -4vw; }
             .about-text { font-size: 2.5rem; }
             
-            /* Adjust Works HUD for tablet/mobile */
             .work-visual-container { width: 80vw; height: 50vw; }
             .hud-title { font-size: 4rem; }
             .hud-num { font-size: 80px; }
@@ -748,21 +728,16 @@
         }
 
         @media (max-width: 768px) {
-            /* Navigation */
             nav { padding: 1.5rem 5vw; }
             .nav-links { gap: 1.5rem; }
             .nav-links a { font-size: 10px; }
 
-            /* Hero */
             header { padding: 6rem 5vw 2rem 5vw; }
-            .hero-svg-text { margin-bottom: -1vw; } /* Adjusted for mobile */
+            .hero-svg-text { margin-bottom: -1vw; }
 
-            /* About */
             .section-padding { padding: 6rem 5vw; }
             .about-text { font-size: 2rem; }
 
-            /* Works (Horizontal to Vertical or Adjusted Horizontal) */
-            /* Keeping horizontal but adjusting proportions for mobile */
             .work-visual-container { width: 90vw; height: 60vw; }
             .hud-title { font-size: 3rem; }
             .hud-num { font-size: 60px; top: 5%; }
@@ -772,18 +747,15 @@
                 max-width: 200px; 
             }
 
-            /* Disciplines */
             .discipline-card { padding: 4rem 5vw; }
             .disc-title { font-size: 3.5rem; }
             .disc-info { font-size: 1rem; }
 
-            /* Footer */
             footer { padding: 6rem 5vw 3rem 5vw; min-height: 60vh; }
             .contact-cta { font-size: 2.5rem; margin-bottom: 3rem; }
             .footer-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
             .social-links { flex-wrap: wrap; gap: 1rem; }
 
-            /* Disable Custom Cursor on Touch */
             @media (hover: none) and (pointer: coarse) {
                 #cursor-viewfinder, #cursor-label, #cursor-dot { display: none !important; }
                 body, a { cursor: auto !important; }
@@ -791,13 +763,8 @@
         }
 
         @media (max-width: 480px) {
-            /* Mobile tweaks */
-            .nav-links { display: none; } /* Consider a hamburger menu for very small screens if needed, or keep minimal */
+            .nav-links { display: none; }
             .nav-logo { font-size: 1rem; }
-            
-            /* If keeping nav links on small screens, stack them or make them tiny */
-            /* .nav-links { display: flex; gap: 0.8rem; } */
-            /* .nav-links a { font-size: 9px; } */
 
             .hero-desc { font-size: 1rem; }
             .about-text { font-size: 1.5rem; }
@@ -805,29 +772,23 @@
             .disc-title { font-size: 3rem; }
         }
 
-        /* Utility */
         .reveal { opacity: 0; transform: translateY(40px); }
     </style>
 </head>
 <body data-cursor="SYSTEM ACTIVE">
 
-    <!-- NAV SHUTTER -->
     <div id="nav-shutter">
         <div class="shutter-line"></div>
         <div id="shutter-text">SYNCING DATA...</div>
     </div>
 
-    <!-- BACKGROUND -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- AXIS LINES -->
     <div class="axis-x"></div>
     <div class="axis-y"></div>
 
-    <!-- NOISE -->
     <div class="noise"></div>
 
-    <!-- CURSOR -->
     <div id="cursor-viewfinder">
         <div class="corner tl"></div>
         <div class="corner tr"></div>
@@ -836,13 +797,11 @@
     </div>
     <div id="cursor-label"></div>
 
-    <!-- PRELOADER -->
     <div id="preloader">
         <div id="preloader-text">[ INITIALIZING VIEWPORT ]</div>
         <div id="preloader-percent">0%</div>
     </div>
 
-    <!-- NAV -->
     <nav>
         <a href="#hero" class="nav-logo" data-cursor="HOME" data-target="#hero">ARSHAD.</a>
         <ul class="nav-links">
@@ -852,7 +811,6 @@
         </ul>
     </nav>
 
-    <!-- HEADER / HERO -->
     <header id="hero">
         <div class="hero-top">
             <p class="hero-desc reveal">
@@ -870,7 +828,6 @@
         </div>
     </header>
 
-    <!-- ABOUT -->
     <section id="about" class="section-padding">
         <span class="section-tag reveal">( About )</span>
         <h2 class="about-text terminal-type">
@@ -878,11 +835,9 @@
         </h2>
     </section>
 
-    <!-- WORKS (Horizontal HUD Scroll) -->
     <section class="works-horizontal-section">
         <div class="works-wrapper">
             
-            <!-- Project 1 -->
             <div class="work-card" data-cursor="VIEW">
                 <span class="hud-num">01</span>
                 <div class="work-visual-container">
@@ -893,13 +848,12 @@
                     <span class="hud-category">AI / Hardware / Python</span>
                 </div>
                 <p class="hud-details">
-                    // EXPERIMENT_001<br>
-                    // STATUS: COMPLETE<br>
+                    EXPERIMENT_001<br>
+                    STATUS: COMPLETE<br>
                     Hybrid interaction system using MediaPipe and ESP32 ultrasonic arrays.
                 </p>
             </div>
 
-            <!-- Project 2 -->
             <div class="work-card" data-cursor="VIEW">
                 <span class="hud-num">02</span>
                 <div class="work-visual-container">
@@ -910,13 +864,12 @@
                     <span class="hud-category">Cyber / ML / OSINT</span>
                 </div>
                 <p class="hud-details">
-                    // EXPERIMENT_002<br>
-                    // STATUS: ACTIVE<br>
+                    EXPERIMENT_002<br>
+                    STATUS: ACTIVE<br>
                     Automated reconnaissance framework utilizing ML-based anomaly detection.
                 </p>
             </div>
 
-            <!-- Project 3 -->
             <div class="work-card" data-cursor="VIEW">
                 <span class="hud-num">03</span>
                 <div class="work-visual-container">
@@ -927,8 +880,8 @@
                     <span class="hud-category">Crypto / Adversarial AI</span>
                 </div>
                 <p class="hud-details">
-                    // EXPERIMENT_003<br>
-                    // STATUS: RESEARCH<br>
+                    EXPERIMENT_003<br>
+                    STATUS: RESEARCH<br>
                     AI-assisted encryption schemes and adversarial robustness simulations.
                 </p>
             </div>
@@ -936,7 +889,6 @@
         </div>
     </section>
 
-    <!-- DISCIPLINES (Horizontal Scroll) -->
     <section class="horizontal-section">
         <div class="disciplines-wrapper">
             
@@ -971,7 +923,6 @@
         </div>
     </section>
 
-    <!-- FOOTER -->
     <footer id="contact">
         <div>
             <span class="section-tag reveal">( Contact )</span>
@@ -995,7 +946,6 @@
         </div>
     </footer>
 
-    <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -1004,7 +954,6 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // 1. PRELOADER
         let progress = 0;
         const percentEl = document.getElementById('preloader-percent');
         const preloader = document.getElementById('preloader');
@@ -1031,21 +980,19 @@
             });
         }
 
-        // 2. SMOOTH SCROLL (Lenis)
         const lenis = new Lenis({
-            duration: 1.8, // Heavier feel
+            duration: 1.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            mouseMultiplier: 0.8, // Slower, more controlled
+            mouseMultiplier: 0.8,
         });
 
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // 3. MILITARY VIEWFINDER & AXIS
         const viewfinder = document.getElementById('cursor-viewfinder');
         const label = document.getElementById('cursor-label');
         const axisX = document.querySelector('.axis-x');
@@ -1058,12 +1005,10 @@
             mouseX = e.clientX;
             mouseY = e.clientY;
             
-            // Move Axis Lines (Hardware Accelerated)
             gsap.to(axisX, { y: mouseY, duration: 0.1 });
             gsap.to(axisY, { x: mouseX, duration: 0.1 });
         });
 
-        // Smooth follow
         gsap.ticker.add(() => {
             vX += (mouseX - vX) * 0.15;
             vY += (mouseY - vY) * 0.15;
@@ -1071,7 +1016,6 @@
             gsap.set(label, { x: vX, y: vY });
         });
 
-        // Hover Logic
         document.querySelectorAll('[data-cursor], .service-row').forEach(el => {
             el.addEventListener('mouseenter', () => {
                 document.body.classList.add('hover-active');
@@ -1082,14 +1026,12 @@
             });
         });
 
-        // Magnetic Nav Logic
         document.querySelectorAll('.nav-links a, .nav-logo').forEach(el => {
             el.addEventListener('mousemove', (e) => {
                 const rect = el.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
                 gsap.to(el, { x: x * 0.4, y: y * 0.4, duration: 0.3 });
-                // Pull viewfinder towards element
                 mouseX = rect.left + rect.width / 2;
                 mouseY = rect.top + rect.height / 2;
             });
@@ -1098,7 +1040,6 @@
             });
         });
 
-        // 4. SCRAMBLE TEXT ENGINE (Advanced)
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|:;<>,.?/~';
         
         function scrambleText(el, time = 1000) {
@@ -1118,7 +1059,6 @@
             link.addEventListener('mouseenter', () => scrambleText(link, 400));
         });
 
-        // 6. NEURAL GRID BACKGROUND
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -1152,7 +1092,6 @@
                 if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
                 if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-                // Mouse interaction
                 const dx = p.x - mouseX;
                 const dy = p.y - mouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1185,15 +1124,13 @@
         initBackground();
         drawBackground();
 
-        // 4. SCROLL-SYNC TYPEWRITER ENGINE
         function initScrollTypewriter() {
             const el = document.querySelector('.terminal-type');
             if(!el) return;
 
             const text = el.textContent.trim();
-            el.innerHTML = ''; // Clear original
+            el.innerHTML = '';
             
-            // 1. Split into characters
             const chars = text.split('').map(char => {
                 const span = document.createElement('span');
                 span.textContent = char;
@@ -1202,12 +1139,10 @@
                 return span;
             });
 
-            // 2. Add dynamic cursor
             const cursor = document.createElement('span');
             cursor.className = 'terminal-cursor';
             el.appendChild(cursor);
 
-            // 3. Scroll Animation
             gsap.to(chars, {
                 opacity: 1,
                 stagger: 0.1,
@@ -1215,21 +1150,17 @@
                     trigger: el,
                     start: "top 80%",
                     end: "bottom 40%",
-                    scrub: 0.5, // Follow scroll
+                    scrub: 0.5,
                     onUpdate: (self) => {
-                        // Position cursor at the end of visible text
                         const activeChars = chars.filter(c => gsap.getProperty(c, "opacity") > 0.5);
                         if(activeChars.length > 0) {
                             const lastChar = activeChars[activeChars.length - 1];
-                            // Subtle cursor follow could be complex with wrapping, 
-                            // for now let's just ensure it blinks at the end.
                         }
                     }
                 }
             });
         }
 
-        // 9. NAV SHUTTER ENGINE
         function initNavShutter() {
             const shutter = document.getElementById('nav-shutter');
             const shutterText = document.getElementById('shutter-text');
@@ -1242,30 +1173,24 @@
                     const targetEl = document.querySelector(targetId);
                     if(!targetEl) return;
 
-                    // 1. Close Shutter
                     const tl = gsap.timeline();
                     tl.to(shutter, { yPercent: -100, duration: 0.6, ease: "power4.inOut" })
                       .to(shutterText, { opacity: 1, duration: 0.2 }, "-=0.2")
                       .call(() => {
-                          // 2. Jump to section while covered
                           lenis.scrollTo(targetEl, { immediate: true });
                       })
                       .to(shutterText, { opacity: 0, duration: 0.2, delay: 0.3 })
-                      // 3. Open Shutter (Slide down)
                       .to(shutter, { yPercent: 0, duration: 0.6, ease: "power4.inOut" });
                 });
             });
         }
 
-        // Initialize on load
         window.addEventListener('load', () => {
             initScrollTypewriter();
             initNavShutter();
         });
 
-        // 5. SCROLL REVEALS
         function initAnimations() {
-            // Horizontal Scroll for Works (HUD Style)
             const worksWrapper = document.querySelector('.works-wrapper');
             const workCards = document.querySelectorAll('.work-card');
             
@@ -1279,14 +1204,12 @@
                     snap: 1 / 2,
                     end: () => "+=" + worksWrapper.offsetWidth,
                     onUpdate: (self) => {
-                        // Lens Skew Animation based on velocity
                         const skew = self.getVelocity() / 300;
                         gsap.to('.work-visual-container img', { skewX: skew, duration: 0.5, ease: "power2.out" });
                     }
                 }
             });
 
-            // Parallax HUD Elements
             workCards.forEach(card => {
                 const num = card.querySelector('.hud-num');
                 const details = card.querySelector('.hud-details');
@@ -1296,7 +1219,6 @@
                 gsap.to(details, { x: 50, scrollTrigger: { trigger: card, containerAnimation: gsap.getById("worksScroll"), scrub: true } });
             });
 
-            // Horizontal Scroll for Disciplines (Card Style)
             const wrapper = document.querySelector('.disciplines-wrapper');
             gsap.to(wrapper, {
                 xPercent: -75,
@@ -1310,7 +1232,6 @@
                 }
             });
 
-            // Initial Hero reveal
             gsap.to('.reveal', {
                 y: 0,
                 opacity: 1,
@@ -1319,7 +1240,6 @@
                 ease: "power3.out"
             });
 
-            // Scroll trigger scramble
             document.querySelectorAll('.scroll-scramble').forEach(el => {
                 ScrollTrigger.create({
                     trigger: el,
@@ -1328,7 +1248,6 @@
                 });
             });
 
-            // Reveal other elements
             gsap.utils.toArray('.reveal').forEach(elem => {
                 ScrollTrigger.create({
                     trigger: elem,
