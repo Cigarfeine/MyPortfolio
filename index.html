@@ -213,6 +213,24 @@
             font-weight: 400;
         }
 
+        #preloader-bar-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #preloader-bar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--white);
+            transition: width 0.1s linear;
+        }
+
         /* --- NAVIGATION --- */
         nav {
             position: fixed;
@@ -1001,6 +1019,9 @@
     <div id="preloader">
         <div id="preloader-text">[ INITIALIZING VIEWPORT ]</div>
         <div id="preloader-percent">0%</div>
+        <div id="preloader-bar-container">
+            <div id="preloader-bar"></div>
+        </div>
     </div>
 
     <!-- NAV -->
@@ -1221,15 +1242,33 @@
         let progress = 0;
         const percentEl = document.getElementById('preloader-percent');
         const preloader = document.getElementById('preloader');
+        const barEl = document.getElementById('preloader-bar');
+        const textEl = document.getElementById('preloader-text');
+        
+        const loadingTexts = [
+            "[ COMPILING SCENE ]",
+            "[ DECRYPTING ASSETS ]",
+            "[ MOUNTING 3D_TERRAIN ]",
+            "[ ESTABLISHING SECURE CONNECTION ]"
+        ];
 
         let loaderInterval = setInterval(() => {
             progress += Math.floor(Math.random() * 5) + 2;
+            
+            // Randomly flash technical phrases
+            if(progress % 15 === 0 && progress < 90) {
+                textEl.textContent = loadingTexts[Math.floor(Math.random() * loadingTexts.length)];
+            }
+
             if(progress >= 100) {
                 progress = 100;
+                textEl.textContent = "[ SYSTEM READY ]";
                 clearInterval(loaderInterval);
                 finishLoading();
             }
+            
             percentEl.textContent = progress + '%';
+            if (barEl) barEl.style.width = progress + '%';
         }, 30);
 
         function finishLoading() {
