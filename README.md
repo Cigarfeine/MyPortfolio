@@ -38,7 +38,7 @@ If you want to poke around the code or run it on your own machine, it's super si
 I'm always open to talking about AI, interesting side projects, or just chatting about tech in general. 
 
 - **GitHub:** [@Cigarfeine](https://github.com/Cigarfeine)
-- **Email:** 191840746+Cigarfeine@users.noreply.github.com
+- **Email:** arshadrafi566@gmail.com
 
 ---
 *Designed & built by Arshad.*
