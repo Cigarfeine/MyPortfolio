@@ -2,7 +2,7 @@
 
 Hey there! 👋 Welcome to the repository for my personal portfolio. I built this space to showcase my work, document my journey as an AI Researcher & Builder, and share the projects I'm most passionate about. 
 
-Check out the live site here: [Insert Live Link Here] *(I'll update this once the custom domain is live!)*
+Check out the live site here: http://arshadrafi.dev
 
 ## ✨ What's Inside
 
@@ -42,3 +42,4 @@ I'm always open to talking about AI, interesting side projects, or just chatting
 
 ---
 *Designed & built by Arshad.*
+

@@ -311,6 +311,7 @@
             width: 100%;
             height: auto;
             fill: var(--white);
+            will-change: transform, filter, opacity;
         }
 
         /* --- AXIS LINES --- */
@@ -1608,7 +1609,10 @@
             });
 
             // Initial Hero reveal
-            gsap.to('.reveal', {
+            const tl = gsap.timeline();
+
+            // 1. Reveal the small text/desc
+            tl.to('.reveal', {
                 y: 0,
                 opacity: 1,
                 duration: 1,
@@ -1616,12 +1620,32 @@
                 ease: "power3.out"
             });
 
-            // Scroll trigger scramble
+            // 2. Cinematic Entrance for the Main Name (SVG)
+            const heroName = document.querySelector('.hero-svg-text svg');
+            gsap.fromTo(heroName, 
+                { 
+                    scale: 1.5, 
+                    filter: "blur(20px)", 
+                    opacity: 0,
+                    y: 100 
+                },
+                {
+                    scale: 1,
+                    filter: "blur(0px)",
+                    opacity: 1,
+                    y: 0,
+                    duration: 2,
+                    ease: "expo.out",
+                    delay: 0.2 // Starts right as the preloader finishes
+                }
+            );
+
+            // Scroll trigger scramble (keep for when user scrolls back up)
             document.querySelectorAll('.scroll-scramble').forEach(el => {
                 ScrollTrigger.create({
                     trigger: el,
                     start: "top 85%",
-                    onEnter: () => scrambleText(el, 1500)
+                    onEnter: () => scrambleText(el, 800)
                 });
             });
 
