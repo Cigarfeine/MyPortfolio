@@ -1336,72 +1336,91 @@
         const navLogo = document.querySelector('.nav-logo');
         navLogo.addEventListener('mouseenter', () => scrambleText(navLogo, 600));
 
-        // 6. NEURAL GRID BACKGROUND
+        // 6. 3D WIREFRAME TERRAIN BACKGROUND (Three.js)
         const canvas = document.getElementById('bg-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        const particleCount = 60;
+        
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.0015); // Add depth to the darkness
 
-        function initBackground() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    size: Math.random() * 2
-                });
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 20); // Elevated looking down slightly
+        camera.lookAt(0, 0, 0);
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance optimization
+
+        // Terrain Geometry (A large plane with many segments)
+        const geometry = new THREE.PlaneGeometry(100, 100, 40, 40);
+        
+        // Rotate flat so it looks like a floor
+        geometry.rotateX(-Math.PI / 2);
+
+        // Displace the vertices to create terrain
+        const vertices = geometry.attributes.position.array;
+        for (let i = 0; i < vertices.length; i += 3) {
+            const x = vertices[i];
+            const z = vertices[i + 2];
+            // Simple math formula for rolling hills/waves
+            vertices[i + 1] = Math.sin(x / 5) * 2 + Math.cos(z / 4) * 2;
+        }
+        
+        // Must update normals for lighting (though wireframe doesn't strictly need it, good practice)
+        geometry.computeVertexNormals();
+
+        // Wireframe Material
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x333333, // Dark grey cyber-industrial color
+            wireframe: true,
+            transparent: true,
+            opacity: 0.2 // Very subtle
+        });
+
+        const terrain = new THREE.Mesh(geometry, material);
+        scene.add(terrain);
+
+        // Animation Loop
+        let clock = new THREE.Clock();
+        
+        function animateBackground() {
+            requestAnimationFrame(animateBackground);
+            
+            const time = clock.getElapsedTime();
+
+            // Slowly animate the terrain moving towards the camera
+            const positions = terrain.geometry.attributes.position.array;
+            for (let i = 0; i < positions.length; i += 3) {
+                const x = positions[i];
+                const z = positions[i + 2];
+                // Update the Y axis (height) over time to make it ripple
+                positions[i + 1] = Math.sin(x / 5 + time * 0.5) * 2 + Math.cos(z / 4 + time * 0.3) * 2;
             }
+            terrain.geometry.attributes.position.needsUpdate = true;
+
+            // Subtle mouse parallax effect
+            const targetX = (mouseX / window.innerWidth - 0.5) * 4;
+            const targetY = (mouseY / window.innerHeight - 0.5) * 4;
+            
+            camera.position.x += (targetX - camera.position.x) * 0.05;
+            // Keep Y elevated but allow slight shifting
+            camera.position.y += ((5 - targetY) - camera.position.y) * 0.05;
+            camera.lookAt(0, 0, 0);
+
+            renderer.render(scene, camera);
         }
 
-        function drawBackground() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.lineWidth = 0.5;
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
-
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-                // Mouse interaction
-                const dx = p.x - mouseX;
-                const dy = p.y - mouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 150) {
-                    p.x += dx * 0.01;
-                    p.y += dy * 0.01;
-                }
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dx2 = p.x - p2.x;
-                    const dy2 = p.y - p2.y;
-                    const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-                    if (dist2 < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                }
-            });
-            requestAnimationFrame(drawBackground);
-        }
-
-        window.addEventListener('resize', initBackground);
-        initBackground();
-        drawBackground();
+        // Start animation
+        animateBackground();
 
         // 4. SCROLL-SYNC TYPEWRITER ENGINE
         function initScrollTypewriter() {
