@@ -1028,13 +1028,13 @@
         /* --- NAV TRANSITION SHUTTER --- */
         #nav-shutter {
             position: fixed;
-            inset: 0;
+            top: 100%;
+            left: 0; right: 0; height: 100vh;
             background: var(--black);
             z-index: 10001;
             display: flex;
             align-items: center;
             justify-content: center;
-            transform: translateY(100%);
             flex-direction: column;
         }
 
@@ -1125,16 +1125,25 @@
                 max-width: 200px; 
             }
 
-            /* Disciplines Stack */
-            .discipline-stack-card { height: 80vh; }
+            /* Disciplines Stack - Disable sticky stacking on mobile for better UX */
+            .disciplines-stack-section { padding-bottom: 4rem; }
+            .disciplines-header { position: relative; padding: 4rem 4vw 2rem 4vw; }
+            .discipline-stack-card { 
+                position: relative !important; 
+                top: 0 !important; 
+                height: auto !important; 
+                min-height: 50vh !important; 
+                margin-bottom: 2rem !important; 
+                transform: none !important;
+            }
             .card-inner { padding: 8vw; }
             .disc-title { font-size: 3.5rem; }
             .disc-info { font-size: 1rem; }
 
             /* Footer */
-            footer { padding: 6rem 5vw 3rem 5vw; min-height: 60vh; }
+            footer { padding: 6rem 5vw 3rem 5vw; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
             .contact-cta { font-size: 2.5rem; margin-bottom: 3rem; }
-            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; margin-top: auto; }
             .social-links { flex-wrap: wrap; gap: 1rem; }
 
             /* Disable Custom Cursor on Touch */
@@ -1166,10 +1175,6 @@
 
         /* --- SCROLL DOWN INDICATOR --- */
         .hero-scroll-indicator {
-            position: absolute;
-            bottom: 25vh;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1178,6 +1183,7 @@
             opacity: 0.5; /* Default opacity */
             pointer-events: none;
             transition: opacity 0.4s ease;
+            margin-bottom: 2vh;
         }
 
         .hero-scroll-indicator.hidden {
@@ -1649,12 +1655,15 @@
         camera.lookAt(0, 0, 0);
 
         // Renderer setup
-        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        const isMobile = window.innerWidth <= 768;
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: !isMobile });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance optimization
+        renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); // Major Performance optimization
 
         // Terrain Geometry (A large plane with high segment density for point cloud)
-        const geometry = new THREE.PlaneGeometry(120, 120, 120, 120);
+        // Drastically reduce vertex count on mobile to prevent lag (14400 vertices -> 2500 vertices)
+        const segments = isMobile ? 50 : 120;
+        const geometry = new THREE.PlaneGeometry(120, 120, segments, segments);
         
         // Rotate flat so it looks like a floor
         geometry.rotateX(-Math.PI / 2);
@@ -1671,7 +1680,7 @@
         // Point Cloud Material
         const material = new THREE.PointsMaterial({ 
             color: 0xffffff, // White dots
-            size: 0.04, // Smoother, smaller dots
+            size: isMobile ? 0.08 : 0.04, // Larger dots on mobile to compensate for fewer points
             transparent: true,
             opacity: 0.2 // Reduced opacity to not distract from text
         });
@@ -1703,14 +1712,17 @@
                 let y = Math.sin(x / 5 + time * 0.4 + scrollOffset) * 2 + Math.cos(z / 4 + time * 0.25 - scrollOffset) * 2;
 
                 // Sonar / Lidar Ripple effect based on mouse distance
-                const dx = x - mouseWorldX;
-                const dz = z - mouseWorldZ;
-                const dist = Math.sqrt(dx*dx + dz*dz);
-                
-                if (dist < 20) {
-                    // Smoother, less abrupt ripple
-                    const ripple = Math.sin(dist * 1.0 - time * 6) * (20 - dist) * 0.05;
-                    y += ripple;
+                // Skip expensive sqrt math on mobile since there is no persistent hover mouse
+                if (!isMobile) {
+                    const dx = x - mouseWorldX;
+                    const dz = z - mouseWorldZ;
+                    const dist = Math.sqrt(dx*dx + dz*dz);
+                    
+                    if (dist < 20) {
+                        // Smoother, less abrupt ripple
+                        const ripple = Math.sin(dist * 1.0 - time * 6) * (20 - dist) * 0.05;
+                        y += ripple;
+                    }
                 }
 
                 positions[i + 1] = y;
@@ -1798,15 +1810,16 @@
 
                     // 1. Close Shutter
                     const tl = gsap.timeline();
-                    tl.to(shutter, { yPercent: -100, duration: 0.6, ease: "power4.inOut" })
+                    tl.to(shutter, { top: "0%", duration: 0.6, ease: "power4.inOut" })
                       .to(shutterText, { opacity: 1, duration: 0.2 }, "-=0.2")
                       .call(() => {
                           // 2. Jump to section while covered
                           lenis.scrollTo(targetEl, { immediate: true });
                       })
                       .to(shutterText, { opacity: 0, duration: 0.2, delay: 0.3 })
-                      // 3. Open Shutter (Slide down)
-                      .to(shutter, { yPercent: 0, duration: 0.6, ease: "power4.inOut" });
+                      // 3. Open Shutter (Slide up and away)
+                      .to(shutter, { top: "-100%", duration: 0.6, ease: "power4.inOut" })
+                      .set(shutter, { top: "100%" }); // Reset to bottom for next use
                 });
             });
         }
@@ -2084,19 +2097,22 @@
             // Clean Stacking Cards for Disciplines
             const stackCards = gsap.utils.toArray('.discipline-stack-card');
             
-            stackCards.forEach((card, i) => {
-                if (i < stackCards.length - 1) {
-                    // Just slightly push back to create a shadow/depth effect
-                    // REMOVED OPACITY DROP: Card remains fully solid so it can't be seen through.
-                    gsap.to(card, {
-                        scale: 1 - ((stackCards.length - 1 - i) * 0.02), // subtle scaling based on depth
-                        y: "-3vh", // Slight push up
-                        ease: "none", 
-                        scrollTrigger: {
-                            trigger: stackCards[i + 1],
-                            start: "top bottom",
-                            end: "top 15%", 
-                            scrub: true,
+            // Only apply complex stacking animation on Desktop
+            ScrollTrigger.matchMedia({
+                "(min-width: 769px)": function() {
+                    stackCards.forEach((card, i) => {
+                        if (i < stackCards.length - 1) {
+                            gsap.to(card, {
+                                scale: 1 - ((stackCards.length - 1 - i) * 0.02),
+                                y: "-3vh",
+                                ease: "none", 
+                                scrollTrigger: {
+                                    trigger: stackCards[i + 1],
+                                    start: "top bottom",
+                                    end: "top 15%", 
+                                    scrub: true,
+                                }
+                            });
                         }
                     });
                 }
