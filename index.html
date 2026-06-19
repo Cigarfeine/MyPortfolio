@@ -124,11 +124,21 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -2; /* Behind everything */
+            z-index: -3; /* Deepest layer */
             background: var(--black);
             pointer-events: none;
             will-change: transform;
             transform: translateZ(0);
+        }
+
+        /* --- DARK VIGNETTE FOR READABILITY --- */
+        .dark-vignette {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1; /* Above grid and canvas, below content */
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
         }
 
         body {
@@ -354,14 +364,80 @@
             transform: translateX(50vw);
         }
 
-        /* --- WORKS (Layered HUD Style) --- */
-        .works-horizontal-section {
-            overflow: hidden;
-            background: #000;
-            position: relative;
+        /* --- GLOBAL TIMELINE RULER --- */
+        #global-timeline {
+            position: fixed;
+            top: 0;
+            right: 0; /* Align flush to right margin like a scrollbar */
+            height: 100vh;
+            width: 40px;
+            z-index: 99;
+            pointer-events: none;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .kinetic-marquee-bg {
+        #global-timeline.visible {
+            opacity: 1;
+        }
+
+        .timeline-hairline {
+            position: absolute;
+            top: 0; right: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .timeline-ticks {
+            position: absolute;
+            top: 0; right: 1px;
+            height: 100%;
+            width: 50px;
+        }
+
+        .timeline-tick {
+            position: absolute;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .timeline-tick.active {
+            background: var(--white);
+        }
+
+        #timeline-indicator {
+            position: absolute;
+            top: 0; right: -10px;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            width: 100vw;
+            will-change: transform;
+        }
+
+        .indicator-arrow {
+            width: 20px;
+            height: 20px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            transform: scaleX(-1);
+        }
+
+
+        /* --- WORKS (Split Vertical HUD Style) --- */
+        .works-split-section {
+            background: transparent;
+            position: relative;
+            width: 100%;
+        }
+
+        .works-marquee-fixed {
             position: absolute;
             top: 50%;
             left: 0;
@@ -400,63 +476,181 @@
             100% { transform: translateX(0); }
         }
 
-        .works-wrapper {
-            width: 300%;
-            height: 100vh;
+        .works-split-container {
             display: flex;
+            width: 100%;
             position: relative;
             z-index: 1;
         }
-        .work-card {
-            width: 100vw;
-            height: 100%;
+
+        /* LEFT PANEL */
+        .works-left {
+            width: 55%;
+            padding: 20vh 0 20vh 10vw;
+            display: flex;
+            flex-direction: column;
+            gap: 40vh;
+        }
+
+        .work-media-card {
+            width: 100%;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: relative;
-            perspective: 1000px;
         }
 
         .work-visual-container {
-            width: 60vw;
-            height: 35vw;
+            width: 100%;
+            aspect-ratio: 16 / 10;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: border-color 0.5s;
+            background: var(--black);
         }
 
-        .work-card:hover .work-visual-container {
-            border-color: var(--white);
+        .work-media-card:hover .work-visual-container {
+            /* Removed border hover */
         }
 
         .work-visual-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* GSAP handles opacity, transform, filter, and clipPath now */
+            transform-origin: center;
+            transform: scale(1.1); /* for parallax zoom out room */
+            filter: grayscale(100%) contrast(1.2);
+            opacity: 0.4;
+            mask-image: linear-gradient(to right, transparent 0%, black 30%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
+            transition: opacity 0.5s, filter 0.5s;
         }
 
-        /* HUD ELEMENTS */
-        .hud-num {
+        .work-visual-container::before {
+            content: '';
             position: absolute;
-            top: 10%; left: 5%;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 120px;
-            font-weight: 500;
-            color: var(--white);
-            opacity: 0.03;
+            inset: 0;
+            background: radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+            z-index: 2;
             pointer-events: none;
         }
 
-        .hud-title-wrap {
+        .work-media-card:hover .work-visual-container img {
+            opacity: 0.6;
+            filter: grayscale(80%) contrast(1.2);
+        }
+
+
+
+        .works-right {
+            width: 45%;
+            position: relative;
+        }
+
+        .works-sticky-hud {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5vw 0 4vw;
+        }
+
+        .tech-readout {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--white);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+            display: flex;
+            gap: 15px;
+        }
+
+        .signal-locked {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--white);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--white);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; box-shadow: 0 0 8px var(--white); }
+            50% { opacity: 0.4; box-shadow: 0 0 2px var(--white); }
+            100% { opacity: 1; box-shadow: 0 0 8px var(--white); }
+        }
+
+        .waveform-svg {
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 300px;
+            height: 20px;
+            stroke: var(--grey);
+            fill: none;
+            stroke-width: 1;
+        }
+
+        .giant-bg-number {
             position: absolute;
-            bottom: 10%; left: 5%;
+            top: 50%;
+            left: -10vw;
+            transform: translateY(-50%);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 40vw;
+            font-weight: 500;
+            color: var(--white);
+            opacity: 0.02;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hud-link-wrapper {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            transition: opacity 0.3s;
+        }
+        
+        .hud-link-wrapper:hover {
+            opacity: 0.7;
+        }
+
+        .hud-num-container {
+            overflow: hidden;
+            height: 140px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .hud-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 140px !important;
+            font-weight: 500;
+            color: var(--white);
+            opacity: 0.05;
+            line-height: 1;
+            position: absolute;
+            top: 0; left: -10px;
+        }
+
+        .hud-info-container {
+            position: relative;
             z-index: 10;
         }
 
         .hud-title {
-            font-size: clamp(3rem, 6vw, 8rem);
+            font-size: clamp(3rem, 5vw, 6rem) !important;
             line-height: 0.9;
             text-transform: uppercase;
             letter-spacing: -0.04em;
@@ -469,87 +663,70 @@
             color: var(--grey);
             letter-spacing: 0.3em;
             text-transform: uppercase;
+            display: block;
+            margin-bottom: 2rem;
         }
 
         .hud-details {
-            position: absolute;
-            top: 10%; right: 5%;
-            max-width: 300px;
-            text-align: right;
-            font-size: 0.9rem;
+            max-width: 350px !important;
+            font-size: 0.95rem !important;
+            text-align: left !important;
             color: var(--grey);
             line-height: 1.6;
             font-family: 'JetBrains Mono', monospace;
+            position: static !important;
         }
 
-        /* RGB GLITCH HOVER */
-        .work-card:hover .work-visual-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: inherit;
-            mix-blend-mode: screen;
-            box-shadow: 2px 0 red, -2px 0 blue;
-            opacity: 0.2;
-            animation: glitch-anim 0.2s infinite;
-        }
-
-        @keyframes glitch-anim {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
-        /* --- HOVER IMAGE REVEAL --- */
-        .hover-reveal {
-            position: fixed;
-            width: 400px;
-            height: 250px;
-            top: 0; left: 0;
-            pointer-events: none;
-            z-index: 150;
-            opacity: 0;
-            overflow: hidden;
-            transform: translate(-50%, -50%) scale(0.8);
-            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .hover-reveal__img {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            transform: scale(1.2);
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .work-item:hover ~ .hover-reveal,
-        .work-item:hover .hover-reveal {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .work-item:hover .hover-reveal__img {
-            transform: scale(1);
+        @media(max-width: 1024px) {
+            .works-left { width: 60%; padding-left: 5vw; }
+            .works-right { width: 40%; }
+            .hud-num { font-size: 100px !important; }
+            .hud-num-container { height: 100px; }
+            .hud-title { font-size: 3.5rem !important; }
         }
 
         @media(max-width: 768px) {
-            .work-item {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-                padding: 3rem 0;
+            .works-split-container {
+                flex-direction: column;
             }
-            .work-category { text-align: left; }
-            .hover-reveal { display: none; }
+            .works-left {
+                width: 100%;
+                padding: 10vh 5vw;
+                gap: 10vh;
+            }
+            .works-right {
+                display: none;
+            }
+            .work-media-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .work-mobile-info {
+                display: block;
+                margin-top: 2rem;
+            }
+            .work-visual-container {
+                width: 100%;
+                aspect-ratio: 4/3 !important;
+            }
+        }
+        
+        .work-mobile-info {
+            display: none;
+        }
+        
+        @media(max-width: 768px) {
+            .work-mobile-info {
+                display: block;
+            }
+            .hud-title { font-size: 3rem !important; margin-bottom: 0.5rem; }
+            .hud-category { margin-bottom: 1rem; }
         }
 
         /* --- DISCIPLINES (Sticky Stack) --- */
         .disciplines-stack-section {
             position: relative;
-            background: #000;
+            background: transparent;
             padding-bottom: 20vh; /* Space after cards finish stacking */
         }
 
@@ -986,6 +1163,58 @@
         }
         /* Utility */
         .reveal { opacity: 0; transform: translateY(40px); }
+
+        /* --- SCROLL DOWN INDICATOR --- */
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 25vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+            opacity: 0.5; /* Default opacity */
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .hero-scroll-indicator.hidden {
+            opacity: 0;
+        }
+
+        .hero-scroll-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            text-transform: uppercase;
+        }
+
+        .hero-scroll-mouse {
+            width: 18px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 9px; /* Pill shape matching military UI */
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .hero-scroll-wheel {
+            width: 2px;
+            height: 5px;
+            background: var(--white);
+            border-radius: 2px;
+            margin-top: 5px;
+            animation: scrollWheelAnim 1.5s cubic-bezier(0.65, 0.05, 0.36, 1) infinite;
+        }
+
+        @keyframes scrollWheelAnim {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(12px); opacity: 0; }
+        }
     </style>
 </head>
 <body data-cursor="SYSTEM ACTIVE">
@@ -996,12 +1225,23 @@
         <div id="shutter-text">SYNCING DATA...</div>
     </div>
 
-    <!-- BACKGROUND -->
+    <!-- BACKGROUND ELEMENTS -->
     <canvas id="bg-canvas"></canvas>
+    <div class="dark-vignette"></div>
 
     <!-- AXIS LINES -->
     <div class="axis-x"></div>
     <div class="axis-y"></div>
+
+    <!-- GLOBAL TIMELINE RULER -->
+    <div id="global-timeline">
+        <div class="timeline-ticks" id="timeline-ticks"></div>
+        <div id="timeline-indicator">
+            <div class="indicator-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </div>
+        </div>
+    </div>
 
     <!-- NOISE -->
     <div class="noise"></div>
@@ -1029,7 +1269,7 @@
         <a href="#hero" class="nav-logo" data-cursor="HOME" data-target="#hero">ARSHAD.</a>
         <ul class="nav-links">
             <li><a href="#about" class="scramble-link" data-text="ABOUT" data-cursor="GO" data-target="#about">ABOUT</a></li>
-            <li><a href="#works" class="scramble-link" data-text="WORKS" data-cursor="GO" data-target=".works-horizontal-section">WORKS</a></li>
+            <li><a href="#works" class="scramble-link" data-text="WORKS" data-cursor="GO" data-target=".works-split-section">WORKS</a></li>
             <li><a href="#contact" class="scramble-link" data-text="CONTACT" data-cursor="GO" data-target="#contact">CONTACT</a></li>
         </ul>
     </nav>
@@ -1048,6 +1288,13 @@
                 <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="180" font-weight="500" letter-spacing="-0.02em" class="scroll-scramble">MUHAMMED ARSHAD</text>
             </svg>
         </div>
+
+        <div class="hero-scroll-indicator" id="hero-scroll-indicator">
+            <div class="hero-scroll-text">SCROLL DOWN</div>
+            <div class="hero-scroll-mouse">
+                <div class="hero-scroll-wheel"></div>
+            </div>
+        </div>
     </header>
 
     <!-- ABOUT -->
@@ -1058,10 +1305,10 @@
         </h2>
     </section>
 
-    <!-- WORKS (Horizontal HUD Scroll) -->
-    <section class="works-horizontal-section">
+    <!-- WORKS (Split Vertical HUD Scroll) -->
+    <section class="works-split-section" id="works">
         <!-- Background Kinetic Marquee -->
-        <div class="kinetic-marquee-bg">
+        <div class="works-marquee-fixed">
             <div class="marquee-track">
                 <span>/// SYSTEM OVERRIDE /// ML MODEL ACTIVE /// ESP32 CONNECTED /// NEURAL CIPHER INITIATED /// SYSTEM OVERRIDE /// ML MODEL ACTIVE /// ESP32 CONNECTED /// NEURAL CIPHER INITIATED ///</span>
             </div>
@@ -1070,59 +1317,75 @@
             </div>
         </div>
 
-        <div class="works-wrapper">
-            
-            <!-- Project 1 -->
-            <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" class="work-card" data-cursor="VIEW" style="text-decoration: none; color: inherit;">
-                <span class="hud-num">01</span>
-                <div class="work-visual-container">
-                    <img src="./images/gesture-arcade.png" alt="Gesture Gaming">
+        <div class="works-split-container">
+            <!-- LEFT PANEL: Scrolling Media -->
+            <div class="works-left">
+                <!-- Project 1 -->
+                <div class="work-media-card" data-index="01" data-title="Gesture<br>Gaming" data-cat="AI · Hardware · Python" data-desc="Hybrid interaction system using MediaPipe and ESP32 ultrasonic arrays." data-link="https://github.com/Cigarfeine/GestureGaming" data-readout="[PLT-001]" data-freq="21.0 kHz">
+                    <div class="giant-bg-number">01</div>
+                    <div class="work-visual-container" data-cursor="VIEW">
+                        <img src="./images/gesture-arcade.png" alt="Gesture Gaming">
+                    </div>
+                    <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" class="work-mobile-info" style="text-decoration: none; color: inherit;">
+                        <div class="tech-readout"><span>[PLT-001]</span><span>2026</span><span>21.0 kHz</span></div>
+                        <div class="signal-locked"><span class="pulse-dot"></span> SIGNAL LOCKED</div>
+                        <h3 class="hud-title">Gesture<br>Gaming</h3>
+                        <span class="hud-category">AI · Hardware · Python</span>
+                        <p class="hud-details">Hybrid interaction system using MediaPipe and ESP32 ultrasonic arrays.</p>
+                        <svg class="waveform-svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 2 0, 4 10 T 8 10 T 12 10 T 16 10 T 20 10 T 24 10 T 28 10 T 32 10 T 36 10 T 40 10 T 44 10 T 48 10 T 52 10 T 56 10 T 60 10 T 64 10 T 68 10 T 72 10 T 76 10 T 80 10 T 84 10 T 88 10 T 92 10 T 96 10 T 100 10" stroke="var(--white)" fill="none" stroke-width="1"></path></svg>
+                    </a>
                 </div>
-                <div class="hud-title-wrap">
-                    <h3 class="hud-title">Gesture<br>Gaming</h3>
-                    <span class="hud-category">AI / Hardware / Python</span>
-                </div>
-                <p class="hud-details">
-                    // EXPERIMENT_001<br>
-                    // STATUS: COMPLETE<br>
-                    Hybrid interaction system using MediaPipe and ESP32 ultrasonic arrays.
-                </p>
-            </a>
 
-            <!-- Project 2 -->
-            <a href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" class="work-card" data-cursor="VIEW" style="text-decoration: none; color: inherit;">
-                <span class="hud-num">02</span>
-                <div class="work-visual-container">
-                    <img src="./images/mnemosyne.png" alt="Mnemosyne">
+                <!-- Project 2 -->
+                <div class="work-media-card" data-index="02" data-title="Mnemosyne" data-cat="AI · Next.js · Python" data-desc="AI-driven platform for generating targeted study guides and notes from PYQs." data-link="https://github.com/Cigarfeine/MNEMOSYNE" data-readout="[SYS-002]" data-freq="14.5 kHz">
+                    <div class="giant-bg-number">02</div>
+                    <div class="work-visual-container" data-cursor="VIEW">
+                        <img src="./images/mnemosyne.png" alt="Mnemosyne">
+                    </div>
+                    <a href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" class="work-mobile-info" style="text-decoration: none; color: inherit;">
+                        <div class="tech-readout"><span>[SYS-002]</span><span>2026</span><span>14.5 kHz</span></div>
+                        <div class="signal-locked"><span class="pulse-dot"></span> STANDBY</div>
+                        <h3 class="hud-title">Mnemosyne</h3>
+                        <span class="hud-category">AI · Next.js · Python</span>
+                        <p class="hud-details">AI-driven platform for generating targeted study guides and notes from PYQs.</p>
+                        <svg class="waveform-svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 L 10 2 L 10 18 L 20 2 L 20 18 L 30 2 L 30 18 L 40 2 L 40 18 L 50 2 L 50 18 L 60 2 L 60 18 L 70 2 L 70 18 L 80 2 L 80 18 L 90 2 L 90 18 L 100 10" stroke="var(--white)" fill="none" stroke-width="1"></path></svg>
+                    </a>
                 </div>
-                <div class="hud-title-wrap">
-                    <h3 class="hud-title">Mnemosyne</h3>
-                    <span class="hud-category">AI / Next.js / Python</span>
-                </div>
-                <p class="hud-details">
-                    // EXPERIMENT_002<br>
-                    // STATUS: ACTIVE<br>
-                    AI-driven platform for generating targeted study guides and notes from PYQs.
-                </p>
-            </a>
 
-            <!-- Project 3 -->
-            <a href="https://github.com/Cigarfeine/NeuralCipher" target="_blank" class="work-card" data-cursor="VIEW" style="text-decoration: none; color: inherit;">
-                <span class="hud-num">03</span>
-                <div class="work-visual-container">
-                    <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2070" alt="Neural Cipher">
+                <!-- Project 3 -->
+                <div class="work-media-card" data-index="03" data-title="Neural<br>Cipher" data-cat="Crypto · Adversarial AI" data-desc="AI-assisted encryption schemes and adversarial robustness simulations." data-link="https://github.com/Cigarfeine/NeuralCipher" data-readout="[NET-003]" data-freq="33.3 kHz">
+                    <div class="giant-bg-number">03</div>
+                    <div class="work-visual-container" data-cursor="VIEW">
+                        <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2070" alt="Neural Cipher">
+                    </div>
+                    <a href="https://github.com/Cigarfeine/NeuralCipher" target="_blank" class="work-mobile-info" style="text-decoration: none; color: inherit;">
+                        <div class="tech-readout"><span>[NET-003]</span><span>2026</span><span>33.3 kHz</span></div>
+                        <div class="signal-locked"><span class="pulse-dot"></span> ENCRYPTING</div>
+                        <h3 class="hud-title">Neural<br>Cipher</h3>
+                        <span class="hud-category">Crypto · Adversarial AI</span>
+                        <p class="hud-details">AI-assisted encryption schemes and adversarial robustness simulations.</p>
+                        <svg class="waveform-svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 L 1 18 L 2 3 L 3 15 L 4 5 L 5 19 L 6 1 L 7 12 L 8 7 L 9 18 L 10 2 L 12 16 L 14 4 L 16 19 L 18 1 L 20 14 L 22 5 L 24 18 L 26 2 L 28 15 L 30 4 L 32 19 L 34 1 L 36 13 L 38 6 L 40 18 L 42 2 L 44 16 L 46 3 L 48 19 L 50 1 L 52 14 L 54 5 L 56 18 L 58 2 L 60 15 L 62 4 L 64 19 L 66 1 L 68 13 L 70 6 L 72 18 L 74 2 L 76 16 L 78 3 L 80 19 L 82 1 L 84 14 L 86 5 L 88 18 L 90 2 L 92 15 L 94 4 L 96 19 L 98 1 L 100 10" stroke="var(--white)" fill="none" stroke-width="1"></path></svg>
+                    </a>
                 </div>
-                <div class="hud-title-wrap">
-                    <h3 class="hud-title">Neural<br>Cipher</h3>
-                    <span class="hud-category">Crypto / Adversarial AI</span>
-                </div>
-                <p class="hud-details">
-                    // EXPERIMENT_003<br>
-                    // STATUS: RESEARCH<br>
-                    AI-assisted encryption schemes and adversarial robustness simulations.
-                </p>
-            </a>
+            </div>
 
+            <!-- RIGHT PANEL: Sticky Info -->
+            <div class="works-right">
+                <div class="works-sticky-hud">
+                    <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" class="hud-link-wrapper" id="hud-link" data-cursor="VIEW PROJECT" data-freq="21.0">
+                        <div class="tech-readout" id="hud-tech-display"><span>[PLT-001]</span><span>2026</span><span>21.0 kHz</span></div>
+                        <div class="signal-locked" id="hud-signal-display"><span class="pulse-dot"></span> SIGNAL LOCKED</div>
+                        <div class="hud-info-container">
+                            <h3 class="hud-title" id="hud-title-display">Gesture<br>Gaming</h3>
+                            <span class="hud-category" id="hud-cat-display">AI · Hardware · Python</span>
+                            <p class="hud-details" id="hud-desc-display">Hybrid interaction system using MediaPipe and ESP32 ultrasonic arrays.</p>
+                        </div>
+                        <div id="hud-svg-container">
+                            <svg class="waveform-svg" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 10 Q 2 0, 4 10 T 8 10 T 12 10 T 16 10 T 20 10 T 24 10 T 28 10 T 32 10 T 36 10 T 40 10 T 44 10 T 48 10 T 52 10 T 56 10 T 60 10 T 64 10 T 68 10 T 72 10 T 76 10 T 80 10 T 84 10 T 88 10 T 92 10 T 96 10 T 100 10" stroke="var(--white)" fill="none" stroke-width="1"></path></svg>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1390,8 +1653,8 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Performance optimization
 
-        // Terrain Geometry (A large plane with many segments)
-        const geometry = new THREE.PlaneGeometry(100, 100, 40, 40);
+        // Terrain Geometry (A large plane with high segment density for point cloud)
+        const geometry = new THREE.PlaneGeometry(120, 120, 120, 120);
         
         // Rotate flat so it looks like a floor
         geometry.rotateX(-Math.PI / 2);
@@ -1404,19 +1667,16 @@
             // Simple math formula for rolling hills/waves
             vertices[i + 1] = Math.sin(x / 5) * 2 + Math.cos(z / 4) * 2;
         }
-        
-        // Must update normals for lighting (though wireframe doesn't strictly need it, good practice)
-        geometry.computeVertexNormals();
 
-        // Wireframe Material
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x333333, // Dark grey cyber-industrial color
-            wireframe: true,
+        // Point Cloud Material
+        const material = new THREE.PointsMaterial({ 
+            color: 0xffffff, // White dots
+            size: 0.04, // Smoother, smaller dots
             transparent: true,
-            opacity: 0.2 // Very subtle
+            opacity: 0.2 // Reduced opacity to not distract from text
         });
 
-        const terrain = new THREE.Mesh(geometry, material);
+        const terrain = new THREE.Points(geometry, material);
         scene.add(terrain);
 
         // Animation Loop
@@ -1426,14 +1686,34 @@
             requestAnimationFrame(animateBackground);
             
             const time = clock.getElapsedTime();
+            const scrollOffset = window.scrollY * 0.005; // Scroll pushes terrain forward
+
+            // Calculate approximate world position of mouse for interaction
+            // Camera looks at 0,0,0 from (0, 5, 20)
+            const mouseWorldX = (mouseX / window.innerWidth - 0.5) * 60;
+            const mouseWorldZ = (mouseY / window.innerHeight - 0.5) * 60 - 5; 
 
             // Slowly animate the terrain moving towards the camera
             const positions = terrain.geometry.attributes.position.array;
             for (let i = 0; i < positions.length; i += 3) {
                 const x = positions[i];
                 const z = positions[i + 2];
-                // Update the Y axis (height) over time to make it ripple
-                positions[i + 1] = Math.sin(x / 5 + time * 0.5) * 2 + Math.cos(z / 4 + time * 0.3) * 2;
+                
+                // Base terrain wave, now tied to scroll position!
+                let y = Math.sin(x / 5 + time * 0.4 + scrollOffset) * 2 + Math.cos(z / 4 + time * 0.25 - scrollOffset) * 2;
+
+                // Sonar / Lidar Ripple effect based on mouse distance
+                const dx = x - mouseWorldX;
+                const dz = z - mouseWorldZ;
+                const dist = Math.sqrt(dx*dx + dz*dz);
+                
+                if (dist < 20) {
+                    // Smoother, less abrupt ripple
+                    const ripple = Math.sin(dist * 1.0 - time * 6) * (20 - dist) * 0.05;
+                    y += ripple;
+                }
+
+                positions[i + 1] = y;
             }
             terrain.geometry.attributes.position.needsUpdate = true;
 
@@ -1537,7 +1817,133 @@
             initNavShutter();
             initCardGlow();
             initTelemetry();
+            initGlobalTimeline();
+            initWaves();
         });
+
+        // 11. DYNAMIC SVG WAVES
+        function initWaves() {
+            let time = 0;
+            function animate() {
+                time += 0.015; // Slowed down significantly for a smoother, cooler feel
+                const svgs = document.querySelectorAll('.waveform-svg');
+                svgs.forEach((svg) => {
+                    const parent = svg.closest('[data-freq]');
+                    let freq = parent ? parseFloat(parent.getAttribute('data-freq')) : 21.0;
+                    
+                    const path = svg.querySelector('path');
+                    if (!path) return;
+
+                    let d = `M0 10`;
+                    for(let x = 0; x <= 100; x += 2) {
+                        let y = 10;
+                        if(freq === 21.0) {
+                            // Smooth chaotic
+                            y = 10 + Math.sin(x * 0.15 + time * 2) * 4 + Math.cos(x * 0.3 - time * 1.5) * 2;
+                        } else if(freq === 14.5) {
+                            // Smooth sawtooth
+                            y = 10 + Math.sin(x * 0.1 + time) * 5 + Math.sin(x * 0.25 + time * 1.2) * 2.5;
+                        } else if(freq === 33.3) {
+                            // Smooth erratic
+                            y = 10 + Math.sin(x * 0.3 + time * 3) * 6 * Math.sin(time * 0.8);
+                        } else {
+                            y = 10 + Math.sin(x * 0.1 + time) * 5;
+                        }
+                        y = Math.max(2, Math.min(18, y));
+                        d += ` L ${x} ${y.toFixed(1)}`;
+                    }
+                    path.setAttribute('d', d);
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // 10. GLOBAL TIMELINE RULER
+        function initGlobalTimeline() {
+            const timeline = document.getElementById('global-timeline');
+            const ticksContainer = document.getElementById('timeline-ticks');
+            const indicator = document.getElementById('timeline-indicator');
+            if(!timeline || !ticksContainer || !indicator) return;
+
+            const tickSpacing = 10;
+            const windowHeight = window.innerHeight;
+            const numTicks = Math.floor(windowHeight / tickSpacing);
+            const tickWidths = [6, 10, 14, 30, 12, 8, 20, 10, 6, 25, 8, 15]; // Pattern for waveform
+            
+            for(let i=0; i < numTicks; i++) {
+                const tick = document.createElement('div');
+                tick.className = 'timeline-tick';
+                tick.style.top = `${i * tickSpacing}px`;
+                tick.style.width = `${tickWidths[i % tickWidths.length]}px`;
+                ticksContainer.appendChild(tick);
+            }
+
+            const ticks = ticksContainer.querySelectorAll('.timeline-tick');
+            const scrollIndicator = document.getElementById('hero-scroll-indicator');
+
+            // Dynamic visibility logic (hide on hero, fade out on inactivity)
+            let hideTimeout;
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                
+                // Fade out the hero scroll indicator as soon as user scrolls down
+                if (scrollIndicator) {
+                    if (scrollY > 50) {
+                        scrollIndicator.classList.add('hidden');
+                    } else {
+                        scrollIndicator.classList.remove('hidden');
+                    }
+                }
+
+                if (scrollY > windowHeight * 0.7) { // Only show timeline after scrolling past hero
+                    timeline.classList.add('visible');
+                    clearTimeout(hideTimeout);
+                    hideTimeout = setTimeout(() => {
+                        timeline.classList.remove('visible');
+                    }, 1200); // Hide after 1.2s of scroll inactivity
+                } else {
+                    timeline.classList.remove('visible');
+                }
+            }, { passive: true });
+
+            // ScrollTrigger to move the indicator
+            gsap.to(indicator, {
+                y: windowHeight,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 0,
+                    onUpdate: (self) => {
+                        const currentY = self.progress * windowHeight;
+                        
+                        // Ripple + Progress effect on ticks
+                        ticks.forEach((tick, i) => {
+                            const tickY = i * tickSpacing;
+                            const dist = Math.abs(currentY - tickY);
+                            const baseW = tickWidths[i % tickWidths.length];
+                            
+                            // Progress bar color
+                            if(tickY <= currentY) {
+                                tick.classList.add('active');
+                            } else {
+                                tick.classList.remove('active');
+                            }
+
+                            // Ripple width
+                            if(dist < 60) {
+                                const expansion = (1 - (dist / 60)) * 34; // Max 34px expansion instantly
+                                tick.style.width = `${baseW + expansion}px`;
+                            } else {
+                                tick.style.width = `${baseW}px`;
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
         // 4.6 Live System Telemetry
         function initTelemetry() {
@@ -1572,38 +1978,89 @@
 
         // 5. SCROLL REVEALS
         function initAnimations() {
-            // Horizontal Scroll for Works (HUD Style)
-            const worksWrapper = document.querySelector('.works-wrapper');
-            const workCards = document.querySelectorAll('.work-card');
-
-            const worksTween = gsap.to(worksWrapper, {
-                xPercent: -66.66,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: ".works-horizontal-section",
-                    pin: true,
-                    scrub: 1,
-                    snap: 1 / 2,
-                    end: () => "+=" + worksWrapper.offsetWidth,
-                    onUpdate: (self) => {
-                        // Lens Skew Animation based on velocity
-                        const skew = self.getVelocity() / 300;
-                        gsap.to('.work-visual-container img', { skewX: skew, duration: 0.5, ease: "power2.out" });
+            // Split Vertical Scroll for Works (Kento Kawazoe / HUD Style)
+            const workCards = document.querySelectorAll('.work-media-card');
+            const hudTitle = document.getElementById('hud-title-display');
+            const hudCat = document.getElementById('hud-cat-display');
+            const hudDesc = document.getElementById('hud-desc-display');
+            const hudLink = document.getElementById('hud-link');
+            const hudTech = document.getElementById('hud-tech-display');
+            const hudSignal = document.getElementById('hud-signal-display');
+            
+            // Subtle Parallax for images inside cards
+            workCards.forEach(card => {
+                const img = card.querySelector('.work-visual-container img');
+                gsap.to(img, {
+                    yPercent: 15,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
                     }
-                }
+                });
             });
 
-            // Cinematic Reveal & Parallax for each card
+            // HUD Update Logic
+            let currentIndex = -1;
+
+            workCards.forEach((card, i) => {
+                ScrollTrigger.create({
+                    trigger: card,
+                    start: "top 60%", // When top of card hits 60% of viewport
+                    end: "bottom 40%",
+                    onEnter: () => updateHUD(card, i),
+                    onEnterBack: () => updateHUD(card, i)
+                });
+            });
+
+            function updateHUD(card, index) {
+                if (currentIndex === index) return;
+                currentIndex = index;
+
+                const newTitle = card.getAttribute('data-title');
+                const newCat = card.getAttribute('data-cat');
+                const newDesc = card.getAttribute('data-desc');
+                const newLink = card.getAttribute('data-link');
+                const newReadout = card.getAttribute('data-readout');
+                const newFreq = card.getAttribute('data-freq');
+                const svgEl = card.querySelector('.waveform-svg');
+                const newSvg = svgEl ? svgEl.outerHTML : '';
+
+                if (!hudTitle) return; // Prevent errors on mobile where right panel might be removed/hidden
+
+                const hudSvgContainer = document.getElementById('hud-svg-container');
+                const svgToAnimate = hudSvgContainer ? [hudSvgContainer] : [];
+
+                const tl = gsap.timeline();
+                
+                // Animate Out
+                tl.to([hudTech, hudSignal, hudTitle, hudCat, hudDesc, ...svgToAnimate], { opacity: 0, x: -20, duration: 0.25, stagger: 0.05, ease: "power2.in" }, 0);
+                
+                tl.call(() => {
+                    // Update Content
+                    hudTitle.innerHTML = newTitle;
+                    hudCat.innerHTML = newCat;
+                    hudDesc.innerHTML = newDesc;
+                    hudLink.setAttribute('href', newLink);
+                    hudLink.setAttribute('data-freq', newFreq);
+                    if(hudTech) hudTech.innerHTML = `<span>${newReadout}</span><span>2026</span><span>${newFreq}</span>`;
+                    if(hudSvgContainer) hudSvgContainer.innerHTML = newSvg;
+
+                    // Reset positions for in-animation
+                    gsap.set([hudTech, hudSignal, hudTitle, hudCat, hudDesc, ...svgToAnimate], { x: 20 });
+                });
+
+                // Animate In
+                tl.to([hudTech, hudSignal, hudTitle, hudCat, hudDesc, ...svgToAnimate], { opacity: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "power3.out" }, "<");
+            }
+
+            // Cinematic Image Reveal for each card
             workCards.forEach(card => {
-                const num = card.querySelector('.hud-num');
-                const details = card.querySelector('.hud-details');
                 const img = card.querySelector('img');
-
-                // Parallax on text
-                gsap.to(num, { x: -100, scrollTrigger: { trigger: card, containerAnimation: worksTween, scrub: true } });
-                gsap.to(details, { x: 50, scrollTrigger: { trigger: card, containerAnimation: worksTween, scrub: true } });
-
-                // Snap, Scale, and Colorize when entering center (Dhero/Mason Wong style)
+                
+                // Snap, Scale, and Colorize when entering center
                 gsap.fromTo(img, 
                     { 
                         filter: "grayscale(100%) brightness(0.5)",
@@ -1617,9 +2074,8 @@
                         ease: "power2.out",
                         scrollTrigger: {
                             trigger: card,
-                            containerAnimation: worksTween,
-                            start: "left center", // Trigger when left of card hits center
-                            end: "center center", // Finish when card is perfectly centered
+                            start: "top 80%", // Reveal when scrolling down
+                            end: "center center",
                             scrub: true,
                         }
                     }
