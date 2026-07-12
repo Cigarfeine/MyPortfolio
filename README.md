@@ -14,32 +14,6 @@ Here is what powers it:
 - **Animations:** Custom CSS keyframes (like the noise overlay) to make the site feel alive without sacrificing load speed.
 - **Images:** Optimized WebP assets for lightning-fast rendering.
 
-## 🛠️ Running it Locally
 
-If you want to poke around the code or run it on your own machine, it's super simple:
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/Cigarfeine/MyPortfolio.git
-   cd MyPortfolio
-   ```
-
-2. **Start a local server:**
-   Since it's vanilla HTML/CSS, you can use any basic HTTP server. If you have Python installed, just run:
-   ```bash
-   python3 -m http.server 8080
-   ```
-
-3. **View it:**
-   Open your browser and head over to `http://localhost:8080`.
-
-## 🤝 Let's Connect
-
-I'm always open to talking about AI, interesting side projects, or just chatting about tech in general. 
-
-- **GitHub:** [@Cigarfeine](https://github.com/Cigarfeine)
-- **Email:** arshadrafi566@gmail.com
-
----
 *Designed & built by Arshad.*
 
