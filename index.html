@@ -907,49 +907,77 @@
         }
 
         .contact-cta {
-            font-size: clamp(3rem, 6vw, 5rem);
-            line-height: 1.1;
+            font-size: clamp(4rem, 12vw, 10rem);
+            font-weight: 500;
+            line-height: 0.9;
+            letter-spacing: -0.04em;
             margin-bottom: 4rem;
+            margin-top: 2rem;
+            /* text-transform: uppercase; Removed */
         }
 
         .contact-cta a {
             position: relative;
             display: inline-block;
+            transition: color 0.4s ease;
         }
 
         .contact-cta a::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 2px;
+            bottom: max(2px, 0.5vw); left: 0;
+            width: 100%; height: 3px;
             background: var(--white);
             transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-origin: center;
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .contact-cta a:hover {
+            color: rgba(255,255,255,0.7);
         }
 
         .contact-cta a:hover::after {
             transform: scaleX(1);
-            transform-origin: left;
         }
 
         .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            border-top: 1px solid var(--line);
+            padding-top: 4rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: var(--grey);
             text-transform: uppercase;
         }
 
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .footer-label {
+            display: block;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+            opacity: 0.4;
+        }
+
         .social-links {
             display: flex;
-            gap: 2rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            transition: color 0.3s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .social-links a:hover {
             color: var(--white);
+            transform: translateX(5px);
         }
 
         /* --- ABOUT --- */
@@ -1159,9 +1187,8 @@
 
             /* Footer */
             footer { padding: 6rem 5vw 3rem 5vw; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-            .contact-cta { font-size: 2.5rem; margin-bottom: 3rem; }
-            .footer-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; margin-top: auto; }
-            .social-links { flex-wrap: wrap; gap: 1rem; }
+            .contact-cta { font-size: clamp(3rem, 10vw, 6rem); margin-bottom: 3rem; }
+            .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
 
             /* Disable Custom Cursor on Touch */
             @media (hover: none) and (pointer: coarse) {
@@ -1259,12 +1286,12 @@
             .works-split-container {
                 flex-direction: column !important;
             }
-            .works-left, .works-right {
+            .works-left {
                 width: 100% !important;
+                padding: 10vh 5vw !important;
             }
             .works-right {
-                position: relative;
-                margin-top: 2rem;
+                display: none !important;
             }
             .disciplines-container {
                 flex-direction: column !important;
@@ -1275,6 +1302,68 @@
             h1 { font-size: clamp(2.5rem, 10vw, 4rem); }
             .about-text { font-size: clamp(1.5rem, 8vw, 3rem); }
             .hero-video-placeholder { width: 80vw; height: 50vw; }
+        }
+
+        /* --- MOBILE OVERLAY STYLES --- */
+        #mobile-menu-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--black);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: visibility 0.4s;
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 2rem;
+            right: 4vw;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            list-style: none;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            padding: 0;
+        }
+
+        .mobile-nav-item {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: block;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .mobile-menu-footer {
+            position: absolute;
+            bottom: 4vw;
+            display: flex;
+            gap: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+        
+        .mobile-menu-footer a {
+            color: var(--grey);
         }
     </style>
 </head>
@@ -1333,8 +1422,23 @@
             <li><a href="#works" class="scramble-link" data-text="WORKS" data-cursor="GO" data-target=".works-split-section">WORKS</a></li>
             <li><a href="#contact" class="scramble-link" data-text="CONTACT" data-cursor="GO" data-target="#contact">CONTACT</a></li>
         </ul>
-        <div class="menu-trigger show-mobile" data-cursor="MENU">MENU</div>
+        <div class="menu-trigger show-mobile" id="mobile-menu-open" data-cursor="MENU">MENU</div>
     </nav>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div id="mobile-menu-overlay">
+        <div class="mobile-menu-close" id="mobile-menu-close" data-cursor="CLOSE">CLOSE</div>
+        <ul class="mobile-nav-links">
+            <li><a href="#about" class="mobile-nav-item mobile-link">ABOUT</a></li>
+            <li><a href="#works" class="mobile-nav-item mobile-link">WORKS</a></li>
+            <li><a href="#contact" class="mobile-nav-item mobile-link">CONTACT</a></li>
+        </ul>
+        <div class="mobile-menu-footer">
+            <a href="https://github.com/Cigarfeine" target="_blank">GITHUB</a>
+            <a href="https://www.linkedin.com/in/arshad-rafi-204458351" target="_blank">LINKEDIN</a>
+            <a href="https://www.instagram.com/ar.shaed" target="_blank">INSTAGRAM</a>
+        </div>
+    </div>
 
     <!-- HEADER / HERO -->
     <header id="hero">
@@ -1534,15 +1638,25 @@
         </div>
 
         <div class="footer-bottom reveal">
-            <div class="location">
-                BASED IN KERALA, INDIA<br>
-                © 2026 ARSHAD
-            </div>
-            <div class="social-links">
-                <a href="https://github.com/Cigarfeine" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="GITHUB">GITHUB</a>
-                <a href="https://www.linkedin.com/in/arshad-rafi-204458351?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="LINKEDIN">LINKEDIN</a>
-                <a href="https://www.instagram.com/ar.shaed" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="INSTAGRAM">INSTAGRAM</a>
-                <a href="https://wa.me/917736889417" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="WHATSAPP">WHATSAPP</a>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <span class="footer-label">LOCATION</span>
+                    KERALA, INDIA<br>
+                    © 2026 ARSHAD
+                </div>
+                <div class="footer-col">
+                    <span class="footer-label">STATUS</span>
+                    <div class="signal-locked"><span class="pulse-dot"></span> AVAILABLE FOR WORK</div>
+                </div>
+                <div class="footer-col social-col">
+                    <span class="footer-label">SOCIALS</span>
+                    <div class="social-links">
+                        <a href="https://github.com/Cigarfeine" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="GITHUB">GITHUB</a>
+                        <a href="https://www.linkedin.com/in/arshad-rafi-204458351" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="LINKEDIN">LINKEDIN</a>
+                        <a href="https://www.instagram.com/ar.shaed" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="INSTAGRAM">INSTAGRAM</a>
+                        <a href="https://wa.me/917736889417" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="WHATSAPP">WHATSAPP</a>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -2243,6 +2357,46 @@
                     ease: "power3.out"
                 });
             });
+            // Mobile Menu Overlay Animation
+            const menuOpen = document.getElementById('mobile-menu-open');
+            const menuClose = document.getElementById('mobile-menu-close');
+            const menuOverlay = document.getElementById('mobile-menu-overlay');
+            const menuItems = document.querySelectorAll('.mobile-nav-item');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            let menuTl = gsap.timeline({ paused: true, reversed: true });
+
+            menuTl.to(menuOverlay, {
+                autoAlpha: 1, // handles visibility and opacity
+                duration: 0.4,
+                ease: "power2.inOut"
+            })
+            .to(menuItems, {
+                y: 0,
+                opacity: 1,
+                duration: 0.4,
+                stagger: 0.1,
+                ease: "power3.out"
+            }, "-=0.2");
+
+            if (menuOpen && menuClose) {
+                menuOpen.addEventListener('click', () => {
+                    menuTl.play();
+                    document.body.style.overflow = 'hidden'; // Stop background scrolling
+                });
+
+                menuClose.addEventListener('click', () => {
+                    menuTl.reverse();
+                    document.body.style.overflow = '';
+                });
+
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        menuTl.reverse();
+                        document.body.style.overflow = '';
+                    });
+                });
+            }
         }
     </script>
 </body>
