@@ -13,11 +13,11 @@
 
     <style>
         :root {
-            --black: #000000;
-            --white: #ffffff;
+            --black: #080807;
+            --white: #E8E8E3;
             --grey: #666666;
-            --line: #1a1a1a;
-            --accent: #ffffff;
+            --line: rgba(232, 232, 227, 0.05);
+            --accent: #E8E8E3;
         }
 
         * {
@@ -149,6 +149,23 @@
             cursor: none;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* Premium Typography Overrides */
+        h1, h2, h3, .about-text {
+            letter-spacing: -0.03em;
+        }
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.1;
+        }
+        .about-text {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.1;
+        }
+        .section-tag {
+            letter-spacing: -0.02em;
+            font-weight: 500;
         }
 
         a {
@@ -1221,6 +1238,44 @@
             0% { transform: translateY(0); opacity: 1; }
             100% { transform: translateY(12px); opacity: 0; }
         }
+
+        /* --- MOBILE OPTIMIZATIONS (Darknode Style) --- */
+        .show-mobile { display: none !important; }
+        
+        @media (max-width: 991px) {
+            .hidden-mobile { display: none !important; }
+            .show-mobile { display: block !important; }
+            
+            .nav-links { display: none; }
+            .menu-trigger {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 11px;
+                color: var(--white);
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                cursor: pointer;
+            }
+
+            .works-split-container {
+                flex-direction: column !important;
+            }
+            .works-left, .works-right {
+                width: 100% !important;
+            }
+            .works-right {
+                position: relative;
+                margin-top: 2rem;
+            }
+            .disciplines-container {
+                flex-direction: column !important;
+            }
+        }
+
+        @media (max-width: 767px) {
+            h1 { font-size: clamp(2.5rem, 10vw, 4rem); }
+            .about-text { font-size: clamp(1.5rem, 8vw, 3rem); }
+            .hero-video-placeholder { width: 80vw; height: 50vw; }
+        }
     </style>
 </head>
 <body data-cursor="SYSTEM ACTIVE">
@@ -1278,6 +1333,7 @@
             <li><a href="#works" class="scramble-link" data-text="WORKS" data-cursor="GO" data-target=".works-split-section">WORKS</a></li>
             <li><a href="#contact" class="scramble-link" data-text="CONTACT" data-cursor="GO" data-target="#contact">CONTACT</a></li>
         </ul>
+        <div class="menu-trigger show-mobile" data-cursor="MENU">MENU</div>
     </nav>
 
     <!-- HEADER / HERO -->
@@ -1485,7 +1541,7 @@
             <div class="social-links">
                 <a href="https://github.com/Cigarfeine" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="GITHUB">GITHUB</a>
                 <a href="https://www.linkedin.com/in/arshad-rafi-204458351?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="LINKEDIN">LINKEDIN</a>
-                <a href="https://www.instagram.com/sisyphar" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="INSTAGRAM">INSTAGRAM</a>
+                <a href="https://www.instagram.com/ar.shaed" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="INSTAGRAM">INSTAGRAM</a>
                 <a href="https://wa.me/917736889417" target="_blank" rel="noreferrer noopener" class="scramble-link" data-text="WHATSAPP">WHATSAPP</a>
             </div>
         </div>
@@ -2171,6 +2227,20 @@
                             ease: "power3.out"
                         });
                     }
+                });
+            });
+
+            // GSAP Scroll Reveals for Project and Discipline Cards
+            gsap.utils.toArray('.work-media-card, .discipline-stack-card').forEach(card => {
+                gsap.from(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 90%",
+                    },
+                    y: 100,
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: "power3.out"
                 });
             });
         }
