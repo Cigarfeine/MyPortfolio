@@ -131,17 +131,17 @@
             transform: translateZ(0);
         }
 
-        /* --- ARCHITECTURAL GRID BACKGROUND --- */
+        /* --- TACTICAL GRID BACKGROUND --- */
         .bg-grid {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0; left: 0; right: 0; bottom: 0;
             z-index: -2;
             pointer-events: none;
             background-image: 
-                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 4vw 4vw;
+                linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 10rem 10rem; /* Tactical, zoomed-in scale */
+            background-position: center center;
             mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
             -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
         }
@@ -149,8 +149,7 @@
         /* --- DARK VIGNETTE FOR READABILITY --- */
         .dark-vignette {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0; left: 0; right: 0; bottom: 0;
             z-index: -1; /* Above grid and canvas, below content */
             pointer-events: none;
             background: radial-gradient(circle at center, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.68) 100%);
@@ -1300,14 +1299,32 @@
 
             .works-split-container {
                 flex-direction: column !important;
+                overflow: hidden !important;
             }
             .works-left {
-                width: 100% !important;
-                padding: 10vh 5vw !important;
+                width: 100vw !important;
+                padding: 5vh 5vw 10vh 5vw !important;
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                gap: 5vw !important;
+            }
+            .works-left::-webkit-scrollbar {
+                display: none;
             }
             .works-right {
                 display: none !important;
             }
+            .work-media-card {
+                flex: 0 0 85vw !important;
+                scroll-snap-align: center;
+                margin-bottom: 0 !important;
+            }
+            .work-mobile-info .tech-readout { display: none; }
+            .work-visual-container { aspect-ratio: 4/5 !important; }
             .disciplines-container {
                 flex-direction: column !important;
             }
