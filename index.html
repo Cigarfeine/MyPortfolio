@@ -311,13 +311,53 @@
         }
 
         /* --- HEADER / HERO --- */
-        header {
+        #hero {
             height: 100vh;
+            width: 100vw;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8rem 4vw 2rem 4vw;
+            padding: 7rem 4vw 4vw 4vw;
             position: relative;
+            z-index: 5;
+            overflow: hidden; /* Contains the ASCII art */
+        }
+        
+        .hero-top, .hero-svg-text, .hero-bottom {
+            position: relative;
+            z-index: 2; /* Content above ASCII */
+            pointer-events: none; /* Let pointer through to ASCII canvas */
+        }
+        
+        /* Make links clickable even with pointer-events none on parent */
+        .hero-top a, .hero-bottom a, .hero-svg-text a {
+            pointer-events: auto;
+        }
+
+        /* --- ASCII ART CSS --- */
+        .ascii-art {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; 
+            opacity: 0.8; /* Blends nicely with the dark background */
+            transition: opacity 1s ease;
+        }
+        
+        .ascii-art[data-ready="false"] {
+            opacity: 0;
+        }
+
+        #ascii-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ascii-fallback {
+            display: none;
         }
 
         .hero-top {
@@ -362,15 +402,30 @@
         .hero-svg-text {
             width: 100%;
             display: flex;
-            align-items: flex-end;
-            margin-bottom: -2vw;
+            align-items: flex-start;
         }
 
-        .hero-svg-text svg {
+        .hero-bottom-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             width: 100%;
-            height: auto;
-            fill: var(--white);
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        .hero-bottom-container > * {
+            pointer-events: auto; /* Enable clicks on children */
+        }
+
+        .hero-main-name {
+            font-size: clamp(2rem, 3.5vw, 4rem);
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            color: var(--white);
+            margin: 0;
+            line-height: 1;
             will-change: transform, filter, opacity;
+            text-transform: uppercase;
         }
 
         /* --- AXIS LINES --- */
@@ -564,8 +619,7 @@
         }
 
         .work-media-card:hover .work-visual-container img {
-            opacity: 0.6;
-            filter: grayscale(80%) contrast(1.2);
+            /* Kept clean and visible on hover */
         }
 
 
@@ -766,7 +820,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            background: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0));
+            background: transparent;
         }
 
         .disciplines-container {
@@ -1084,6 +1138,17 @@
             .profile-visual { aspect-ratio: 1/1; margin-bottom: 3rem; }
         }
 
+        .top-nav-fade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 25vh;
+            background: linear-gradient(to bottom, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%);
+            z-index: 50;
+            pointer-events: none;
+        }
+
         /* --- NAV TRANSITION SHUTTER --- */
         #nav-shutter {
             position: fixed;
@@ -1143,7 +1208,6 @@
         /* --- MEDIA QUERIES (Mobile Optimization) --- */
         @media (max-width: 1024px) {
             .hero-desc { font-size: 1.1rem; max-width: 100%; }
-            .hero-svg-text { margin-bottom: -4vw; }
             .about-text { font-size: 2.5rem; }
             
             /* Adjust Works HUD for tablet/mobile */
@@ -1167,7 +1231,6 @@
 
             /* Hero */
             header { padding: 6rem 5vw 2rem 5vw; }
-            .hero-svg-text { margin-bottom: -1vw; } /* Adjusted for mobile */
 
             /* About */
             .section-padding { padding: 6rem 5vw; }
@@ -1186,7 +1249,12 @@
 
             /* Disciplines Stack - Disable sticky stacking on mobile for better UX */
             .disciplines-stack-section { padding-bottom: 4rem; }
-            .disciplines-header { position: relative; padding: 4rem 4vw 2rem 4vw; }
+            .disciplines-header { 
+                position: relative; 
+                top: 0;
+                padding: 4rem 4vw 2rem 4vw; 
+                background: transparent;
+            }
             .discipline-stack-card { 
                 position: relative !important; 
                 top: 0 !important; 
@@ -1233,6 +1301,10 @@
 
         /* --- SCROLL DOWN INDICATOR --- */
         .hero-scroll-indicator {
+            position: absolute;
+            bottom: 4vw;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -1241,7 +1313,6 @@
             opacity: 0.5; /* Default opacity */
             pointer-events: none;
             transition: opacity 0.4s ease;
-            margin-bottom: 2vh;
         }
 
         .hero-scroll-indicator.hidden {
@@ -1328,6 +1399,17 @@
             .disciplines-container {
                 flex-direction: column !important;
             }
+
+            /* --- MOBILE PERFORMANCE: Kill heavy compositing layers --- */
+            .noise { display: none !important; }
+            .bg-grid, .dark-vignette { display: none !important; }
+            .axis-x, .axis-y { display: none !important; }
+            #global-timeline { display: none !important; }
+            #cursor-viewfinder, #cursor-label, #cursor-dot { display: none !important; }
+            body, a { cursor: auto !important; }
+            #bg-canvas { will-change: auto; }
+            .discipline-stack-card { contain: content; }
+            .hero-main-name { will-change: auto; }
         }
 
         @media (max-width: 767px) {
@@ -1400,6 +1482,7 @@
     </style>
 </head>
 <body data-cursor="SYSTEM ACTIVE">
+    <div class="top-nav-fade"></div>
 
     <!-- NAV SHUTTER -->
     <div id="nav-shutter">
@@ -1475,23 +1558,29 @@
 
     <!-- HEADER / HERO -->
     <header id="hero">
-        <div class="hero-top">
-            <p class="hero-desc reveal">
-                The personal portfolio of Arshad, a developer based in Kerala exploring
-                <span>artificial intelligence</span>, <span>cybersecurity</span>, and <span>visual storytelling</span>.
-            </p>
+        <!-- ASCII HANDS -->
+        <div class="ascii-art" data-ready="false">
+            <canvas id="ascii-canvas"></canvas>
+            <div class="ascii-fallback"></div>
         </div>
 
         <div class="hero-svg-text">
-            <svg viewBox="0 0 1800 200" preserveAspectRatio="xMidYMid meet">
-                <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" font-size="180" font-weight="500" letter-spacing="-0.02em" class="scroll-scramble">MUHAMMED ARSHAD</text>
-            </svg>
+            <h1 class="hero-main-name scroll-scramble">MUHAMMED ARSHAD</h1>
         </div>
 
-        <div class="hero-scroll-indicator" id="hero-scroll-indicator">
-            <div class="hero-scroll-text">SCROLL DOWN</div>
-            <div class="hero-scroll-mouse">
-                <div class="hero-scroll-wheel"></div>
+        <div class="hero-bottom-container">
+            <div class="hero-desc-container">
+                <p class="hero-desc reveal">
+                    The personal portfolio of Arshad, a developer based in Kerala exploring
+                    <span>artificial intelligence</span>, <span>cybersecurity</span>, and <span>visual storytelling</span>.
+                </p>
+            </div>
+
+            <div class="hero-scroll-indicator" id="hero-scroll-indicator">
+                <div class="hero-scroll-text">SCROLL DOWN</div>
+                <div class="hero-scroll-mouse">
+                    <div class="hero-scroll-wheel"></div>
+                </div>
             </div>
         </div>
     </header>
@@ -1664,7 +1753,7 @@
     <footer id="contact">
         <div>
             <span class="section-tag reveal">( Contact )</span>
-            <h2 class="contact-cta reveal">
+            <h2 class="contact-cta reveal no-scramble">
                 Got a project?<br>
                 <a href="mailto:arshadrafi566@gmail.com" data-cursor="SEND MAIL">Let's build it.</a>
             </h2>
@@ -1707,8 +1796,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     
+    <!-- ASCII Hands Engine -->
+    <script src="ascii-hands.js"></script>
+
     <script>
         gsap.registerPlugin(ScrollTrigger);
+
+        // Mobile device detection for performance gating
+        const isMobileDevice = window.innerWidth <= 991;
 
         // 1. PRELOADER
         let progress = 0;
@@ -1754,19 +1849,22 @@
             });
         }
 
-        // 2. SMOOTH SCROLL (Lenis)
-        const lenis = new Lenis({
-            duration: 1.8, // Heavier feel
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 0.8, // Slower, more controlled
-        });
+        // 2. SMOOTH SCROLL (Lenis) — Desktop only; native scroll on mobile
+        let lenis;
+        if (!isMobileDevice) {
+            lenis = new Lenis({
+                duration: 1.8,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                direction: 'vertical',
+                gestureDirection: 'vertical',
+                smooth: true,
+                mouseMultiplier: 0.8,
+            });
 
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-        gsap.ticker.lagSmoothing(0);
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+            gsap.ticker.lagSmoothing(0);
+        }
 
         // 3. MILITARY VIEWFINDER & AXIS
         const viewfinder = document.getElementById('cursor-viewfinder');
@@ -1786,55 +1884,100 @@
             gsap.to(axisY, { x: mouseX, duration: 0.1 });
         });
 
-        // Smooth follow
-        gsap.ticker.add(() => {
-            vX += (mouseX - vX) * 0.15;
-            vY += (mouseY - vY) * 0.15;
-            gsap.set(viewfinder, { x: vX, y: vY });
-            gsap.set(label, { x: vX, y: vY });
-        });
+        // Smooth follow, Hover Logic, Magnetic Nav — Desktop only
+        if (!isMobileDevice) {
+            gsap.ticker.add(() => {
+                vX += (mouseX - vX) * 0.15;
+                vY += (mouseY - vY) * 0.15;
+                gsap.set(viewfinder, { x: vX, y: vY });
+                gsap.set(label, { x: vX, y: vY });
+            });
 
-        // Hover Logic
-        document.querySelectorAll('[data-cursor], .service-row').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                document.body.classList.add('hover-active');
-                label.textContent = el.getAttribute('data-cursor') || 'VIEW';
+            document.querySelectorAll('[data-cursor], .service-row').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    document.body.classList.add('hover-active');
+                    label.textContent = el.getAttribute('data-cursor') || 'VIEW';
+                });
+                el.addEventListener('mouseleave', () => {
+                    document.body.classList.remove('hover-active');
+                });
             });
-            el.addEventListener('mouseleave', () => {
-                document.body.classList.remove('hover-active');
-            });
-        });
 
-        // Magnetic Nav Logic
-        document.querySelectorAll('.nav-links a, .nav-logo').forEach(el => {
-            el.addEventListener('mousemove', (e) => {
-                const rect = el.getBoundingClientRect();
-                const x = e.clientX - rect.left - rect.width / 2;
-                const y = e.clientY - rect.top - rect.height / 2;
-                gsap.to(el, { x: x * 0.4, y: y * 0.4, duration: 0.3 });
-                // Pull viewfinder towards element
-                mouseX = rect.left + rect.width / 2;
-                mouseY = rect.top + rect.height / 2;
+            document.querySelectorAll('.nav-links a, .nav-logo').forEach(el => {
+                el.addEventListener('mousemove', (e) => {
+                    const rect = el.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    gsap.to(el, { x: x * 0.4, y: y * 0.4, duration: 0.3 });
+                    mouseX = rect.left + rect.width / 2;
+                    mouseY = rect.top + rect.height / 2;
+                });
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, { x: 0, y: 0, duration: 0.3 });
+                });
             });
-            el.addEventListener('mouseleave', () => {
-                gsap.to(el, { x: 0, y: 0, duration: 0.3 });
-            });
-        });
+        }
 
         // 4. SCRAMBLE TEXT ENGINE (Advanced)
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]|:;<>,.?/~';
         
         function scrambleText(el, time = 1000) {
-            const originalText = el.textContent;
+            if (!el.dataset.originalText) {
+                el.dataset.originalText = el.textContent;
+            }
+            const originalText = el.dataset.originalText;
             let iterations = 0;
             const interval = setInterval(() => {
                 el.textContent = originalText.split('').map((char, index) => {
                     if (index < iterations) return originalText[index];
+                    if (char === ' ') return ' ';
                     return chars[Math.floor(Math.random() * chars.length)];
                 }).join('');
-                if (iterations >= originalText.length) clearInterval(interval);
+                if (iterations >= originalText.length) {
+                    clearInterval(interval);
+                    el.textContent = originalText;
+                }
                 iterations += originalText.length / (time / 30);
             }, 30);
+        }
+
+        // 4.7 3D Hover Tilt Cards
+        function init3DTiltCards() {
+            if (isMobileDevice) return; // Optimize for mobile
+            
+            const tiltCards = document.querySelectorAll('.work-media-card, .discipline-stack-card');
+            
+            tiltCards.forEach(card => {
+                gsap.set(card, { transformPerspective: 1000 });
+                
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; 
+                    const y = e.clientY - rect.top;  
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const tiltX = ((y - centerY) / centerY) * -5; // Max tilt 5deg
+                    const tiltY = ((x - centerX) / centerX) * 5;
+                    
+                    gsap.to(card, {
+                        rotateX: tiltX,
+                        rotateY: tiltY,
+                        duration: 0.5,
+                        ease: "power2.out"
+                    });
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        rotateX: 0,
+                        rotateY: 0,
+                        duration: 0.7,
+                        ease: "power3.out"
+                    });
+                });
+            });
         }
 
         document.querySelectorAll('.scramble-link').forEach(link => {
@@ -1850,7 +1993,7 @@
         
         // Scene setup
         const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x000000, 0.0015); // Add depth to the darkness
+        // Fog removed per user request
 
         // Camera setup
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -1858,7 +2001,7 @@
         camera.lookAt(0, 0, 0);
 
         // Renderer setup
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = isMobileDevice;
         const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: !isMobile });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2)); // Major Performance optimization
@@ -1894,11 +2037,18 @@
         // Animation Loop
         let clock = new THREE.Clock();
         
+        let bgFrameCount = 0;
         function animateBackground() {
             requestAnimationFrame(animateBackground);
-            
+
+            // Throttle terrain updates to ~15fps on mobile
+            if (isMobile) {
+                bgFrameCount++;
+                if (bgFrameCount % 4 !== 0) return;
+            }
+
             const time = clock.getElapsedTime();
-            const scrollOffset = window.scrollY * 0.005; // Scroll pushes terrain forward
+            const scrollOffset = 0; // Terrain is now still as user scrolls
 
             // Calculate approximate world position of mouse for interaction
             // Camera looks at 0,0,0 from (0, 5, 20)
@@ -2017,7 +2167,11 @@
                       .to(shutterText, { opacity: 1, duration: 0.2 }, "-=0.2")
                       .call(() => {
                           // 2. Jump to section while covered
-                          lenis.scrollTo(targetEl, { immediate: true });
+                          if (lenis) {
+                              lenis.scrollTo(targetEl, { immediate: true });
+                          } else {
+                              targetEl.scrollIntoView();
+                          }
                       })
                       .to(shutterText, { opacity: 0, duration: 0.2, delay: 0.3 })
                       // 3. Open Shutter (Slide up and away)
@@ -2040,8 +2194,21 @@
         // 11. DYNAMIC SVG WAVES
         function initWaves() {
             let time = 0;
+            let wavesVisible = !isMobileDevice;
+
+            // On mobile, only animate waveforms when works section is on screen
+            if (isMobileDevice) {
+                const worksEl = document.getElementById('works');
+                if (worksEl) {
+                    new IntersectionObserver((entries) => {
+                        wavesVisible = entries[0].isIntersecting;
+                    }, { threshold: 0 }).observe(worksEl);
+                }
+            }
+
             function animate() {
-                time += 0.015; // Slowed down significantly for a smoother, cooler feel
+                time += 0.015;
+                if (!wavesVisible) { requestAnimationFrame(animate); return; }
                 const svgs = document.querySelectorAll('.waveform-svg');
                 svgs.forEach((svg) => {
                     const parent = svg.closest('[data-freq]');
@@ -2218,6 +2385,24 @@
                 });
             });
 
+            // Scroll Velocity Skew (Butter smooth Parallax skew)
+            if (!isMobileDevice) {
+                let proxy = { skew: 0 },
+                    skewSetter = gsap.quickSetter(".work-visual-container img", "skewY", "deg"),
+                    clamp = gsap.utils.clamp(-3, 3); // Subtle skew
+
+                ScrollTrigger.create({
+                    onUpdate: (self) => {
+                        let skew = clamp(self.getVelocity() / -400);
+                        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+                            proxy.skew = skew;
+                            gsap.to(proxy, {skew: 0, duration: 0.8, ease: "power3", overwrite: true, onUpdate: () => skewSetter(proxy.skew)});
+                        }
+                    }
+                });
+                gsap.set(".work-visual-container img", {transformOrigin: "center center", force3D: true});
+            }
+
             // HUD Update Logic
             let currentIndex = -1;
 
@@ -2276,23 +2461,21 @@
             workCards.forEach(card => {
                 const img = card.querySelector('img');
                 
-                // Snap, Scale, and Colorize when entering center
+                // Smooth, clean fade and scale when entering center
                 gsap.fromTo(img, 
                     { 
-                        filter: "grayscale(100%) brightness(0.5)",
-                        scale: 1.2,
-                        clipPath: "inset(0 100% 0 0)" // Scanner reveal start
+                        scale: 1.1,
+                        opacity: 0
                     },
                     { 
-                        filter: "grayscale(0%) brightness(1)",
                         scale: 1,
-                        clipPath: "inset(0 0% 0 0)", // Scanner reveal end
-                        ease: "power2.out",
+                        opacity: 1,
+                        duration: 1.2,
+                        ease: "power3.out",
                         scrollTrigger: {
                             trigger: card,
-                            start: "top 80%", // Reveal when scrolling down
-                            end: "center center",
-                            scrub: true,
+                            start: "top 75%", // Reveal smoothly when scrolling down
+                            toggleActions: "play none none reverse"
                         }
                     }
                 );
@@ -2325,7 +2508,7 @@
             const tl = gsap.timeline({ delay: 0.3 }); // Wait until preloader is almost gone
 
             // 1. Cinematic Entrance for the Main Name (SVG)
-            const heroName = document.querySelector('.hero-svg-text svg');
+            const heroName = document.querySelector('.hero-main-name');
             tl.fromTo(heroName, 
                 { 
                     scale: 1.5, 
@@ -2342,6 +2525,14 @@
                     ease: "expo.out"
                 }
             );
+
+            // 1.5 ASCII Hands Slide In (from halves)
+            tl.to(window.asciiIntro, {
+                progress: 1,
+                duration: 2.5,
+                ease: "expo.out",
+                onUpdate: () => document.dispatchEvent(new Event('ascii-intro-update'))
+            }, "<0.2"); // Start slightly after the name
 
             // 2. Reveal the small text/desc overlapping with the name
             tl.to('.reveal', {
@@ -2373,6 +2564,10 @@
                             duration: 1.2,
                             ease: "power3.out"
                         });
+                        // Decryption effect for headings
+                        if (!elem.classList.contains('no-scramble') && (elem.tagName.match(/^H[1-6]$/i) || elem.classList.contains('scramble-reveal'))) {
+                            scrambleText(elem, 800);
+                        }
                     }
                 });
             });
@@ -2430,6 +2625,8 @@
                     });
                 });
             }
+            
+            init3DTiltCards();
         }
     </script>
 </body>
