@@ -312,7 +312,7 @@
 
         /* --- HEADER / HERO --- */
         #hero {
-            height: 100vh;
+            height: 100vh; height: 100dvh;
             width: 100vw;
             display: flex;
             flex-direction: column;
@@ -455,7 +455,7 @@
             position: fixed;
             top: 0;
             right: 0; /* Align flush to right margin like a scrollbar */
-            height: 100vh;
+            height: 100vh; height: 100dvh;
             width: 40px;
             z-index: 99;
             pointer-events: none;
@@ -632,7 +632,7 @@
         .works-sticky-hud {
             position: sticky;
             top: 0;
-            height: 100vh;
+            height: 100vh; height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1153,7 +1153,7 @@
         #nav-shutter {
             position: fixed;
             top: 100%;
-            left: 0; right: 0; height: 100vh;
+            left: 0; right: 0; height: 100vh; height: 100dvh;
             background: var(--black);
             z-index: 10001;
             display: flex;
@@ -1268,7 +1268,7 @@
             .disc-info { font-size: 1rem; }
 
             /* Footer */
-            footer { padding: 6rem 5vw 3rem 5vw; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
+            footer { padding: 6rem 5vw 3rem 5vw; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; }
             .contact-cta { font-size: clamp(3rem, 10vw, 6rem); margin-bottom: 3rem; }
             .footer-grid { grid-template-columns: 1fr; gap: 3rem; }
 
