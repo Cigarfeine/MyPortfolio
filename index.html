@@ -2385,19 +2385,21 @@
             const hudSignal = document.getElementById('hud-signal-display');
             
             // Subtle Parallax for images inside cards
-            workCards.forEach(card => {
-                const img = card.querySelector('.work-visual-container img');
-                gsap.to(img, {
-                    yPercent: 15,
-                    ease: "none",
-                    scrollTrigger: {
-                        trigger: card,
-                        start: "top bottom",
-                        end: "bottom top",
-                        scrub: true
-                    }
+            if (!isMobileDevice) {
+                workCards.forEach(card => {
+                    const img = card.querySelector('.work-visual-container img');
+                    gsap.to(img, {
+                        yPercent: 15,
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top bottom",
+                            end: "bottom top",
+                            scrub: true
+                        }
+                    });
                 });
-            });
+            }
 
             // Scroll Velocity Skew (Butter smooth Parallax skew)
             if (!isMobileDevice) {
