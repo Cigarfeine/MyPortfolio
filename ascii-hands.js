@@ -57,7 +57,8 @@ function rebuildGrid() {
   width = Math.max(1, bounds.width);
   height = Math.max(1, bounds.height);
   devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-  columns = Math.max(96, Math.min(220, Math.floor(width / 6.5)));
+  const minColumns = width < 500 ? 40 : width < 900 ? 64 : 96;
+  columns = Math.max(minColumns, Math.min(220, Math.floor(width / 6.5)));
   cellWidth = width / columns;
   cellHeight = cellWidth * 1.48;
   rows = Math.ceil(height / cellHeight);
