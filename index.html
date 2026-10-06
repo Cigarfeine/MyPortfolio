@@ -15,7 +15,7 @@
         :root {
             --black: #080807;
             --white: #E8E8E3;
-            --grey: #666666;
+            --grey: #8E8E88;
             --line: rgba(232, 232, 227, 0.05);
             --accent: #E8E8E3;
         }
@@ -25,6 +25,20 @@
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+        }
+
+        a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+            outline: 1px solid var(--white);
+            outline-offset: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .noise {
+                animation: none !important;
+            }
+            .marquee-track, .marquee-track.reverse {
+                animation-play-state: paused !important;
+            }
         }
 
         /* --- FILM GRAIN OVERLAY --- */
@@ -40,6 +54,7 @@
             will-change: transform;
             backface-visibility: hidden;
             transform: translate3d(0,0,0);
+            contain: strict;
         }
 
         @keyframes noise {
@@ -83,20 +98,6 @@
         .tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
         .bl { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
         .br { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
-
-        #cursor-label {
-            position: fixed;
-            pointer-events: none;
-            z-index: 10001;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            color: var(--white);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            opacity: 0;
-            transform: translate(-50%, 30px);
-            transition: opacity 0.3s;
-        }
 
         body.hover-active #cursor-viewfinder {
             width: 60px; height: 60px;
@@ -207,7 +208,7 @@
             pointer-events: none;
             z-index: 10000;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             color: var(--black);
             background: var(--white);
             padding: 4px 8px;
@@ -762,50 +763,8 @@
             position: static !important;
         }
 
-        @media(max-width: 1024px) {
-            .works-left { width: 60%; padding-left: 5vw; }
-            .works-right { width: 40%; }
-            .hud-num { font-size: 100px !important; }
-            .hud-num-container { height: 100px; }
-            .hud-title { font-size: 3.5rem !important; }
-        }
-
-        @media(max-width: 768px) {
-            .works-split-container {
-                flex-direction: column;
-            }
-            .works-left {
-                width: 100%;
-                padding: 10vh 5vw;
-                gap: 10vh;
-            }
-            .works-right {
-                display: none;
-            }
-            .work-media-card {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .work-mobile-info {
-                display: block;
-                margin-top: 2rem;
-            }
-            .work-visual-container {
-                width: 100%;
-                aspect-ratio: 4/3 !important;
-            }
-        }
-        
         .work-mobile-info {
             display: none;
-        }
-        
-        @media(max-width: 768px) {
-            .work-mobile-info {
-                display: block;
-            }
-            .hud-title { font-size: 3rem !important; margin-bottom: 0.5rem; }
-            .hud-category { margin-bottom: 1rem; }
         }
 
         /* --- DISCIPLINES (Sticky Stack) --- */
@@ -1090,7 +1049,7 @@
             position: absolute;
             bottom: 2rem; left: 2rem;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             color: var(--white);
             z-index: 10;
             background: var(--black);
@@ -1187,7 +1146,7 @@
             right: 4vw;
             z-index: 100;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-size: 11px;
             color: rgba(255, 255, 255, 0.4);
             display: flex;
             gap: 1rem;
@@ -1321,7 +1280,7 @@
 
         .hero-scroll-text {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
+            font-size: 11px;
             letter-spacing: 0.3em;
             color: var(--white);
             text-transform: uppercase;
@@ -1644,7 +1603,7 @@
                 <div class="work-media-card" data-index="03" data-title="KAGE<br>AGENT" data-cat="AI Agent · Security" data-desc="Autonomous dependency vulnerability triage agent using OSV.dev." data-link="https://github.com/Cigarfeine/KAGE-AGENT" data-readout="[NET-003]" data-freq="33.3 kHz">
                     <div class="giant-bg-number">03</div>
                     <div class="work-visual-container" data-cursor="VIEW">
-                        <img src="https://raw.githubusercontent.com/Cigarfeine/KAGE-AGENT/main/assets/kage.png" alt="KAGE AGENT">
+                        <img src="./images/kage.png" alt="KAGE AGENT">
                     </div>
                     <a href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" class="work-mobile-info" style="text-decoration: none; color: inherit;">
                         <div class="tech-readout"><span>[NET-003]</span><span>2026</span><span>33.3 kHz</span></div>
@@ -1830,8 +1789,14 @@
             "[ ESTABLISHING SECURE CONNECTION ]"
         ];
 
+        let pageFullyLoaded = document.readyState === 'complete';
+        if (!pageFullyLoaded) {
+            window.addEventListener('load', () => { pageFullyLoaded = true; });
+        }
+
         let loaderInterval = setInterval(() => {
-            progress += Math.floor(Math.random() * 5) + 2;
+            const step = pageFullyLoaded ? Math.floor(Math.random() * 10) + 7 : Math.floor(Math.random() * 5) + 2;
+            progress += step;
             
             // Randomly flash technical phrases
             if(progress % 15 === 0 && progress < 90) {
