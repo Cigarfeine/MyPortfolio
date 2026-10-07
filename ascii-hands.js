@@ -16,7 +16,6 @@ const rightContext = rightCanvas.getContext('2d');
 const source = new Image();
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const CHARACTER_RAMP = ' .`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
-const TACTICAL_CIPHER = ['+', ':', '·', '•', '/', '|', '=', '<', '>', '1', '0', '[', ']', '#', '∆'];
 
 window.asciiIntro = { progress: 0 };
 
@@ -54,7 +53,7 @@ function configureCanvas(target, targetContext) {
   targetContext.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
   targetContext.textAlign = 'center';
   targetContext.textBaseline = 'middle';
-  targetContext.font = `${fontSize}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+  targetContext.font = `${fontSize}px "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
 }
 
 function rebuildGrid() {
@@ -119,51 +118,17 @@ function drawBaseLayer() {
   }
 }
 
-function drawContactSpark(time) {
-  const contactX = width * 0.5;
-  const contactY = height * 0.47;
-  const distToContact = Math.hypot(currentX - contactX, currentY - contactY);
-  const sparkRadius = Math.max(120, Math.min(width, height) * 0.28);
-  const sparkProximity = Math.max(0, 1 - distToContact / sparkRadius) * intensity;
-
-  if (sparkProximity <= 0.04) return;
-
-  const centerCol = Math.floor(columns * 0.5);
-  const centerRow = Math.floor(rows * 0.47);
-  const sparkGlyphs = ['·', '+', '•', '-', '×'];
-
-  for (let c = -2; c <= 2; c++) {
-    const col = centerCol + c;
-    const row = centerRow;
-    if (col < 0 || col >= columns || row < 0 || row >= rows) continue;
-
-    const b = samples[row * columns + col];
-    if (b < 0.18) {
-      const x = (col + 0.5) * cellWidth;
-      const y = (row + 0.5) * cellHeight;
-      const phase = (time * 0.008 + c * 1.8) % (Math.PI * 2);
-      const sparkAlpha = sparkProximity * (0.55 + Math.sin(phase) * 0.35);
-
-      if (sparkAlpha > 0.12) {
-        context.clearRect(
-          Math.floor(col * cellWidth),
-          Math.floor(row * cellHeight),
-          Math.ceil(cellWidth),
-          Math.ceil(cellHeight)
-        );
-
-        const sparkChar = sparkGlyphs[Math.abs(c * 7 + Math.floor(time / 70)) % sparkGlyphs.length];
-        context.fillStyle = `rgb(255 255 255 / ${Math.min(1.0, sparkAlpha)})`;
-        context.fillText(sparkChar, x, y);
-      }
-    }
-  }
-}
+const MATRIX_GLYPHS = [
+  '0', '1', '2', '3', '4', '5', '7', '8', '9',
+  'X', 'Z', 'Y', 'K', 'M', 'W', 'N', 'R', 'T', 'V', 'A', 'E', 'H',
+  'x', 'z', 'k', 'v', 'y', 'w',
+  '+', '-', '*', '/', '=', '<', '>', ':', ';', '~', '^', '|', '_', '%', '&', '$', '#', '?', '!', '[', ']', '{', '}'
+];
 
 function drawPointerEffect(time) {
   if (intensity <= 0.005) return;
 
-  const radius = Math.max(90, Math.min(width, height) * 0.22);
+  const radius = Math.max(80, Math.min(width, height) * 0.16);
   const minColumn = Math.max(0, Math.floor((currentX - radius) / cellWidth));
   const maxColumn = Math.min(columns - 1, Math.ceil((currentX + radius) / cellWidth));
   const minRow = Math.max(0, Math.floor((currentY - radius) / cellHeight));
@@ -181,39 +146,40 @@ function drawPointerEffect(time) {
       const dist = Math.hypot(dx, dy);
       if (dist > radius) continue;
 
-      const norm = dist / radius; // 0 at center, 1 at perimeter
+      const norm = dist / radius; // 0 at cursor center, 1 at perimeter
       const falloff = Math.cos(norm * (Math.PI * 0.5));
       const strength = falloff * intensity;
-      if (strength <= 0.02) continue;
+      if (strength <= 0.015) continue;
 
-      // Concentric lidar wave harmonic
-      const wave = Math.sin(norm * 9.0 - time * 0.006);
+      // Matrix rain vertical cadence: subtle downward streaming offset per column
+      const speed = 0.007 + ((column * 7) % 5) * 0.0018;
+      const cascade = Math.floor(time * speed + column * 1.3);
 
-      let glyph;
-      let alpha;
-      let color;
+      // Stagger mutation cycle intervals per cell (65ms - 125ms) so changes feel organic, not seizure-like
+      const cadence = 65 + ((column * 19 + row * 31) % 60);
+      const tick = Math.floor(time / cadence);
 
-      if (norm < 0.25) {
-        // High-clarity sensor core: illuminate authentic hand anatomy with razor-sharp pure white
-        const boosted = Math.min(1.0, brightness * 1.4 + 0.2);
-        glyph = glyphFor(boosted);
-        alpha = Math.min(1.0, 0.85 + strength * 0.15);
-        color = `rgb(255 255 255 / ${alpha})`;
-      } else if (wave > 0.52 && !prefersReducedMotion.matches) {
-        // Wave crest: subtle tactical decryption pulse
-        const cipherIdx = Math.abs((column * 37 ^ row * 67 ^ Math.floor(time / 85))) % TACTICAL_CIPHER.length;
-        glyph = TACTICAL_CIPHER[cipherIdx];
-        alpha = Math.min(0.95, 0.5 + strength * 0.45);
-        color = `rgb(232 232 227 / ${alpha})`;
-      } else {
-        // Proximity illumination: boost contour brightness smoothly
-        const boosted = Math.min(1.0, brightness + strength * 0.35);
-        glyph = glyphFor(boosted);
-        alpha = Math.min(0.95, 0.45 + boosted * 0.55);
-        color = `rgb(232 232 227 / ${alpha})`;
-      }
+      // Deterministic pseudo-random seed for Matrix glyph
+      const seed = Math.abs((column * 73856093) ^ ((row - cascade) * 19349663) ^ (tick * 83492791));
+      const matrixGlyph = MATRIX_GLYPHS[seed % MATRIX_GLYPHS.length];
 
-      // Clear existing cell from base layer to avoid double-glyph collision / blur
+      // Organic edge decode: closer to cursor = full matrix stream, outer edges decode back to original hand
+      const mutateProb = Math.min(1.0, strength * 1.45);
+      const cellNoise = ((column * 37 + row * 59 + tick * 17) % 100) / 100;
+      const isMatrix = cellNoise < mutateProb;
+
+      const displayGlyph = isMatrix ? matrixGlyph : glyphFor(brightness);
+
+      // Calibrated natural intensity: exactly preserves the hand's silhouette density
+      const baseAlpha = Math.min(0.96, 0.32 + brightness * 0.76);
+      
+      // Subtle lead drop shimmer (~3% chance on active matrix cells)
+      const isLeadSpark = isMatrix && ((seed % 31) === 0);
+      const color = isLeadSpark
+        ? `rgb(255 255 255 / ${Math.min(1.0, baseAlpha + 0.15)})`
+        : `rgb(232 232 227 / ${baseAlpha})`;
+
+      // Erase base cell cleanly to prevent character double-stamping / blur
       context.clearRect(
         Math.floor(column * cellWidth),
         Math.floor(row * cellHeight),
@@ -222,12 +188,9 @@ function drawPointerEffect(time) {
       );
 
       context.fillStyle = color;
-      context.fillText(glyph, x, y);
+      context.fillText(displayGlyph, x, y);
     }
   }
-
-  // Draw Michelangelo fingertip quantum connection spark
-  drawContactSpark(time);
 }
 
 function render(time = 0) {
