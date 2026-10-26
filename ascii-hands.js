@@ -14,6 +14,7 @@ const rightCanvas = document.createElement('canvas');
 const rightContext = rightCanvas.getContext('2d');
 
 const source = new Image();
+source.crossOrigin = 'anonymous';
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const CHARACTER_RAMP = ' .`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
 
@@ -84,7 +85,12 @@ function rebuildGrid() {
   sampleContext.clearRect(0, 0, columns, rows);
   sampleContext.drawImage(source, 0, 0, columns, rows);
 
-  const pixels = sampleContext.getImageData(0, 0, columns, rows).data;
+  let pixels;
+  try {
+    pixels = sampleContext.getImageData(0, 0, columns, rows).data;
+  } catch (err) {
+    return;
+  }
   samples = new Array(columns * rows);
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
