@@ -14,7 +14,6 @@ const rightCanvas = document.createElement('canvas');
 const rightContext = rightCanvas.getContext('2d');
 
 const source = new Image();
-source.crossOrigin = 'anonymous';
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const CHARACTER_RAMP = ' .`^\",:;Il!i~+_-?][}{1)(|\\/*tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
 
@@ -30,6 +29,14 @@ let cellHeight = 0;
 let fontSize = 0;
 let samples = [];
 let frameId = 0;
+
+// Ambient background character field (Anthracite Studio tech)
+let fieldCells = [];
+let fieldFont = 11;
+let waveRadius = 0;
+let waveMax = 0;
+let waveAlpha = 0;
+const FIELD_GLYPHS = ['+', ':', '·', '•', '0', '1', '/', 'x', '=', '-'];
 
 // Smooth tactical pointer state with spring physics
 let currentX = 0;
@@ -55,6 +62,39 @@ function configureCanvas(target, targetContext) {
   targetContext.textAlign = 'center';
   targetContext.textBaseline = 'middle';
   targetContext.font = `${fontSize}px "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+}
+
+function buildField() {
+  const spacing = Math.max(24, Math.floor(width / (width < 600 ? 28 : 56)));
+  const cols = Math.ceil(width / spacing);
+  const rowsCount = Math.ceil(height / (spacing * 1.35));
+  fieldFont = Math.max(8, Math.round(spacing * 0.42));
+  fieldCells = [];
+
+  for (let r = 0; r < rowsCount; r++) {
+    for (let c = 0; c < cols; c++) {
+      // Deterministic sparse distribution (~45% density)
+      const hash = ((c * 431) ^ (r * 787)) % 100;
+      if (hash > 45) continue;
+
+      fieldCells.push({
+        x: c * spacing + spacing / 2,
+        y: r * spacing * 1.35 + spacing * 0.67,
+        seed: Math.abs((c * 17) ^ (r * 31)),
+        baseAlpha: 0.04 + (hash % 10) * 0.007,
+        rate: 1 + (hash % 3),
+        phase: (hash / 100) * Math.PI * 2,
+        glyph: FIELD_GLYPHS[hash % FIELD_GLYPHS.length]
+      });
+    }
+  }
+}
+
+function triggerWave() {
+  waveRadius = 1;
+  waveMax = Math.max(width, height) * 0.9;
+  waveAlpha = 1.0;
+  requestRender();
 }
 
 function rebuildGrid() {
@@ -85,12 +125,7 @@ function rebuildGrid() {
   sampleContext.clearRect(0, 0, columns, rows);
   sampleContext.drawImage(source, 0, 0, columns, rows);
 
-  let pixels;
-  try {
-    pixels = sampleContext.getImageData(0, 0, columns, rows).data;
-  } catch (err) {
-    return;
-  }
+  const pixels = sampleContext.getImageData(0, 0, columns, rows).data;
   samples = new Array(columns * rows);
   for (let row = 0; row < rows; row += 1) {
     for (let column = 0; column < columns; column += 1) {
@@ -100,6 +135,7 @@ function rebuildGrid() {
       samples[row * columns + column] = alpha * Math.max(0.13, Math.pow(lightness, 0.62));
     }
   }
+  buildField();
   drawBaseLayer();
   render();
 }
@@ -205,6 +241,58 @@ function render(time = 0) {
   const progress = window.asciiIntro ? window.asciiIntro.progress : 1;
   const offset = (1 - progress) * (width * 0.5);
 
+  // 1. Draw ambient background character field (Anthracite Studio tech)
+  if (fieldCells.length) {
+    context.font = `${fieldFont}px "JetBrains Mono", monospace`;
+    const tSec = time * 0.001;
+    const contactX = width * 0.5;
+    const contactY = height * 0.47;
+
+    for (let i = 0; i < fieldCells.length; i++) {
+      const cell = fieldCells[i];
+      const dx = cell.x - currentX;
+      const dy = cell.y - currentY;
+      const distPointer = Math.hypot(dx, dy);
+
+      let pushX = cell.x;
+      let pushY = cell.y;
+      let alpha = cell.baseAlpha * (0.6 + 0.4 * Math.sin(tSec * cell.rate + cell.phase));
+
+      // Pointer repulsion / illumination on ambient background
+      if (intensity > 0.01 && distPointer < 160) {
+        const pNorm = 1 - distPointer / 160;
+        const pAngle = Math.atan2(dy, dx);
+        pushX += Math.cos(pAngle) * (pNorm * 10 * intensity);
+        pushY += Math.sin(pAngle) * (pNorm * 10 * intensity);
+        alpha = Math.min(0.75, alpha + pNorm * 0.35 * intensity);
+      }
+
+      // Contact shockwave pulse
+      if (waveAlpha > 0.01) {
+        const distCenter = Math.hypot(cell.x - contactX, cell.y - contactY);
+        const waveDist = Math.abs(distCenter - waveRadius);
+        if (waveDist < 50) {
+          const wNorm = (1 - waveDist / 50) * waveAlpha;
+          alpha = Math.min(0.9, alpha + wNorm * 0.55);
+        }
+      }
+
+      context.fillStyle = `rgb(232 232 227 / ${alpha.toFixed(3)})`;
+      context.fillText(cell.glyph, pushX, pushY);
+    }
+  }
+
+  // 2. Advance shockwave if active
+  if (waveAlpha > 0.01) {
+    waveRadius += (waveMax - waveRadius) * 0.12 + 4;
+    waveAlpha *= 0.94;
+    if (waveAlpha <= 0.02 || waveRadius >= waveMax) {
+      waveAlpha = 0;
+      waveRadius = 0;
+    }
+  }
+
+  // 3. Draw ASCII Hands
   if (progress < 1) {
     context.globalAlpha = Math.max(0, progress * 1.5 - 0.5);
   }
@@ -219,12 +307,12 @@ function render(time = 0) {
   currentY += (targetY - currentY) * 0.16;
   intensity += (targetIntensity - intensity) * 0.12;
 
-  // Draw enhanced pointer effect once intro has assembled
+  // Draw enhanced pointer matrix effect once intro has assembled
   if (progress >= 0.95 && intensity > 0.005) {
     drawPointerEffect(time);
   }
 
-  const isDecaying = intensity > 0.005 || Math.hypot(targetX - currentX, targetY - currentY) > 0.5;
+  const isDecaying = intensity > 0.005 || Math.hypot(targetX - currentX, targetY - currentY) > 0.5 || waveAlpha > 0.01;
   const needsMoreFrames = (isDecaying || progress < 1) && !prefersReducedMotion.matches;
 
   if (needsMoreFrames) {
@@ -234,6 +322,15 @@ function render(time = 0) {
     if (progress >= 1 && intensity <= 0.005 && intensity !== 0) {
       intensity = 0;
       context.clearRect(0, 0, width, height);
+      // Redraw ambient field at rest
+      if (fieldCells.length) {
+        context.font = `${fieldFont}px "JetBrains Mono", monospace`;
+        for (let i = 0; i < fieldCells.length; i++) {
+          const cell = fieldCells[i];
+          context.fillStyle = `rgb(232 232 227 / ${cell.baseAlpha.toFixed(3)})`;
+          context.fillText(cell.glyph, cell.x, cell.y);
+        }
+      }
       context.drawImage(leftCanvas, 0, 0, width, height);
       context.drawImage(rightCanvas, 0, 0, width, height);
     }
@@ -297,6 +394,10 @@ canvas.addEventListener('blur', () => {
   requestRender();
 });
 
+canvas.addEventListener('click', () => {
+  triggerWave();
+});
+
 prefersReducedMotion.addEventListener('change', () => {
   if (frameId) cancelAnimationFrame(frameId);
   frameId = 0;
@@ -305,10 +406,30 @@ prefersReducedMotion.addEventListener('change', () => {
 
 new ResizeObserver(rebuildGrid).observe(container);
 
+function startIntroAnimation() {
+  if (prefersReducedMotion.matches) {
+    window.asciiIntro.progress = 1;
+    requestRender();
+    return;
+  }
+  if (window.gsap) {
+    window.gsap.to(window.asciiIntro, {
+      progress: 1,
+      duration: 2.2,
+      ease: 'expo.out',
+      onUpdate: requestRender
+    });
+  } else {
+    window.asciiIntro.progress = 1;
+    requestRender();
+  }
+}
+
 source.addEventListener('load', () => {
   container.dataset.ready = 'true';
   fallback.hidden = true;
   rebuildGrid();
+  startIntroAnimation();
 });
 
 source.addEventListener('error', () => {
@@ -316,4 +437,11 @@ source.addEventListener('error', () => {
 });
 
 source.src = './assets/hands-source.png';
+
+if (source.complete && source.naturalWidth > 0) {
+  container.dataset.ready = 'true';
+  fallback.hidden = true;
+  rebuildGrid();
+  startIntroAnimation();
+}
 })();
