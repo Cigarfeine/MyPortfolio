@@ -1906,7 +1906,15 @@
             translate: -50% -50%;
             overflow: hidden;
             border-radius: 4px;
-            background: rgba(14, 14, 13, 0.9);
+            background: transparent;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .35s var(--fp-ease), visibility .35s;
+        }
+
+        .fp__list.is-hovering .fp__preview {
+            opacity: 1;
+            visibility: visible;
         }
 
         .fp__preview img {
