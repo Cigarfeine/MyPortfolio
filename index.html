@@ -2679,6 +2679,12 @@
             };
         }
 
+        const DEFAULT_EMBLEM_SVG = {
+            d: "M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z",
+            vw: 600,
+            vh: 680
+        };
+
         class HandsField {
             constructor(canvas, image, options = {}) {
                 this.canvas = canvas;
@@ -2696,6 +2702,7 @@
                 this.last = -1;
                 this.drawnPose = '';
                 
+                this.emblemSrc = options.emblemSrc || DEFAULT_EMBLEM_SVG;
                 this.crop = this.computeCrop();
                 this.resize();
             }
@@ -2870,12 +2877,25 @@
                 this.field = { cells, font: Math.round(step * 0.42) };
             }
 
+            setEmblem(d, vw, vh) {
+                this.emblemSrc = { d, vw, vh };
+                if (this.width && this.height) {
+                    this.buildEmblem();
+                }
+                this.last = -1;
+            }
+
             buildEmblem() {
+                const src = this.emblemSrc;
+                if (!src) {
+                    this.emblem = null;
+                    return;
+                }
                 const { width, height, portrait } = this;
                 const rng = createPRNG(23);
-                const emblemH = Math.min(height * 0.44, width * (portrait ? 0.6 : 0.38));
-                const emblemW = emblemH;
-                const cols = portrait ? 30 : 42;
+                const emblemH = Math.min(height * 0.46, width * (portrait ? 0.6 : 0.4) * src.vh / src.vw);
+                const emblemW = emblemH * src.vw / src.vh;
+                const cols = portrait ? 30 : 44;
                 const stepX = emblemW / cols;
                 const fontSize = stepX / 0.75;
                 const stepY = fontSize * 1.3;
@@ -2886,20 +2906,22 @@
                 offCanvas.height = rows;
                 const offCtx = offCanvas.getContext('2d');
                 offCtx.fillStyle = '#FFFFFF';
-                offCtx.font = `italic 700 ${Math.round(rows * 0.9)}px 'Instrument Serif', Georgia, serif`;
-                offCtx.textAlign = 'center';
-                offCtx.textBaseline = 'middle';
-                offCtx.fillText('A', cols / 2, rows / 2);
+                offCtx.scale(cols / src.vw, rows / src.vh);
+                offCtx.fill(new Path2D(src.d));
 
                 const data = offCtx.getImageData(0, 0, cols, rows).data;
                 const primary = [140, 140, 136];
-                const lightChalk = [245, 245, 240];
+                const lightChalk = [lerpInt(primary[0], 255, 0.55), lerpInt(primary[1], 255, 0.55), lerpInt(primary[2], 255, 0.55)];
                 const cells = [];
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
-                        if (data[(r * cols + c) * 4 + 3] < 96) continue;
+                        if (data[(r * cols + c) * 4 + 3] < 128) continue;
                         const rndVal = rng();
-                        const colArr = [lerpInt(primary[0], lightChalk[0], rndVal), lerpInt(primary[1], lightChalk[1], rndVal), lerpInt(primary[2], lightChalk[2], rndVal)];
+                        const colArr = [
+                            lerpInt(primary[0], lightChalk[0], rndVal),
+                            lerpInt(primary[1], lightChalk[1], rndVal),
+                            lerpInt(primary[2], lightChalk[2], rndVal)
+                        ];
                         cells.push({
                             dx: (c + 0.5) * stepX - emblemW / 2,
                             dy: (r + 0.5) * (emblemH / rows) - emblemH / 2,
@@ -2907,7 +2929,7 @@
                             ch: MATRIX_CHARS[Math.floor(rng() * 36)],
                             seed: Math.floor(rng() * 1000),
                             live: rng() < 0.12,
-                            tw: 170 + rng() * 340,
+                            tw: 170 + Math.floor(rng() * 340),
                             jitter: rng() * 0.03
                         });
                     }
@@ -3140,6 +3162,22 @@
                 handsField = new HandsField(handsCanvas, heroHandsImg, { gap: 0.30, handsY: 0.79 });
                 window.__handsField = handsField;
                 window.addEventListener('resize', () => handsField.resize());
+
+                // Exact Anthracite Studio dynamic vector emblem extraction from navbar
+                const syncNavbarMonogramToEmblem = () => {
+                    const navLogoSvg = document.querySelector('.bottom-nav__logo svg');
+                    if (navLogoSvg && handsField) {
+                        const vb = navLogoSvg.getAttribute('viewBox');
+                        if (vb) {
+                            const [,,vw,vh] = vb.split(/\s+/).map(Number);
+                            const d = [...navLogoSvg.querySelectorAll('path')].map(p => p.getAttribute('d')).join(' ');
+                            if (d && vw && vh) {
+                                handsField.setEmblem(d, vw, vh);
+                            }
+                        }
+                    }
+                };
+                syncNavbarMonogramToEmblem();
                 
                 let targetPointerX = 0.5, targetPointerY = 0.5;
                 let targetPointerOn = 0;
@@ -3168,29 +3206,29 @@
                             const p = self.progress;
                             const easeInOutCubic = v => v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2;
 
-                            // 1. Text fade out & translate (0.00 -> 0.18):
-                            const pText = clamp01(p / 0.18);
+                            // 1. Text fade out & translate (0.00 -> 0.20):
+                            const pText = clamp01(p / 0.20);
                             if (heroInnerEl) {
                                 heroInnerEl.style.opacity = String(1 - pText);
-                                heroInnerEl.style.transform = `translateY(${-48 * pText}px)`;
+                                heroInnerEl.style.transform = `translateY(${-60 * pText}px)`;
                                 heroInnerEl.style.visibility = pText >= 1 ? 'hidden' : 'visible';
                             }
-                            // 2. Hands rise (0.05 -> 0.42):
-                            const riseP = clamp01((p - 0.05) / 0.37);
+                            // 2. Hands rise (0.05 -> 0.40):
+                            const riseP = clamp01((p - 0.05) / 0.35);
                             handsField.rise = easeInOutCubic(riseP);
                             
-                            // 3. Contact (0.22 -> 0.48):
-                            const contactP = clamp01((p - 0.22) / 0.26);
+                            // 3. Contact (0.28 -> 0.50):
+                            const contactP = clamp01((p - 0.28) / 0.22);
                             handsField.contact = easeInOutCubic(contactP);
                             
-                            // 4. Wave shockwave (0.50 -> 0.95):
+                            // 4. Wave shockwave (0.52 -> 0.97):
                             const touch = handsField.touch || { x: 0.5, y: 0.48 };
                             const w = handsField.width || window.innerWidth;
                             const h = handsField.height || window.innerHeight;
                             const u = h / (w || 1);
                             const d = Math.max(...[[0, 0], [1, 0], [0, 1], [1, 1]].map(([x, y]) => Math.hypot(x - touch.x, (y - touch.y) * u)));
                             const f = Math.max(d, handsField.exitWave || 1) + 0.05;
-                            const waveP = clamp01((p - 0.50) / 0.45);
+                            const waveP = clamp01((p - 0.52) / 0.45);
                             handsField.wave = f * Math.pow(waveP, 1.25);
                             
                             // 5. Open / separation at exit (0.52 -> 1.0):
