@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="js-reveal">
 
 <head>
     <meta charset="UTF-8" />
@@ -27,12 +27,23 @@
             --accent-mark-bg: #E8E8E3;
             --accent-mark-fg: #080807;
             
+            --container-min: 992px;
+            --container-max: 100svw;
+            --container: clamp(var(--container-min), 92vw, var(--container-max));
+            --unit: 1rem;
+
             --font-body: 'Space Grotesk', -apple-system, sans-serif;
             --font-title: 'Instrument Serif', Georgia, serif;
             --font-mono: 'JetBrains Mono', ui-monospace, monospace;
             
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
             --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+            --hs-ease: cubic-bezier(.77, 0, .18, 1);
+            --hs-line: rgba(232, 232, 227, 0.18);
+            --awards-line: rgba(232, 232, 227, 0.16);
+            --awards-muted: rgba(232, 232, 227, 0.55);
+            --fp-ease-out: cubic-bezier(.25, 1, .5, 1);
+            --fp-ease: cubic-bezier(.5, 1, .89, 1);
         }
 
         * {
@@ -426,18 +437,14 @@
             border-color: var(--white);
         }
 
-        /* --- SECTION LAYOUT ARCHITECTURE --- */
-        section, .site-footer {
-            position: relative;
-            padding: 140px 32px;
-            max-width: 1360px;
+        /* --- SECTION LAYOUT ARCHITECTURE (Anthracite Studio Exact Alignments) --- */
+        .container, [data-container] {
+            width: 100%;
+            max-width: var(--container);
             margin: 0 auto;
+            padding: 0 25px;
         }
-        @media (max-width: 768px) {
-            section, .site-footer {
-                padding: 90px 20px;
-            }
-        }
+
         .section-tag {
             font-family: var(--font-mono);
             font-size: 11px;
@@ -447,35 +454,85 @@
             margin-bottom: 24px;
             display: inline-block;
         }
-        .section-title {
+
+        .section-title, .title.title--section {
             font-family: var(--font-body);
-            font-size: clamp(2.5rem, 5vw, 4.75rem);
+            font-size: clamp(44px, 5.5vw, 96px);
             font-weight: 500;
-            line-height: 1.05;
-            letter-spacing: -0.025em;
+            line-height: 0.96;
+            letter-spacing: -0.03em;
             margin-bottom: 48px;
             color: var(--white);
         }
         .section-title mark {
-            font-size: 1.08em;
+            font-size: 1.05em;
+        }
+
+        /* --- EXACT TITLE WIPE REVEAL (Anthracite Studio Reveal System) --- */
+        .js-reveal :is(.section-title, .reveal, .footer-cta-title):not(.is-revealed) .reveal__text {
+            visibility: hidden;
+        }
+        .reveal {
+            --reveal-color: var(--white);
+            --reveal-duration: 1.2s;
+            --reveal-delay: 0s;
+        }
+        .reveal__line {
+            --line-delay: calc(var(--reveal-delay) + var(--line, 0) * 80ms);
+            display: block;
+        }
+        .reveal__line + .reveal__line {
+            text-indent: 0;
+        }
+        .reveal__text {
+            text-indent: 0;
+            visibility: hidden;
+            display: inline-block;
+            position: relative;
+        }
+        .reveal__text::after {
+            content: "";
+            inset: -2px -6px -2px -6px;
+            background: var(--reveal-color);
+            clip-path: inset(0 100% 0 0);
+            visibility: visible;
+            position: absolute;
+            z-index: 2;
+        }
+        .reveal.is-revealed .reveal__text {
+            animation: reveal-show 0s calc(var(--line-delay) + var(--reveal-duration) * 0.4) forwards;
+        }
+        .reveal.is-revealed .reveal__text::after {
+            animation: reveal-bar var(--reveal-duration) cubic-bezier(0.77, 0, 0.18, 1) var(--line-delay) forwards;
+        }
+
+        @keyframes reveal-bar { 
+            0% { clip-path: inset(0 100% 0 0); }
+            40% { clip-path: inset(0); }
+            100% { clip-path: inset(0 0 0 100%); }
+        }
+        @keyframes reveal-show { 
+            100% { visibility: visible; }
         }
 
         /* --- 1. HERO SECTION (Anthracite Studio Hero Architecture) --- */
         .home-hero {
             position: relative;
-            min-height: 100vh;
+            height: 100svh;
+            min-height: 680px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 56px 32px 140px;
-            max-width: 1440px;
+            padding: 56px 25px 56px;
+            max-width: var(--container);
             margin: 0 auto;
             overflow: hidden;
         }
         @media (max-width: 768px) {
             .home-hero {
-                padding: 32px 20px 120px;
-                min-height: 95vh;
+                padding: 32px 20px 48px;
+                height: 100svh;
+                min-height: 600px;
             }
         }
         .home-hero__top {
@@ -508,15 +565,16 @@
             z-index: 5;
             margin-top: auto;
             max-width: 980px;
+            transition: opacity 0.1s linear, transform 0.1s linear;
         }
         .home-hero__title {
             font-family: var(--font-body);
-            font-size: clamp(3rem, 7vw, 6.25rem);
+            font-size: clamp(3rem, 6.5vw, 6rem);
             font-weight: 500;
-            line-height: 1.02;
+            line-height: 0.98;
             letter-spacing: -0.03em;
             color: var(--white);
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
         .home-hero__bottom {
             display: flex;
@@ -541,8 +599,12 @@
 
         /* --- 2. TECH STACK & CLIENT WALL (`clients`) --- */
         .clients {
-            border-top: 1px solid var(--line);
-            border-bottom: 1px solid var(--line);
+            z-index: 1;
+            position: relative;
+            padding: 96px 25px 0;
+            max-width: var(--container);
+            margin-left: auto;
+            margin-right: auto;
         }
         .clients-head {
             display: flex;
@@ -602,43 +664,78 @@
 
         /* --- 3. MANIFESTO & PIXEL-FRAME PORTRAIT REVEAL --- */
         .manifesto {
+            color: var(--white);
             display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
-            gap: 64px;
-            align-items: center;
+            grid-template-columns: minmax(0, 1fr) auto;
+            column-gap: clamp(40px, 5vw, 96px);
+            padding: 150px 25px 160px;
+            max-width: var(--container);
+            margin: 0 auto;
+            align-items: start;
         }
         @media (max-width: 900px) {
             .manifesto {
                 grid-template-columns: 1fr;
                 gap: 48px;
+                padding: 100px 20px 120px;
             }
         }
+        .manifesto__text-col {
+            grid-column: 1;
+        }
         .manifesto__text {
-            font-family: var(--font-body);
-            font-size: clamp(1.8rem, 3.6vw, 3.25rem);
+            max-width: 1280px;
+            font-family: var(--font-title);
+            font-size: clamp(46px, 5.8vw, 92px);
             font-weight: 400;
-            line-height: 1.25;
-            letter-spacing: -0.02em;
+            line-height: 0.98;
+            letter-spacing: -0.015em;
+            text-indent: 12%;
             color: var(--grey-dim);
+            margin-bottom: 40px;
         }
         .manifesto__word {
-            display: inline-block;
-            margin-right: 0.28em;
+            display: inline;
             transition: color 0.3s ease, opacity 0.3s ease;
         }
         .manifesto__word.is-on {
             color: var(--white);
         }
+        .manifesto__intro {
+            grid-column: 1;
+            margin-top: 24px;
+        }
+        .manifesto__desc {
+            color: rgba(232, 232, 227, 0.7);
+            max-width: 520px;
+            margin: 0 0 28px;
+            font-size: 17px;
+            line-height: 1.5;
+            font-family: var(--font-body);
+        }
+        .manifesto__btns {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
         .manifesto__portrait-container {
-            position: relative;
-            width: 100%;
-            max-width: 380px;
+            grid-column: 2;
+            width: clamp(260px, 22vw, 360px);
             aspect-ratio: 4/5;
-            margin: 0 auto;
+            position: relative;
             border: 1px solid var(--line-strong);
             background: var(--card-bg);
             border-radius: 4px;
             overflow: hidden;
+            margin: 0;
+        }
+        @media (max-width: 900px) {
+            .manifesto__portrait-container {
+                grid-column: 1;
+                width: 100%;
+                max-width: 320px;
+            }
         }
         .pixel-frame__canvas {
             width: 100%;
@@ -661,14 +758,24 @@
         }
 
         /* --- 4. SERVICES & CAPABILITIES (`hs`) --- */
+        .hs {
+            padding: 0 25px;
+            max-width: var(--container);
+            margin: 0 auto;
+            color: var(--white);
+        }
+        .hs__head {
+            margin-bottom: 56px;
+        }
         .hs__grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
+            gap: 0 32px;
         }
         @media (max-width: 1024px) {
             .hs__grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
             }
         }
         @media (max-width: 600px) {
@@ -677,20 +784,38 @@
             }
         }
         .hs__col {
-            background: var(--card-bg);
-            border: 1px solid var(--line);
-            border-radius: 4px;
-            padding: 32px 24px;
+            padding-top: 24px;
+            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 380px;
-            transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s var(--ease);
+            min-height: 360px;
         }
-        .hs__col:hover {
-            border-color: rgba(232, 232, 227, 0.35);
-            background: var(--card-hover);
-            transform: translateY(-3px);
+        .hs__col::before {
+            content: "";
+            background: var(--hs-line);
+            transform-origin: 0 center;
+            height: 1px;
+            transition: transform 1.2s var(--hs-ease) calc(var(--i) * 0.12s);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            transform: scaleX(0);
+        }
+        .hs__grid.is-in .hs__col::before {
+            transform: scaleX(1);
+        }
+        .js-reveal .hs__col > * {
+            opacity: 0;
+            translate: 0 24px;
+        }
+        .hs__col > * {
+            transition: opacity 0.8s ease calc(var(--i) * 0.12s + 0.15s), translate 1s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--i) * 0.12s + 0.15s);
+        }
+        .hs__grid.is-in .hs__col > * {
+            opacity: 1;
+            translate: 0;
         }
         .hs__icon {
             width: 32px;
@@ -742,13 +867,25 @@
         }
 
         /* --- 5. FEATURED PROJECTS (`fp`) --- */
+        .fp {
+            padding: 160px 25px 140px;
+            max-width: var(--container);
+            margin: 0 auto;
+            color: var(--white);
+            isolation: isolate;
+        }
         .fp__head {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr auto;
             align-items: flex-end;
-            justify-content: space-between;
-            gap: 24px;
-            margin-bottom: 48px;
+            gap: 40px;
+            margin-bottom: 56px;
+        }
+        @media (max-width: 768px) {
+            .fp__head {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
         }
         .view-toggle {
             display: flex;
@@ -779,7 +916,7 @@
         .fp__grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 28px;
+            gap: 32px;
         }
         @media (max-width: 992px) {
             .fp__grid {
@@ -808,15 +945,40 @@
             overflow: hidden;
             background: #000;
         }
+        .fp__fig::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--white);
+            clip-path: inset(0 100% 0 0);
+            z-index: 2;
+            pointer-events: none;
+        }
+        .fp__fig.is-in::before {
+            animation: 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0s 1 normal forwards running fp-bar;
+        }
+        .fp__fig.is-in img {
+            animation: 0s ease 0.44s 1 normal forwards running fp-show;
+        }
         .fp__fig img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s var(--ease);
+            visibility: hidden;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .fp__card:hover .fp__fig img {
-            transform: scale(1.05);
+            transform: scale(1.04);
         }
+        @keyframes fp-bar { 
+            0% { clip-path: inset(0 100% 0 0); }
+            40% { clip-path: inset(0); }
+            100% { clip-path: inset(0 0 0 100%); }
+        }
+        @keyframes fp-show { 
+            100% { visibility: visible; }
+        }
+
         .fp__body {
             padding: 24px;
             display: flex;
@@ -944,73 +1106,151 @@
         }
 
         /* --- 6. AWARDS & RECOGNITION (`awards`) --- */
-        .awards__list {
-            list-style: none;
-            border-top: 1px solid var(--line);
-        }
-        .awards__item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 24px 0;
-            border-bottom: 1px solid var(--line);
-            text-decoration: none;
-            color: var(--fg);
-            transition: color 0.2s ease, border-color 0.2s ease;
-        }
-        .awards__item:hover {
+        .awards {
             color: var(--white);
-            border-color: rgba(232, 232, 227, 0.3);
+            grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+            gap: 40px 6vw;
+            padding: 20px 25px 150px;
+            max-width: var(--container);
+            margin: 0 auto;
+            display: grid;
+        }
+        @media (max-width: 900px) {
+            .awards {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+        .awards__title {
+            margin: 0;
+        }
+        .awards__groups {
+            flex-direction: column;
+            gap: 36px;
+            padding-top: 12px;
+            display: flex;
         }
         .awards__org {
             font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--white);
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 10px;
             font-size: 12px;
-            letter-spacing: 0.12em;
-            color: var(--grey);
-            width: 180px;
+            display: flex;
         }
-        .awards__name {
-            font-family: var(--font-body);
-            font-size: 1.25rem;
-            font-weight: 500;
-            flex-grow: 1;
+        .awards__org::before {
+            content: "";
+            background: var(--white);
+            width: 6px;
+            height: 6px;
+        }
+        .awards__list {
+            border-top: 1px solid var(--awards-line);
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .awards__item {
+            border-bottom: 1px solid var(--awards-line);
+            transition: opacity 0.7s ease calc(var(--i, 0) * 60ms), translate 0.9s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--i, 0) * 60ms);
+        }
+        .js-reveal .awards__item {
+            opacity: 0;
+            translate: 0 16px;
+        }
+        .awards__groups.is-in .awards__item {
+            opacity: 1;
+            translate: 0;
+        }
+        .awards__row {
+            color: inherit;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: baseline;
+            gap: 24px;
+            padding: 18px 0;
+            text-decoration: none;
+            display: grid;
+            transition: color 0.2s ease;
+        }
+        .awards__row:hover .awards__label {
+            color: var(--white);
+        }
+        .awards__label {
+            font-family: var(--font-title);
+            letter-spacing: -0.01em;
+            font-size: clamp(22px, 1.9vw, 28px);
+            line-height: 1.15;
+            color: rgba(232, 232, 227, 0.9);
         }
         .awards__date {
             font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--grey);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--awards-muted);
+            white-space: nowrap;
+            font-size: 11px;
         }
 
         /* --- 7. SIGNALS & METRICS (`testimonials`) --- */
-        .signals-grid {
+        .testimonials {
+            padding: 10px 25px 140px;
+            max-width: var(--container);
+            margin: 0 auto;
+            color: var(--fg);
+        }
+        .testimonials__head {
+            margin-bottom: 48px;
+        }
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-bottom: 64px;
         }
         @media (max-width: 900px) {
-            .signals-grid {
+            .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        .signal-stat {
-            background: var(--card-bg);
-            border: 1px solid var(--line);
-            padding: 32px 24px;
-            border-radius: 4px;
+        @media (max-width: 500px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
         }
-        .signal-stat__num {
+        .stat-box {
+            border-top: 1px solid var(--line-strong);
+            padding-top: 24px;
+            position: relative;
+        }
+        .stat-box::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: var(--white);
+            transform-origin: 0 center;
+            transform: scaleX(0);
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.18, 1) calc(var(--i, 0) * 0.12s);
+        }
+        .testimonials.is-in .stat-box::before {
+            transform: scaleX(1);
+        }
+        .stat-num {
             font-family: var(--font-body);
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 300;
-            color: var(--white);
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 400;
             line-height: 1;
+            color: var(--white);
+            letter-spacing: -0.03em;
             margin-bottom: 8px;
         }
-        .signal-stat__label {
+        .stat-label {
             font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.1em;
+            font-size: 10px;
+            letter-spacing: 0.14em;
             color: var(--grey);
             text-transform: uppercase;
         }
@@ -1043,8 +1283,22 @@
 
         /* --- 8. FOOTER WITH BINARY/ASCII REVEAL --- */
         .site-footer {
-            border-top: 1px solid var(--line-strong);
-            padding-bottom: 120px;
+            padding: 0 25px 80px;
+            max-width: var(--container);
+            margin: 0 auto;
+            color: var(--fg);
+        }
+        .site-footer__top {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 48px;
+            padding: 80px 0 60px;
+            border-bottom: 1px solid var(--line);
+        }
+        @media (max-width: 768px) {
+            .site-footer__top {
+                grid-template-columns: 1fr;
+            }
         }
         .footer-binary-reveal {
             position: relative;
@@ -1334,14 +1588,14 @@
     <!-- 4. SERVICES & CAPABILITIES (`hs`) -->
     <section class="hs" id="services" data-txt="Capabilities">
         <span class="section-tag">[ 03 // DISCIPLINARY FOCUS ]</span>
-        <h2 class="section-title">
-            From research to code,<br />
-            <mark>all the way to deployment.</mark>
+        <h2 class="section-title reveal" data-reveal>
+            <span class="reveal__line" style="--line: 0"><span class="reveal__text">From research to code,</span></span>
+            <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>all the way to deployment.</mark></span></span>
         </h2>
 
-        <div class="hs__grid">
+        <div class="hs__grid" data-hs-grid>
             <!-- 01 -->
-            <div class="hs__col">
+            <div class="hs__col" style="--i: 0">
                 <div>
                     <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
                         <rect x="0" y="0" width="3" height="3" />
@@ -1363,7 +1617,7 @@
             </div>
 
             <!-- 02 -->
-            <div class="hs__col">
+            <div class="hs__col" style="--i: 1">
                 <div>
                     <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
                         <rect x="0" y="4" width="11" height="3" />
@@ -1384,7 +1638,7 @@
             </div>
 
             <!-- 03 -->
-            <div class="hs__col">
+            <div class="hs__col" style="--i: 2">
                 <div>
                     <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
                         <rect x="0" y="0" width="11" height="2" />
@@ -1406,7 +1660,7 @@
             </div>
 
             <!-- 04 -->
-            <div class="hs__col">
+            <div class="hs__col" style="--i: 3">
                 <div>
                     <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
                         <rect x="1" y="1" width="9" height="9" fill="none" stroke="currentColor" />
@@ -1433,9 +1687,9 @@
         <div class="fp__head">
             <div>
                 <span class="section-tag">[ 04 // SELECTED WORKS ]</span>
-                <h2 class="section-title">
-                    Selected works<br />
-                    <mark>engineered with precision.</mark>
+                <h2 class="section-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0"><span class="reveal__text">Selected works</span></span>
+                    <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>engineered with precision.</mark></span></span>
                 </h2>
             </div>
             <div class="view-toggle">
@@ -1549,57 +1803,72 @@
 
     <!-- 6. AWARDS & RECOGNITION -->
     <section class="awards" id="awards" data-txt="Recognition">
-        <span class="section-tag">[ 05 // RECOGNITION &amp; CITATIONS ]</span>
-        <h2 class="section-title">
-            Noticed <mark>by the community.</mark>
-        </h2>
-        <ul class="awards__list">
-            <li class="awards__item">
-                <span class="awards__org">NATIONAL HACKATHON</span>
-                <span class="awards__name" data-scramble-target>Finalist &amp; Special Innovation Award — Gesture Systems</span>
-                <time class="awards__date">2026</time>
-            </li>
-            <li class="awards__item">
-                <span class="awards__org">OPEN SOURCE INTEL</span>
-                <span class="awards__name" data-scramble-target>Featured Contributor — Automated Vulnerability Triaging</span>
-                <time class="awards__date">2026</time>
-            </li>
-            <li class="awards__item">
-                <span class="awards__org">RESEARCH MILESTONE</span>
-                <span class="awards__name" data-scramble-target>Autonomous Dependency Audit Pipeline Deployment</span>
-                <time class="awards__date">2025</time>
-            </li>
-            <li class="awards__item">
-                <span class="awards__org">SYSTEM INTEGRATION</span>
-                <span class="awards__name" data-scramble-target>High-Speed Ultrasonic ESP32 Serial Mesh</span>
-                <time class="awards__date">2025</time>
-            </li>
-        </ul>
+        <div>
+            <span class="section-tag">[ 05 // RECOGNITION &amp; CITATIONS ]</span>
+            <h2 class="section-title reveal awards__title" data-reveal>
+                <span class="reveal__line" style="--line: 0"><span class="reveal__text">Noticed</span></span>
+                <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>by the community.</mark></span></span>
+            </h2>
+        </div>
+        <div class="awards__groups" data-awards-list>
+            <div class="awards__group">
+                <div class="awards__org">RESEARCH &amp; HACKATHONS</div>
+                <ul class="awards__list">
+                    <li class="awards__item" style="--i: 0">
+                        <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" class="awards__row">
+                            <span class="awards__label" data-scramble-target>Finalist &amp; Special Innovation Award — Gesture Systems</span>
+                            <time class="awards__date">2026</time>
+                        </a>
+                    </li>
+                    <li class="awards__item" style="--i: 1">
+                        <a href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" class="awards__row">
+                            <span class="awards__label" data-scramble-target>Featured Contributor — Automated Vulnerability Triaging</span>
+                            <time class="awards__date">2026</time>
+                        </a>
+                    </li>
+                    <li class="awards__item" style="--i: 2">
+                        <a href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" class="awards__row">
+                            <span class="awards__label" data-scramble-target>Autonomous Dependency Audit Pipeline Deployment</span>
+                            <time class="awards__date">2025</time>
+                        </a>
+                    </li>
+                    <li class="awards__item" style="--i: 3">
+                        <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" class="awards__row">
+                            <span class="awards__label" data-scramble-target>High-Speed Ultrasonic ESP32 Serial Mesh</span>
+                            <time class="awards__date">2025</time>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </section>
 
     <!-- 7. SIGNALS & METRICS (`testimonials`) -->
     <section class="testimonials" id="testimonials" data-txt="Signals">
-        <span class="section-tag">[ 06 // SIGNALS &amp; TELEMETRY ]</span>
-        <h2 class="section-title">
-            Signals &amp; <mark>telemetry.</mark>
-        </h2>
+        <div class="testimonials__head">
+            <span class="section-tag">[ 06 // SIGNALS &amp; TELEMETRY ]</span>
+            <h2 class="section-title reveal" data-reveal>
+                <span class="reveal__line" style="--line: 0"><span class="reveal__text">Signals &amp;</span></span>
+                <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>telemetry.</mark></span></span>
+            </h2>
+        </div>
 
-        <div class="signals-grid">
-            <div class="signal-stat">
-                <div class="signal-stat__num" data-counter="3">3+</div>
-                <div class="signal-stat__label">Deployed AI Systems</div>
+        <div class="stats-grid">
+            <div class="stat-box" style="--i: 0">
+                <div class="stat-num" data-counter="3">3+</div>
+                <div class="stat-label">Deployed AI Systems</div>
             </div>
-            <div class="signal-stat">
-                <div class="signal-stat__num" data-counter="99.4">99.4%</div>
-                <div class="signal-stat__label">Gesture Detection Precision</div>
+            <div class="stat-box" style="--i: 1">
+                <div class="stat-num" data-counter="99.4">99.4%</div>
+                <div class="stat-label">Gesture Detection Precision</div>
             </div>
-            <div class="signal-stat">
-                <div class="signal-stat__num" data-counter="500">500+</div>
-                <div class="signal-stat__label">Vulnerability Audits Conducted</div>
+            <div class="stat-box" style="--i: 2">
+                <div class="stat-num" data-counter="500">500+</div>
+                <div class="stat-label">Vulnerability Audits Conducted</div>
             </div>
-            <div class="signal-stat">
-                <div class="signal-stat__num">10.85°N</div>
-                <div class="signal-stat__label">Kerala HQ Coordinates</div>
+            <div class="stat-box" style="--i: 3">
+                <div class="stat-num">10.85°N</div>
+                <div class="stat-label">Kerala HQ Coordinates</div>
             </div>
         </div>
 
@@ -1624,9 +1893,9 @@
         <div class="footer-main">
             <div>
                 <span class="section-tag">[ 07 // INITIATE TRANSMISSION ]</span>
-                <h2 class="footer-cta-title">
-                    Got an ambitious project?<br />
-                    <mark>Let's engineer it.</mark>
+                <h2 class="footer-cta-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0"><span class="reveal__text">Got an ambitious project?</span></span>
+                    <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>Let's engineer it.</mark></span></span>
                 </h2>
                 <a class="btn-primary" href="mailto:arshadrafi566@gmail.com" data-cursor="SEND">
                     <span data-scramble-target>arshadrafi566@gmail.com</span>
@@ -1714,18 +1983,34 @@
             if (barEl) barEl.style.width = progress + '%';
         }, 25);
 
-        // 2. SMOOTH SCROLL (Lenis)
+        // 2. SMOOTH SCROLL (Anthracite Studio Lenis Engine)
         let lenis;
         if (!isMobile) {
             lenis = new Lenis({
-                duration: 1.4,
-                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-                smooth: true,
-                mouseMultiplier: 0.85
+                lerp: 0.165,
+                wheelMultiplier: 1.25,
+                touchMultiplier: 1,
+                smoothWheel: true,
+                respectReducedMotion: true
             });
             lenis.on('scroll', ScrollTrigger.update);
             gsap.ticker.add((time) => { lenis.raf(time * 1000); });
             gsap.ticker.lagSmoothing(0);
+            window.__lenis = lenis;
+
+            // Smooth anchor links with Lenis
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId !== '#') {
+                        const targetEl = document.querySelector(targetId);
+                        if (targetEl && lenis) {
+                            e.preventDefault();
+                            lenis.scrollTo(targetEl, { offset: 0, duration: 1.2 });
+                        }
+                    }
+                });
+            });
         }
 
         // 3. CURSOR VIEWFINDER
@@ -1976,7 +2261,105 @@
             });
         });
 
-        // 9. FOOTER BINARY / ASCII REVEAL CANVAS
+        // 9. ANTHRACITE STUDIO SCROLL REVEAL OBSERVERS
+        // Hero Content Scroll Fade (Anthracite Studio Hero interaction)
+        const heroContentEl = document.querySelector('.home-hero__content');
+        if (heroContentEl) {
+            ScrollTrigger.create({
+                trigger: '#hero',
+                start: 'top top',
+                end: 'bottom 40%',
+                scrub: true,
+                onUpdate: (self) => {
+                    const p = Math.min(1, self.progress * 1.5);
+                    heroContentEl.style.opacity = String(1 - p);
+                    heroContentEl.style.transform = `translateY(${-50 * p}px)`;
+                }
+            });
+        }
+
+        // Title Wipe Bar Reveal
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Capabilities Grid Reveal
+        const hsGridEl = document.querySelector('[data-hs-grid]');
+        if (hsGridEl) {
+            const hsObserver = new IntersectionObserver(([entry]) => {
+                if (entry && entry.isIntersecting) {
+                    hsGridEl.classList.add('is-in');
+                    hsObserver.unobserve(hsGridEl);
+                }
+            }, { threshold: 0.15 });
+            hsObserver.observe(hsGridEl);
+        }
+
+        // Featured Projects Figures Wipe Reveal
+        const fpFigs = document.querySelectorAll('.fp__fig');
+        if (fpFigs.length > 0) {
+            const fpObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-in');
+                        fpObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            fpFigs.forEach(fig => fpObserver.observe(fig));
+        }
+
+        // Awards Staggered Items Reveal
+        const awardsGroupEl = document.querySelector('[data-awards-list]');
+        if (awardsGroupEl) {
+            const awardsObserver = new IntersectionObserver(([entry]) => {
+                if (entry && entry.isIntersecting) {
+                    awardsGroupEl.classList.add('is-in');
+                    awardsObserver.unobserve(awardsGroupEl);
+                }
+            }, { threshold: 0.15 });
+            awardsObserver.observe(awardsGroupEl);
+        }
+
+        // Signals / Testimonials Metric Borders & Counter Animation
+        const testimonialsEl = document.querySelector('.testimonials');
+        if (testimonialsEl) {
+            const testimonialsObserver = new IntersectionObserver(([entry]) => {
+                if (entry && entry.isIntersecting) {
+                    testimonialsEl.classList.add('is-in');
+                    testimonialsObserver.unobserve(testimonialsEl);
+
+                    // Animate counters
+                    testimonialsEl.querySelectorAll('[data-counter]').forEach(el => {
+                        const targetVal = parseFloat(el.getAttribute('data-counter'));
+                        const isDecimal = targetVal % 1 !== 0;
+                        const suffix = el.textContent.replace(/[\d\.]/g, '');
+                        gsap.fromTo(el, 
+                            { textContent: 0 }, 
+                            { 
+                                duration: 1.8, 
+                                ease: "power3.out", 
+                                textContent: targetVal,
+                                snap: { textContent: isDecimal ? 0.1 : 1 },
+                                onUpdate: function() {
+                                    const val = isDecimal ? parseFloat(el.textContent).toFixed(1) : Math.round(parseFloat(el.textContent));
+                                    el.textContent = val + suffix;
+                                }
+                            }
+                        );
+                    });
+                }
+            }, { threshold: 0.15 });
+            testimonialsObserver.observe(testimonialsEl);
+        }
+
+        // 10. FOOTER BINARY / ASCII REVEAL CANVAS
         const footerBinaryBox = document.getElementById('footer-binary-reveal');
         const footerBinaryCanvas = document.getElementById('footer-binary-canvas');
         if (footerBinaryCanvas && footerBinaryBox) {
