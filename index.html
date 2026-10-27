@@ -250,26 +250,35 @@
             transition: width 0.05s linear;
         }
 
-        /* --- ANTHRACITE STUDIO FLOATING NAVIGATION BAR (TOP CENTER CAPSULE) --- */
+        /* --- ANTHRACITE STUDIO FLOATING NAV BAR (TOP CENTER CAPSULE) --- */
         .bottom-nav {
             position: fixed;
-            top: 24px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9000;
-            width: calc(100% - 32px);
-            max-width: 680px;
+            width: auto;
+            min-width: 420px;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav {
+                top: 16px;
+                min-width: 290px;
+                width: calc(100% - 32px);
+            }
         }
         .bottom-nav__inner {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 20px;
+            height: 50px;
             background: rgba(16, 16, 18, 0.85);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid rgba(232, 232, 227, 0.12);
             border-radius: 9999px;
-            padding: 6px 14px 6px 8px;
+            padding: 0 16px 0 10px;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
@@ -281,17 +290,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             background: var(--white);
             color: var(--dark);
             border-radius: 50%;
             text-decoration: none;
             font-family: var(--font-title);
-            font-size: 20px;
+            font-size: 19px;
             font-style: italic;
             font-weight: 700;
             transition: transform 0.3s var(--ease), background 0.3s ease;
+            flex-shrink: 0;
         }
         .bottom-nav__logo:hover {
             transform: scale(1.08);
@@ -382,23 +392,25 @@
         /* --- TOP RIGHT CORNER STATUS BADGE --- */
         .top-status-badge {
             position: fixed;
-            top: 24px;
-            right: 28px;
+            top: 20px;
+            right: 25px;
             z-index: 9000;
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
+            height: 50px;
+            padding: 0 18px;
             border-radius: 9999px;
-            background: rgba(16, 16, 19, 0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(232, 232, 227, 0.1);
+            background: rgba(16, 16, 19, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(232, 232, 227, 0.12);
             font-family: var(--font-mono);
             font-size: 11px;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.10em;
             color: var(--grey);
             pointer-events: none;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
             transition: border-color 0.3s ease;
         }
         .top-status-badge .status-dot {
@@ -679,14 +691,21 @@
         .home-hero__content {
             position: relative;
             z-index: 5;
-            padding-top: clamp(110px, 15vh, 150px);
-            padding-left: clamp(24px, 5vw, 64px);
-            padding-right: clamp(24px, 5vw, 64px);
+            padding-top: 144px;
+            padding-left: 25px;
+            padding-right: 25px;
             width: 100%;
             max-width: var(--container);
             margin: 0 auto;
             pointer-events: none;
             transition: opacity 0.1s linear, transform 0.1s linear;
+        }
+        @media (max-width: 991px) {
+            .home-hero__content {
+                padding-top: 110px;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
         }
         .home-hero__inner {
             display: flex;
@@ -696,7 +715,7 @@
         }
         .home-hero__title {
             font-family: var(--font-title);
-            font-size: clamp(3.2rem, 6.8vw, 108px);
+            font-size: clamp(48px, 7vw, 100.8px);
             font-weight: 400;
             line-height: 1.0;
             letter-spacing: -0.025em;
@@ -705,38 +724,47 @@
         }
         .home-hero__bottom {
             display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
             justify-content: space-between;
-            gap: 28px 48px;
-            margin-top: 8px;
+            align-items: flex-end;
+            gap: 24px 48px;
+            padding-right: 53px;
+            margin-top: 0;
+        }
+        @media (max-width: 991px) {
+            .home-hero__bottom {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-right: 0;
+            }
         }
         .home-hero__text {
             font-family: var(--font-body);
-            font-size: clamp(15px, 1.15vw, 17px);
-            line-height: 1.55;
+            font-size: 17px;
+            line-height: 1.45;
             font-weight: 300;
             color: rgba(232, 232, 227, 0.75);
-            max-width: 460px;
+            max-width: 540px;
+            margin: 0;
         }
         .home-hero__actions {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 28px;
             pointer-events: auto;
+            flex-shrink: 0;
         }
         .home-hero__btn-email {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 13px 26px;
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            background: rgba(10, 10, 20, 0.45);
+            padding: 15px 28px;
+            border: 1px solid rgba(232, 232, 227, 0.35);
+            background: rgba(16, 16, 18, 0.6);
             backdrop-filter: blur(8px);
             color: var(--white);
             font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.14em;
+            font-size: 12px;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             text-decoration: none;
             border-radius: 2px;
@@ -755,17 +783,17 @@
             gap: 6px;
             color: var(--white);
             font-family: var(--font-mono);
-            font-size: 11px;
+            font-size: 12px;
             letter-spacing: 0.12em;
             text-transform: uppercase;
             text-decoration: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+            border-bottom: 1px solid rgba(232, 232, 227, 0.35);
             padding-bottom: 4px;
             transition: border-color 0.2s ease, color 0.2s ease;
         }
         .home-hero__link-projects:hover {
             border-color: var(--white);
-            color: #a0b4ff;
+            color: var(--white);
         }
 
         /* --- 2. TECH STACK & CLIENT WALL (`clients`) --- */
@@ -1688,8 +1716,8 @@
             <div class="home-hero__content">
                 <div class="home-hero__inner">
                     <h1 class="home-hero__title">
-                        <mark>AI Research</mark> &amp; Systems,<br />
-                        engineered for <mark>the Frontier.</mark>
+                        <mark>AI</mark> Research &amp; Systems,<br />
+                        engineered for <mark>the&nbsp;Frontier.</mark>
                     </h1>
                     <div class="home-hero__bottom">
                         <p class="home-hero__text">
@@ -2172,9 +2200,9 @@
         let lenis;
         if (!isMobile) {
             lenis = new Lenis({
-                lerp: 0.165,
-                wheelMultiplier: 1.25,
-                touchMultiplier: 1,
+                lerp: 0.09,
+                wheelMultiplier: 1.0,
+                touchMultiplier: 1.2,
                 smoothWheel: true,
                 respectReducedMotion: true
             });
@@ -2471,8 +2499,8 @@
                 this.ctx = canvas.getContext('2d');
                 this.img = image;
                 this.bg = '#080807';
-                this.gap = options.gap !== undefined ? options.gap : 0.38;
-                this.handsYRatio = options.handsY !== undefined ? options.handsY : 0.88;
+                this.gap = options.gap !== undefined ? options.gap : 0.30;
+                this.handsYRatio = options.handsY !== undefined ? options.handsY : 0.79;
                 
                 this.open = 0;
                 this.rise = 0;
@@ -2702,7 +2730,7 @@
             }
 
             get handsY() {
-                const baseRatio = this.handsYRatio ?? (this.portrait ? 0.90 : 0.88);
+                const baseRatio = this.handsYRatio ?? (this.portrait ? 0.82 : 0.79);
                 return this.height * (baseRatio + (0.48 - baseRatio) * this.rise);
             }
 
@@ -2784,37 +2812,7 @@
                     ctx.fillText(MATRIX_CHARS[(cell.seed + cellRate * 7) % 36], cell.x, cell.y);
                 }
 
-                // 2. Chromatic Glitch Mosaic Blocks (Tactical Slate / Graphite)
-                const glitchBlocks = [
-                    { rx: 0.16, ry: 0.72, rw: 110, rh: 44, col: 'rgba(25, 25, 28, 0.85)', drift: 0.008, ch: '010101' },
-                    { rx: 0.44, ry: 0.79, rw: 165, rh: 62, col: 'rgba(32, 32, 36, 0.75)', drift: -0.006, ch: 'AI//SYS' },
-                    { rx: 0.58, ry: 0.73, rw: 90, rh: 42, col: 'rgba(28, 28, 32, 0.75)', drift: 0.012, ch: 'NEURAL' },
-                    { rx: 0.68, ry: 0.78, rw: 65, rh: 32, col: 'rgba(35, 35, 40, 0.65)', drift: -0.010, ch: 'PROTO' },
-                    { rx: 0.30, ry: 0.84, rw: 140, rh: 52, col: 'rgba(28, 28, 32, 0.70)', drift: 0.007, ch: 'SYSTEM' },
-                    { rx: 0.78, ry: 0.83, rw: 75, rh: 40, col: 'rgba(25, 25, 28, 0.80)', drift: -0.008, ch: '99201' }
-                ];
-                const glitchFade = clamp01(1 - this.rise * 1.5);
-                if (glitchFade > 0.01) {
-                    for (const b of glitchBlocks) {
-                        const bx = (b.rx + Math.sin(time * 0.7 + b.rx * 8) * b.drift) * w;
-                        const by = b.ry * h - (this.rise * 60);
-                        ctx.fillStyle = b.col;
-                        ctx.globalAlpha = glitchFade;
-                        ctx.fillRect(bx, by, b.rw, b.rh);
-
-                        ctx.strokeStyle = 'rgba(232, 232, 227, 0.15)';
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(bx, by, b.rw, b.rh);
-
-                        // Alphanumeric technical stamp inside glitch block
-                        ctx.font = `700 9px ${FONT_MONO}`;
-                        ctx.fillStyle = 'rgba(232, 232, 227, 0.6)';
-                        ctx.fillText(b.ch, bx + b.rw / 2, by + b.rh / 2);
-                    }
-                    ctx.globalAlpha = 1;
-                }
-
-                // 3. ASCII Alphanumeric Hands Field & Wireframe Contours
+                // 2. ASCII Alphanumeric Hands Field & Wireframe Contours
                 const hands = this.hands;
                 const introProgress = easeOutCubic(remap(time, 0.2, 3.6)) * 1.35;
                 const originX = (w - hands.w) / 2;
@@ -2953,7 +2951,7 @@
             const heroHandsImg = new Image();
             const initHands = () => {
                 if (handsField) return;
-                handsField = new HandsField(handsCanvas, heroHandsImg, { gap: 0.40, handsY: 0.91 });
+                handsField = new HandsField(handsCanvas, heroHandsImg, { gap: 0.30, handsY: 0.79 });
                 window.__handsField = handsField;
                 window.addEventListener('resize', () => handsField.resize());
                 
@@ -2970,7 +2968,7 @@
                     targetPointerY = (e.clientY - rect.top) / rect.height;
                 });
 
-                // ScrollTrigger scrub pin on #hero-track
+                // ScrollTrigger scrub pin on #hero-track with smooth inertia
                 const heroTrackEl = document.getElementById('hero-track');
                 const heroInnerEl = document.querySelector('.home-hero__inner');
 
@@ -2979,50 +2977,51 @@
                         trigger: heroTrackEl,
                         start: 'top top',
                         end: 'bottom bottom',
-                        scrub: true,
+                        scrub: 1.0,
                         onUpdate: (self) => {
                             const p = self.progress;
                             const easeInOutCubic = v => v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2;
 
-                            // 1. Text fade out & translate (0.00 -> 0.20):
-                            const pText = clamp01(p / 0.20);
+                            // 1. Text fade out & translate (0.00 -> 0.18):
+                            const pText = clamp01(p / 0.18);
                             if (heroInnerEl) {
                                 heroInnerEl.style.opacity = String(1 - pText);
-                                heroInnerEl.style.transform = `translateY(${-60 * pText}px)`;
+                                heroInnerEl.style.transform = `translateY(${-48 * pText}px)`;
                                 heroInnerEl.style.visibility = pText >= 1 ? 'hidden' : 'visible';
                             }
-                            // 2. Hands rise (0.05 -> 0.40):
-                            const riseP = clamp01((p - 0.05) / 0.35);
+                            // 2. Hands rise (0.05 -> 0.42):
+                            const riseP = clamp01((p - 0.05) / 0.37);
                             handsField.rise = easeInOutCubic(riseP);
                             
-                            // 3. Contact (0.28 -> 0.50):
-                            const contactP = clamp01((p - 0.28) / 0.22);
+                            // 3. Contact (0.22 -> 0.48):
+                            const contactP = clamp01((p - 0.22) / 0.26);
                             handsField.contact = easeInOutCubic(contactP);
                             
-                            // 4. Wave shockwave (0.52 -> 0.97):
-                            const touch = handsField.touch || { x: 0.5, y: 0.5 };
-                            const c = handsCanvas.getBoundingClientRect();
-                            const u = c.height / (c.width || 1);
+                            // 4. Wave shockwave (0.50 -> 0.95):
+                            const touch = handsField.touch || { x: 0.5, y: 0.48 };
+                            const w = handsField.width || window.innerWidth;
+                            const h = handsField.height || window.innerHeight;
+                            const u = h / (w || 1);
                             const d = Math.max(...[[0, 0], [1, 0], [0, 1], [1, 1]].map(([x, y]) => Math.hypot(x - touch.x, (y - touch.y) * u)));
                             const f = Math.max(d, handsField.exitWave || 1) + 0.05;
-                            const waveP = clamp01((p - 0.52) / 0.45);
+                            const waveP = clamp01((p - 0.50) / 0.45);
                             handsField.wave = f * Math.pow(waveP, 1.25);
                             
-                            // 5. Open / separation at exit (0.85 -> 1.0):
+                            // 5. Open / separation at exit (0.52 -> 1.0):
                             handsField.open = 2 * handsField.wave;
                         }
                     });
                 }
 
-                // Animation loop
+                // Animation loop with fluid pointer inertia
                 const startTime = performance.now();
                 function tickHands() {
                     requestAnimationFrame(tickHands);
                     const now = (performance.now() - startTime) / 1000;
                     
-                    curPointerOn += (targetPointerOn - curPointerOn) * 0.15;
-                    curPointerX += (targetPointerX - curPointerX) * 0.18;
-                    curPointerY += (targetPointerY - curPointerY) * 0.18;
+                    curPointerOn += (targetPointerOn - curPointerOn) * 0.10;
+                    curPointerX += (targetPointerX - curPointerX) * 0.12;
+                    curPointerY += (targetPointerY - curPointerY) * 0.12;
                     
                     handsField.pointer.on = curPointerOn;
                     handsField.pointer.x = curPointerX;
