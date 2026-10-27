@@ -1495,8 +1495,8 @@
         }
 
         .fp__card[data-slot="2"] {
-            grid-column: 13 / span 8;
-            margin-top: -130px;
+            grid-column: 12 / span 9;
+            margin-top: -60px;
         }
 
         .fp__card[data-slot="3"] {
@@ -1550,12 +1550,16 @@
         }
 
         .fp__card[data-slot="2"] .fp__fig,
+        .fp__card[data-slot="3"] .fp__fig {
+            aspect-ratio: 16 / 9;
+        }
+
         .fp__card[data-slot="4"] .fp__fig {
             aspect-ratio: 4 / 5;
         }
 
-        .fp__card[data-slot="3"] .fp__fig {
-            aspect-ratio: 16 / 9;
+        .fp__card[data-slot="2"] .fp__fig img {
+            scale: 1.05;
         }
 
         .fp__fig img {
@@ -2094,6 +2098,13 @@
                 margin-top: 0px;
             }
             .fp__card[data-slot] .fp__fig {
+                aspect-ratio: 16 / 10;
+            }
+            .fp__card[data-slot="2"] .fp__fig,
+            .fp__card[data-slot="3"] .fp__fig {
+                aspect-ratio: 16 / 9;
+            }
+            .fp__card[data-slot="4"] .fp__fig {
                 aspect-ratio: 4 / 5;
             }
             .fp__title {
@@ -3327,11 +3338,11 @@
                     </a>
                 </li>
 
-                <!-- Slot 2: Mnemosyne (span 8, row 2, negative margin, aspect 4/5 portrait) -->
+                <!-- Slot 2: Mnemosyne (span 9, row 2, negative margin, aspect 16/9 widescreen) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="2" style="--row:2">
                     <a class="fp__link" href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="./images/mnemosyne.png" alt="Mnemosyne academic synthesis engine interface" loading="lazy" decoding="async" width="1080" height="1350">
+                            <img src="./images/mnemosyne.png" alt="Mnemosyne academic synthesis engine interface" loading="lazy" decoding="async" width="1920" height="1080">
                             <figcaption class="fp__tags">
                                 <span class="fp__tag" style="--j:0; --t:2">AI Architecture</span>
                                 <span class="fp__tag" style="--j:1; --t:2">Knowledge Graph</span>
