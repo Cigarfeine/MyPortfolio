@@ -12,6 +12,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23080807' rx='4'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='bold' fill='%23E8E8E3' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E" />
+    <script>
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('is-loading');
+        }
+    </script>
 
     <style>
         :root {
@@ -213,53 +218,90 @@
         body.hover-active .reticle-crosshair { opacity: 0; transform: scale(0.6); }
         body.hover-active .corner { opacity: 1; }
 
-        /* --- PRELOADER --- */
-        #preloader {
+        /* --- ANTHRACITE STUDIO PAGE TRANSITION & PRELOADER --- */
+        html.is-page-transition {
+            cursor: progress;
+        }
+
+        .page-transition {
             position: fixed;
             inset: 0;
-            background: var(--bg);
             z-index: 99999;
+            display: grid;
+            place-items: center;
+            background: var(--bg);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .page-transition.is-on {
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        html.is-loading .page-transition {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .page-transition__lines {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 40px;
-            font-family: var(--font-mono);
-            color: var(--fg);
+            align-items: center;
+            gap: 8px;
         }
-        .preloader-head {
-            font-size: 11px;
-            letter-spacing: 0.15em;
-            color: var(--grey);
-            display: flex;
-            justify-content: space-between;
+
+        .page-transition__line {
+            margin: 0;
+            font-family: var(--font-title);
+            font-size: clamp(22px, 2.4vw, 36px);
+            line-height: 1.25;
+            letter-spacing: -0.01em;
+            font-weight: 500;
+            color: var(--white);
+            white-space: nowrap;
+            opacity: 0;
+            translate: var(--o, 0) 0;
         }
-        .preloader-main {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+
+        .sweep-char {
+            display: inline-block;
+            text-align: center;
+            white-space: pre;
         }
-        #preloader-text {
-            font-size: 13px;
-            letter-spacing: 0.12em;
+
+        .sweep-char.is-hidden {
+            opacity: 0;
+        }
+
+        .sweep-char.is-band {
+            color: var(--white);
+            opacity: 0.95;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+        }
+
+        .sweep-char.is-final {
+            opacity: 1;
             color: var(--white);
         }
-        #preloader-percent {
-            font-size: clamp(3rem, 8vw, 7rem);
-            font-weight: 300;
-            line-height: 1;
-            font-family: var(--font-body);
+
+        /* Dual scramble colors for button/link hover and touch */
+        .dual-scramble-color-1 {
             color: var(--white);
+            opacity: 0.85;
         }
-        #preloader-bar-container {
-            width: 100%;
-            height: 2px;
-            background: rgba(232, 232, 227, 0.12);
+
+        .dual-scramble-color-2 {
+            color: inherit;
         }
-        #preloader-bar {
-            width: 0%;
-            height: 100%;
-            background: var(--white);
-            transition: width 0.05s linear;
+
+        @media (prefers-reduced-motion: reduce) {
+            .page-transition {
+                display: none !important;
+            }
         }
 
         /* --- ANTHRACITE STUDIO MORPHING NAV CAPSULE --- */
@@ -2708,22 +2750,11 @@
     </div>
     <div id="cursor-label">EXPLORE</div>
 
-    <!-- PRELOADER -->
-    <div id="preloader">
-        <div class="preloader-head">
-            <span>[ SYSTEM INITIALIZATION ]</span>
-            <span>SYS_LOC // 10.8505° N, 76.2711° E</span>
-        </div>
-        <div class="preloader-main">
-            <div id="preloader-text">[ MOUNTING NEURAL ENVIRONMENT ]</div>
-            <div id="preloader-percent">0%</div>
-            <div id="preloader-bar-container">
-                <div id="preloader-bar"></div>
-            </div>
-        </div>
-        <div class="preloader-head">
-            <span>ARSHAD — AI RESEARCH &amp; SYSTEMS</span>
-            <span>2026</span>
+    <!-- ANTHRACITE STUDIO PAGE TRANSITION & PRELOADER -->
+    <div class="page-transition" data-page-transition="" aria-hidden="true">
+        <div class="page-transition__lines">
+            <p class="page-transition__line" data-page-transition-line="" style="--o: -24px;" data-sweep-text="ARSHAD RAFI">ARSHAD RAFI</p>
+            <p class="page-transition__line" data-page-transition-line="" style="--o: 16px;" data-sweep-text="AI RESEARCH &amp; SYSTEMS ARCHITECTURE">AI RESEARCH &amp; SYSTEMS ARCHITECTURE</p>
         </div>
     </div>
 
@@ -3691,40 +3722,320 @@ Available anywhere, remotely</span>
 
         const isMobile = window.innerWidth <= 991;
 
-        // 1. PRELOADER
-        let progress = 0;
-        const preloader = document.getElementById('preloader');
-        const percentEl = document.getElementById('preloader-percent');
-        const barEl = document.getElementById('preloader-bar');
-        const textEl = document.getElementById('preloader-text');
+        // ========================================================
+        // 1. ANTHRACITE STUDIO PRELOADER & PAGE TRANSITION ENGINE
+        // ========================================================
+        const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz';
+        const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const easeQuadInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+        const getRandomChar = (char) => {
+            const set = char === char.toLowerCase() ? LOWERCASE_CHARS : UPPERCASE_CHARS;
+            return set[(Math.random() * set.length) | 0];
+        };
 
-        const preloaderPhrases = [
-            "INITIALIZING ENVIRONMENT",
-            "LOADING SYSTEM ASSETS",
-            "CONFIGURING INTERFACES"
-        ];
-
-        let preloaderInterval = setInterval(() => {
-            progress += Math.floor(Math.random() * 8) + 5;
-            if (progress % 12 === 0 && progress < 90) {
-                textEl.textContent = preloaderPhrases[Math.floor(Math.random() * preloaderPhrases.length)];
+        function setCharPhase(item, phase) {
+            if (item.phase !== phase) {
+                item.phase = phase;
+                item.el.className = `sweep-char ${phase}`;
             }
-            if (progress >= 100) {
-                progress = 100;
-                textEl.textContent = "READY";
-                clearInterval(preloaderInterval);
-                gsap.to(preloader, {
-                    yPercent: -100,
-                    duration: 0.7,
-                    ease: "power4.inOut",
-                    onComplete: () => {
-                        preloader.style.display = 'none';
+        }
+
+        function runSweepAnimation(durationSec, onUpdate, easeFn = (t) => t) {
+            let rafId;
+            let stopped = false;
+            let resolvePromise;
+            const promise = new Promise((resolve) => {
+                resolvePromise = resolve;
+                const startTime = performance.now();
+                const loop = (now) => {
+                    if (stopped) return resolve();
+                    const progress = Math.min(1, (now - startTime) / (durationSec * 1000));
+                    onUpdate(easeFn(progress));
+                    if (progress < 1) {
+                        rafId = requestAnimationFrame(loop);
+                    } else {
+                        resolve();
                     }
-                });
+                };
+                rafId = requestAnimationFrame(loop);
+            });
+            return {
+                promise,
+                stop: () => {
+                    stopped = true;
+                    cancelAnimationFrame(rafId);
+                    resolvePromise?.();
+                }
+            };
+        }
+
+        function initSweepText(el, { band = 70, glyphEvery = 40 } = {}) {
+            const text = el.dataset.sweepText ?? el.textContent.trim();
+            el.dataset.sweepText = text;
+            el.textContent = '';
+            const chars = [...text].map((ch) => {
+                const span = document.createElement('span');
+                span.textContent = ch;
+                el.appendChild(span);
+                return { el: span, text: ch, space: /\s/.test(ch), phase: '' };
+            });
+            const parentLeft = el.getBoundingClientRect().left;
+            chars.forEach((c) => {
+                const rect = c.el.getBoundingClientRect();
+                c.w = rect.width;
+                c.x = rect.left - parentLeft;
+            });
+            chars.forEach((c) => {
+                c.el.style.display = 'inline-block';
+                c.el.style.width = `${c.w}px`;
+                c.el.style.textAlign = 'center';
+                c.el.style.whiteSpace = 'pre';
+            });
+            const state = {
+                el,
+                chars,
+                width: Math.max(1, ...chars.map((c) => c.x + c.w)),
+                band,
+                glyphEvery,
+                anim: null
+            };
+            resetSweepToHidden(state);
+            return state;
+        }
+
+        function resetSweepToHidden(state) {
+            state.anim?.stop();
+            state.chars.forEach((c) => {
+                setCharPhase(c, 'is-hidden');
+                c.el.textContent = c.text;
+            });
+        }
+
+        function animateSweepWrite(state, { duration = 0.42 } = {}) {
+            state.anim?.stop();
+            let lastGlyphStep = -1;
+            state.anim = runSweepAnimation(duration, (t) => {
+                const currentGlyphStep = Math.floor(performance.now() / state.glyphEvery);
+                const bandLeadX = t * (state.width + state.band);
+                for (const char of state.chars) {
+                    if (char.space) {
+                        setCharPhase(char, 'is-final');
+                        continue;
+                    }
+                    if (char.x + char.w <= bandLeadX - state.band) {
+                        setCharPhase(char, 'is-final');
+                        if (char.el.textContent !== char.text) char.el.textContent = char.text;
+                    } else if (bandLeadX > 0 && char.x < bandLeadX) {
+                        setCharPhase(char, 'is-band');
+                        if (currentGlyphStep !== lastGlyphStep) {
+                            char.el.textContent = getRandomChar(char.text);
+                        }
+                    } else {
+                        setCharPhase(char, 'is-hidden');
+                    }
+                }
+                lastGlyphStep = currentGlyphStep;
+                if (t === 1) {
+                    state.chars.forEach((c) => {
+                        setCharPhase(c, 'is-final');
+                        c.el.textContent = c.text;
+                    });
+                }
+            }, easeQuadInOut);
+            return state.anim.promise;
+        }
+
+        function animateSweepErase(state, { duration = 0.32 } = {}) {
+            state.anim?.stop();
+            const total = Math.max(1, state.chars.length - 1);
+            state.chars.forEach((char, idx) => {
+                char.start = ((total - idx) / total) * 0.55 + Math.random() * 0.25;
+                char.end = Math.min(1, char.start + 0.15 + Math.random() * 0.15);
+            });
+            let lastGlyphStep = -1;
+            state.anim = runSweepAnimation(duration, (t) => {
+                const currentGlyphStep = Math.floor(performance.now() / state.glyphEvery);
+                for (const char of state.chars) {
+                    if (t >= char.end) {
+                        setCharPhase(char, 'is-hidden');
+                    } else if (t >= char.start && !char.space) {
+                        setCharPhase(char, 'is-band');
+                        if (currentGlyphStep !== lastGlyphStep) {
+                            char.el.textContent = getRandomChar(char.text);
+                        }
+                    }
+                }
+                lastGlyphStep = currentGlyphStep;
+                if (t === 1) resetSweepToHidden(state);
+            });
+            return state.anim.promise;
+        }
+
+        const TRANSITION_CONFIG = {
+            fadeOut: 0.40,
+            overlap: 0.12,
+            cadence: 0.42,
+            write: 0.38,
+            erase: 0.28,
+            fadeIn: 0.50
+        };
+
+        const INITIAL_LOAD_CONFIG = {
+            speed: 1.25,
+            fadeIn: 0.70,
+            maxWait: 1500
+        };
+
+        let sweepLineInstances = [];
+        let pendingTimers = [];
+        let isNavigating = false;
+
+        function getTransitionOverlay() {
+            return document.querySelector('[data-page-transition]');
+        }
+
+        function prepareSweepLines() {
+            const overlay = getTransitionOverlay();
+            if (overlay && !sweepLineInstances.length) {
+                sweepLineInstances = [...overlay.querySelectorAll('[data-page-transition-line]')].map(el => initSweepText(el));
             }
-            percentEl.textContent = progress + '%';
-            if (barEl) barEl.style.width = progress + '%';
-        }, 16);
+        }
+
+        function clearPendingTimers() {
+            pendingTimers.forEach(t => t.kill());
+            pendingTimers = [];
+        }
+
+        function playSweepSequence(speedFactor = 1) {
+            prepareSweepLines();
+            clearPendingTimers();
+            const cadence = TRANSITION_CONFIG.cadence * speedFactor;
+            const writeTime = TRANSITION_CONFIG.write * speedFactor;
+            const eraseTime = TRANSITION_CONFIG.erase * speedFactor;
+
+            sweepLineInstances.forEach((line, idx) => {
+                pendingTimers.push(
+                    gsap.delayedCall(idx * cadence, () => {
+                        line.el.style.opacity = '1';
+                        animateSweepWrite(line, { duration: writeTime });
+                    })
+                );
+                pendingTimers.push(
+                    gsap.delayedCall((idx + 2) * cadence, () => {
+                        animateSweepErase(line, { duration: eraseTime });
+                    })
+                );
+            });
+            return (sweepLineInstances.length + 1) * cadence + eraseTime;
+        }
+
+        async function runInitialLoader() {
+            const overlay = getTransitionOverlay();
+            if (!overlay) {
+                document.documentElement.classList.remove('is-loading');
+                return;
+            }
+            if (window.__lenis) window.__lenis.stop();
+            document.documentElement.classList.add('is-page-transition');
+            overlay.classList.add('is-on');
+            gsap.set(overlay, { opacity: 1 });
+            document.documentElement.classList.remove('is-loading');
+
+            try {
+                await document.fonts.ready;
+            } catch (e) {}
+
+            prepareSweepLines();
+            const totalSweepSec = playSweepSequence(INITIAL_LOAD_CONFIG.speed);
+
+            const loadPromise = document.readyState === 'complete'
+                ? Promise.resolve()
+                : new Promise(r => window.addEventListener('load', r, { once: true }));
+
+            await Promise.all([
+                new Promise(r => setTimeout(r, totalSweepSec * 1000)),
+                Promise.race([loadPromise, new Promise(r => setTimeout(r, INITIAL_LOAD_CONFIG.maxWait))])
+            ]);
+
+            if (window.__lenis) window.__lenis.start();
+            gsap.to(overlay, {
+                opacity: 0,
+                duration: INITIAL_LOAD_CONFIG.fadeIn,
+                ease: 'power2.out',
+                onComplete: () => {
+                    overlay.classList.remove('is-on');
+                    clearPendingTimers();
+                    sweepLineInstances.forEach(line => {
+                        resetSweepToHidden(line);
+                        line.el.style.opacity = '';
+                    });
+                    document.documentElement.classList.remove('is-page-transition');
+                }
+            });
+        }
+
+        async function triggerPageTransition(targetElementOrFn) {
+            if (isNavigating) return;
+            const overlay = getTransitionOverlay();
+            if (!overlay || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                if (typeof targetElementOrFn === 'function') targetElementOrFn();
+                else if (targetElementOrFn) {
+                    if (window.__lenis) window.__lenis.scrollTo(targetElementOrFn);
+                    else targetElementOrFn.scrollIntoView({ behavior: 'smooth' });
+                }
+                return;
+            }
+
+            isNavigating = true;
+
+            // Auto-close bottom nav drawer if open
+            const nav = document.querySelector('[data-bottom-nav-init]');
+            if (nav?.getAttribute('data-bottom-nav-open') === 'true') {
+                nav.querySelector('[data-bottom-nav-toggle]')?.click();
+            }
+
+            prepareSweepLines();
+            document.documentElement.classList.add('is-page-transition');
+            overlay.classList.add('is-on');
+            gsap.killTweensOf(overlay);
+
+            await gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.28, ease: 'power2.in' });
+
+            const durationSec = playSweepSequence(1.0);
+
+            if (typeof targetElementOrFn === 'function') {
+                targetElementOrFn();
+            } else if (targetElementOrFn) {
+                if (window.__lenis) {
+                    window.__lenis.scrollTo(targetElementOrFn, { immediate: true });
+                } else {
+                    targetElementOrFn.scrollIntoView({ behavior: 'instant' });
+                }
+            }
+
+            await new Promise(r => setTimeout(r, Math.max(0, durationSec - TRANSITION_CONFIG.erase) * 1000));
+
+            gsap.to(overlay, {
+                opacity: 0,
+                duration: TRANSITION_CONFIG.fadeIn,
+                ease: 'power2.out',
+                onComplete: () => {
+                    overlay.classList.remove('is-on');
+                    clearPendingTimers();
+                    sweepLineInstances.forEach(line => {
+                        resetSweepToHidden(line);
+                        line.el.style.opacity = '';
+                    });
+                    document.documentElement.classList.remove('is-page-transition');
+                    isNavigating = false;
+                }
+            });
+        }
+        window.triggerPageTransition = triggerPageTransition;
+
+        if (document.documentElement.classList.contains('is-loading')) {
+            runInitialLoader();
+        }
 
         // 2. SMOOTH SCROLL (Anthracite Studio Lenis Engine)
         let lenis;
@@ -3741,20 +4052,21 @@ Available anywhere, remotely</span>
             gsap.ticker.lagSmoothing(0);
             window.__lenis = lenis;
 
-            // Smooth anchor links with Lenis
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    const targetId = this.getAttribute('href');
-                    if (targetId && targetId !== '#') {
-                        const targetEl = document.querySelector(targetId);
-                        if (targetEl && lenis) {
-                            e.preventDefault();
-                            lenis.scrollTo(targetEl, { offset: 0, duration: 1.2 });
-                        }
-                    }
-                });
-            });
         }
+
+        // Smooth anchor links with Anthracite Studio Page Transition
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        e.preventDefault();
+                        triggerPageTransition(targetEl);
+                    }
+                }
+            });
+        });
 
         // 3. RETICLE CURSOR TRACKING (Anthracite Studio Precision Crosshair & Corner Viewfinder)
         const reticle = document.getElementById('cursor-reticle');
@@ -3786,62 +4098,155 @@ Available anywhere, remotely</span>
             });
         }
 
-        // 4. TEXT SCRAMBLE ENGINE (Anthracite Studio Scramble Algorithm)
-        const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-_=/:;';
-        function scrambleText(element, duration = 0.5) {
-            if (!element) return;
-            if (!element.dataset.originalText) {
-                element.dataset.originalText = element.textContent.trim();
-            }
-            const original = element.dataset.originalText;
-            const len = original.length;
-            const startTime = performance.now();
+        // ========================================================
+        // 4. ANTHRACITE STUDIO DUAL-SCRAMBLE ENGINE (ZERO JITTER)
+        // ========================================================
+        const canvasCtx = document.createElement('canvas').getContext('2d');
+        const glyphWidthCache = new Map();
 
-            function tick(now) {
-                const elapsed = (now - startTime) / (duration * 1000);
-                const progress = Math.min(1, elapsed);
-                const settledIndex = Math.floor(progress * len);
-
-                let out = '';
-                for (let i = 0; i < len; i++) {
-                    if (original[i] === ' ') {
-                        out += ' ';
-                    } else if (i < settledIndex) {
-                        out += original[i];
-                    } else {
-                        out += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-                    }
-                }
-                element.textContent = out;
-
-                if (progress < 1) {
-                    requestAnimationFrame(tick);
-                } else {
-                    element.textContent = original;
-                }
-            }
-            requestAnimationFrame(tick);
+        function getGlyphWidthLookup(font, chars, uppercase = false) {
+            const key = `${font}|${chars}|${uppercase}`;
+            if (glyphWidthCache.has(key)) return glyphWidthCache.get(key);
+            const measure = (t) => {
+                canvasCtx.font = font;
+                return canvasCtx.measureText(uppercase ? t.toUpperCase() : t).width;
+            };
+            const charMap = [...chars].map(c => ({ c, w: measure(c) }));
+            const cache = new Map();
+            const lookup = (ch) => {
+                if (cache.has(ch)) return cache.get(ch);
+                const w = measure(ch);
+                const sorted = [...charMap].sort((a, b) => Math.abs(a.w - w) - Math.abs(b.w - w)).slice(0, 3);
+                const list = sorted.map(e => e.c).filter(c => c !== ch);
+                cache.set(ch, list.length ? list : [ch]);
+                return cache.get(ch);
+            };
+            glyphWidthCache.set(key, lookup);
+            return lookup;
         }
 
-        document.querySelectorAll('[data-scramble-target]').forEach(target => {
-            const parent = target.closest('a, button, .awards__item, .logo-wall__logo');
-            if (parent) {
-                parent.addEventListener('mouseenter', () => scrambleText(target, 0.45));
-            }
-        });
+        const isWordChar = (c) => /[\p{L}\p{N}]/u.test(c);
 
-        // Event delegation for dynamic items in the logo wall
-        document.addEventListener('mouseenter', (e) => {
-            const logoEl = e.target.closest && e.target.closest('.logo-wall__logo');
-            if (logoEl) {
-                const target = logoEl.querySelector('[data-scramble-target]');
-                if (target && !target.dataset.scrambling) {
-                    target.dataset.scrambling = 'true';
-                    scrambleText(target, 0.45);
-                    setTimeout(() => delete target.dataset.scrambling, 500);
+        function buildScrambleSpans(el, text) {
+            el.textContent = '';
+            const container = document.createElement('span');
+            container.style.pointerEvents = 'none';
+            const spanItems = [];
+
+            for (const chunk of text.split(/(\s+)/)) {
+                if (!chunk) continue;
+                if (/^\s+$/.test(chunk)) {
+                    container.appendChild(document.createTextNode(chunk));
+                    continue;
                 }
+                const wordSpan = document.createElement('span');
+                wordSpan.style.whiteSpace = 'nowrap';
+                for (const ch of chunk) {
+                    const s = document.createElement('span');
+                    s.textContent = ch;
+                    wordSpan.appendChild(s);
+                    spanItems.push({
+                        el: s,
+                        ch,
+                        scramblable: isWordChar(ch),
+                        shown: ch,
+                        cls: ''
+                    });
+                }
+                container.appendChild(wordSpan);
             }
+            el.appendChild(container);
+
+            const widths = spanItems.map(item => item.el.getBoundingClientRect().width);
+            spanItems.forEach((item, idx) => {
+                item.el.style.display = 'inline-block';
+                item.el.style.width = `${widths[idx]}px`;
+                item.el.style.textAlign = 'center';
+            });
+            return spanItems;
+        }
+
+        function scrambleText(target, duration = 0.45) {
+            if (!target) return;
+            const original = target.dataset.originalText || target.textContent.trim();
+            if (!target.dataset.originalText) target.dataset.originalText = original;
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                target.textContent = original;
+                return;
+            }
+
+            cancelAnimationFrame(target.__scrambleRaf);
+            const cs = window.getComputedStyle(target);
+            const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+            const lookup = getGlyphWidthLookup(font, LOWERCASE_CHARS + UPPERCASE_CHARS, cs.textTransform === 'uppercase');
+            const spans = buildScrambleSpans(target, original);
+            const scramblableCount = spans.filter(s => s.scramblable).length;
+            const charDelay = scramblableCount > 0 ? duration / scramblableCount : 0;
+            const totalTime = charDelay + duration;
+            let lastTime = -Infinity;
+            const startTime = performance.now();
+
+            const tick = (now) => {
+                const elapsed = (now - startTime) / 1000;
+                const resolvedIdx = Math.floor(Math.min(1, Math.max(0, (elapsed - charDelay) / duration)) * spans.length);
+                const shouldUpdate = now - lastTime >= 40;
+                if (shouldUpdate) lastTime = now;
+
+                spans.forEach((item, idx) => {
+                    const isResolved = idx < resolvedIdx || !item.scramblable;
+                    const cls = isResolved ? 'dual-scramble-color-2' : 'dual-scramble-color-1';
+                    if (item.cls !== cls) {
+                        item.el.className = cls;
+                        item.cls = cls;
+                    }
+                    let glyph = item.ch;
+                    if (!isResolved) {
+                        if (!shouldUpdate) return;
+                        const choices = lookup(item.ch);
+                        glyph = choices[(Math.random() * choices.length) | 0];
+                    }
+                    if (item.shown !== glyph) {
+                        item.el.textContent = glyph;
+                        item.shown = glyph;
+                    }
+                });
+
+                if (elapsed < totalTime) {
+                    target.__scrambleRaf = requestAnimationFrame(tick);
+                } else {
+                    target.textContent = original;
+                }
+            };
+            target.__scrambleRaf = requestAnimationFrame(tick);
+        }
+        window.scrambleText = scrambleText;
+
+        function findScrambleTarget(parent) {
+            const target = parent.querySelector('[data-scramble-target]');
+            if (target) return target;
+            if (!parent.children.length) return parent.textContent.trim() ? parent : null;
+            const leaves = [...parent.querySelectorAll('*')].filter(el => !el.children.length && el.textContent.trim() && !el.closest('svg'));
+            return leaves.length === 1 ? leaves[0] : null;
+        }
+
+        function handleScrambleTrigger(e) {
+            const btn = e.target.closest?.('a, button, [data-scramble], .menu-btn, .awards__item, .logo-wall__logo, .site-footer__tag, .hs__btn, .home-hero__btn-email, .home-hero__link-projects, .bottom-nav__link');
+            if (!btn || btn.closest('[data-no-scramble]')) return;
+            if (e.type === 'mouseenter' && e.relatedTarget && btn.contains(e.relatedTarget)) return;
+            const target = findScrambleTarget(btn);
+            if (target) {
+                scrambleText(target, 0.45);
+            }
+        }
+
+        // Tactile event listeners on hover, focus, touch, and pointerdown
+        document.addEventListener('mouseenter', handleScrambleTrigger, true);
+        document.addEventListener('focusin', (e) => {
+            if (e.target.matches?.(':focus-visible')) handleScrambleTrigger(e);
         }, true);
+        document.addEventListener('touchstart', handleScrambleTrigger, { passive: true });
+        document.addEventListener('pointerdown', handleScrambleTrigger, { passive: true });
 
         // 4b. ANTHRACITE STUDIO SLOT-BASED LOGO / TECH STACK WALL
         function initClientsWall() {
