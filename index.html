@@ -78,17 +78,16 @@
             outline-offset: 4px;
         }
 
-        /* --- EDITORIAL MARK BADGE (Anthracite Studio Aesthetic) --- */
+        /* --- EDITORIAL MARK ACCENT (Anthracite Studio Aesthetic) --- */
         mark {
-            background: var(--accent-mark-bg);
-            color: var(--accent-mark-fg);
+            background: transparent;
+            color: var(--white);
             font-family: var(--font-title);
             font-style: italic;
             font-weight: 400;
-            padding: 0 0.28em;
-            border-radius: 2px;
-            display: inline-block;
-            line-height: 1.05;
+            padding: 0;
+            display: inline;
+            line-height: inherit;
         }
 
         /* --- FILM NOISE OVERLAY --- */
@@ -113,25 +112,57 @@
             100% { transform: translate3d(0,0,0); }
         }
 
-        /* --- CUSTOM VIEWFINDER CURSOR --- */
-        #cursor-viewfinder {
+        /* --- CUSTOM RETICLE CURSOR (Anthracite Studio Precision Crosshair & Viewfinder) --- */
+        #cursor-reticle {
             position: fixed;
             top: 0; left: 0;
-            width: 32px; height: 32px;
+            width: 24px; height: 24px;
             pointer-events: none;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
             transform: translate(-50%, -50%);
-            transition: width 0.25s var(--ease), height 0.25s var(--ease), opacity 0.2s ease;
+            transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reticle-crosshair {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .reticle-line-h {
+            position: absolute;
+            width: 14px;
+            height: 1px;
+            background: var(--white);
+            opacity: 0.85;
+        }
+        .reticle-line-v {
+            position: absolute;
+            width: 1px;
+            height: 14px;
+            background: var(--white);
+            opacity: 0.85;
+        }
+        .reticle-dot {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--white);
+            border-radius: 50%;
         }
 
         .corner {
             position: absolute;
-            width: 6px; height: 6px;
+            width: 7px; height: 7px;
             border-color: var(--white);
             border-style: solid;
+            opacity: 0;
+            transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .tl { top: 0; left: 0; border-width: 1px 0 0 1px; }
         .tr { top: 0; right: 0; border-width: 1px 1px 0 0; }
@@ -150,12 +181,14 @@
             border: 1px solid var(--line-strong);
             padding: 3px 7px;
             border-radius: 2px;
-            transform: translate(20px, 20px);
+            transform: translate(22px, 22px);
             opacity: 0;
             transition: opacity 0.2s ease;
         }
         body.hover-active #cursor-label { opacity: 1; }
-        body.hover-active #cursor-viewfinder { width: 44px; height: 44px; }
+        body.hover-active #cursor-reticle { width: 44px; height: 44px; }
+        body.hover-active .reticle-crosshair { opacity: 0; transform: scale(0.6); }
+        body.hover-active .corner { opacity: 1; }
 
         /* --- PRELOADER --- */
         #preloader {
@@ -515,9 +548,18 @@
             100% { visibility: visible; }
         }
 
-        /* --- 1. HERO SECTION (Anthracite Studio Hero Architecture) --- */
-        .home-hero {
+        /* --- 1. HERO SECTION (Anthracite Studio Hero Architecture & Pinning) --- */
+        .home-hero-track {
             position: relative;
+            height: 220vh;
+            min-height: 1600px;
+        }
+        .home-hero-pin {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
             height: 100svh;
             min-height: 680px;
             display: flex;
@@ -527,9 +569,14 @@
             max-width: var(--container);
             margin: 0 auto;
             overflow: hidden;
+            z-index: 2;
         }
         @media (max-width: 768px) {
-            .home-hero {
+            .home-hero-track {
+                height: 180vh;
+                min-height: 1200px;
+            }
+            .home-hero-pin {
                 padding: 32px 20px 48px;
                 height: 100svh;
                 min-height: 600px;
@@ -544,16 +591,18 @@
             letter-spacing: 0.12em;
             color: var(--grey);
             z-index: 10;
+            pointer-events: none;
         }
-        .ascii-art {
+        .hero-stage {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             pointer-events: auto;
             z-index: 1;
+            cursor: crosshair;
         }
-        #ascii-canvas {
+        #hands-canvas {
             position: absolute;
             top: 0; left: 0;
             width: 100%;
@@ -565,7 +614,12 @@
             z-index: 5;
             margin-top: auto;
             max-width: 980px;
+            pointer-events: none;
             transition: opacity 0.1s linear, transform 0.1s linear;
+        }
+        .home-hero__content a,
+        .home-hero__content button {
+            pointer-events: auto;
         }
         .home-hero__title {
             font-family: var(--font-body);
@@ -1416,8 +1470,13 @@
     <!-- NOISE -->
     <div class="noise"></div>
 
-    <!-- VIEWFINDER CURSOR -->
-    <div id="cursor-viewfinder">
+    <!-- RETICLE CURSOR (Anthracite Studio Dual-State Precision Crosshair + Viewfinder) -->
+    <div id="cursor-reticle">
+        <div class="reticle-crosshair">
+            <div class="reticle-line-h"></div>
+            <div class="reticle-line-v"></div>
+            <div class="reticle-dot"></div>
+        </div>
         <div class="corner tl"></div>
         <div class="corner tr"></div>
         <div class="corner bl"></div>
@@ -1490,39 +1549,40 @@
         </div>
     </nav>
 
-    <!-- 1. HERO SECTION -->
-    <header class="home-hero" id="hero" data-txt="Home">
-        <div class="home-hero__top">
-            <span>[ ARSHAD // PORTFOLIO 2026 ]</span>
-            <span>SYS_LOC [10.8505° N, 76.2711° E] KERALA</span>
-        </div>
+    <!-- 1. HERO PINNED TRACK (Anthracite Studio 220vh Scrub Pin Sequence) -->
+    <div class="home-hero-track" id="hero-track">
+        <header class="home-hero-pin" id="hero" data-txt="Home">
+            <div class="home-hero__top">
+                <span>[ ARSHAD // PORTFOLIO 2026 ]</span>
+                <span>SYS_LOC [10.8505° N, 76.2711° E] KERALA</span>
+            </div>
 
-        <!-- ASCII Hands Canvas (Background Interactive Stage) -->
-        <div class="ascii-art" data-ready="false">
-            <canvas id="ascii-canvas"></canvas>
-            <div class="ascii-fallback"></div>
-        </div>
+            <!-- ASCII Hands Interactive Canvas Stage -->
+            <div class="hero-stage" id="hero-stage">
+                <canvas id="hands-canvas"></canvas>
+            </div>
 
-        <div class="home-hero__content">
-            <h1 class="home-hero__title">
-                <mark>AI Research</mark> &amp; Systems,<br />
-                engineered for <mark>the Frontier.</mark>
-            </h1>
-            <div class="home-hero__bottom">
-                <p class="home-hero__text">
-                    Developer and AI researcher in Kerala exploring autonomous machine intelligence, computer vision, and proactive cybersecurity. Building software that bridges neural models with physical reality.
-                </p>
-                <div class="home-hero__actions">
-                    <a class="btn-primary" href="mailto:arshadrafi566@gmail.com" data-cursor="EMAIL">
-                        <span data-scramble-target>Initiate Contact</span>
-                    </a>
-                    <a class="btn-link" href="#works" data-cursor="VIEW">
-                        <span data-scramble-target>See the projects ↗</span>
-                    </a>
+            <div class="home-hero__content">
+                <h1 class="home-hero__title">
+                    <mark>AI Research</mark> &amp; Systems,<br />
+                    engineered for <mark>the Frontier.</mark>
+                </h1>
+                <div class="home-hero__bottom">
+                    <p class="home-hero__text">
+                        Developer and AI researcher in Kerala exploring autonomous machine intelligence, computer vision, and proactive cybersecurity. Building software that bridges neural models with physical reality.
+                    </p>
+                    <div class="home-hero__actions">
+                        <a class="btn-primary" href="mailto:arshadrafi566@gmail.com" data-cursor="EMAIL">
+                            <span data-scramble-target>Initiate Contact</span>
+                        </a>
+                        <a class="btn-link" href="#works" data-cursor="VIEW">
+                            <span data-scramble-target>See the projects ↗</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
+    </div>
 
     <!-- 2. TECH STACK & CLIENT WALL -->
     <section class="clients" id="clients" data-txt="Stack & Ecosystem">
@@ -2013,8 +2073,8 @@
             });
         }
 
-        // 3. CURSOR VIEWFINDER
-        const viewfinder = document.getElementById('cursor-viewfinder');
+        // 3. RETICLE CURSOR TRACKING (Anthracite Studio Precision Crosshair & Corner Viewfinder)
+        const reticle = document.getElementById('cursor-reticle');
         const cursorLabel = document.getElementById('cursor-label');
         let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
         let vX = mouseX, vY = mouseY;
@@ -2024,18 +2084,18 @@
             mouseY = e.clientY;
         }, { passive: true });
 
-        if (!isMobile) {
+        if (!isMobile && reticle) {
             gsap.ticker.add(() => {
-                vX += (mouseX - vX) * 0.18;
-                vY += (mouseY - vY) * 0.18;
-                gsap.set(viewfinder, { x: vX, y: vY });
-                gsap.set(cursorLabel, { x: vX, y: vY });
+                vX += (mouseX - vX) * 0.22;
+                vY += (mouseY - vY) * 0.22;
+                gsap.set(reticle, { x: vX, y: vY });
+                if (cursorLabel) gsap.set(cursorLabel, { x: vX + 24, y: vY + 24 });
             });
 
             document.querySelectorAll('[data-cursor]').forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     document.body.classList.add('hover-active');
-                    cursorLabel.textContent = el.getAttribute('data-cursor') || 'VIEW';
+                    if (cursorLabel) cursorLabel.textContent = el.getAttribute('data-cursor') || 'VIEW';
                 });
                 el.addEventListener('mouseleave', () => {
                     document.body.classList.remove('hover-active');
@@ -2261,21 +2321,531 @@
             });
         });
 
-        // 9. ANTHRACITE STUDIO SCROLL REVEAL OBSERVERS
-        // Hero Content Scroll Fade (Anthracite Studio Hero interaction)
-        const heroContentEl = document.querySelector('.home-hero__content');
-        if (heroContentEl) {
-            ScrollTrigger.create({
-                trigger: '#hero',
-                start: 'top top',
-                end: 'bottom 40%',
-                scrub: true,
-                onUpdate: (self) => {
-                    const p = Math.min(1, self.progress * 1.5);
-                    heroContentEl.style.opacity = String(1 - p);
-                    heroContentEl.style.transform = `translateY(${-50 * p}px)`;
+        // 9. ANTHRACITE STUDIO ASCII HANDS FIELD ENGINE & HERO SCROLL PIN
+        const FONT_MONO = "'JetBrains Mono', ui-monospace, monospace";
+        const MATRIX_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        const clamp01 = (v) => Math.max(0, Math.min(1, v));
+        const remap = (v, min, max) => clamp01((v - min) / (max - min));
+        const easeOutCubic = (v) => 1 - Math.pow(1 - v, 3);
+        const lerpInt = (a, b, t) => Math.round(a + (b - a) * t);
+
+        function createPRNG(seed) {
+            return () => {
+                seed |= 0;
+                seed = (seed + 0x6D2B79F5) | 0;
+                let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+                t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+
+        class HandsField {
+            constructor(canvas, image, options = {}) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.img = image;
+                this.bg = '#080807';
+                this.gap = options.gap || 0;
+                
+                this.open = 0;
+                this.rise = 0;
+                this.contact = 0;
+                this.wave = 0;
+                this.pointer = { x: 0.5, y: 0.5, on: 0 };
+                this.last = -1;
+                this.drawnPose = '';
+                
+                this.crop = this.computeCrop();
+                this.resize();
+            }
+
+            computeCrop() {
+                const img = this.img;
+                const targetH = Math.round(img.height * 400 / img.width);
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = 400;
+                offCanvas.height = targetH;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.drawImage(img, 0, 0, 400, targetH);
+                const data = offCtx.getImageData(0, 0, 400, targetH).data;
+
+                let minY = targetH, maxY = -1;
+                for (let y = 0; y < targetH; y++) {
+                    for (let x = 0; x < 400; x++) {
+                        const idx = (y * 400 + x) * 4;
+                        if (data[idx + 3] < 16) continue;
+                        const lum = this.lum(data, idx);
+                        if (lum <= 250) {
+                            minY = Math.min(minY, y);
+                            maxY = Math.max(maxY, y);
+                        }
+                    }
                 }
-            });
+                const scale = img.height / targetH;
+                const pad = (maxY - minY + 1) * 0.08;
+                const sy = Math.max(0, (minY - pad) * scale);
+                const sh = Math.min(img.height, (maxY + 1 + pad) * scale) - sy;
+                return { sy, sh };
+            }
+
+            lum(data, idx) {
+                return Math.max(0, Math.min(255, (0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2] - 128) * 1.3 + 128));
+            }
+
+            resize() {
+                const parent = this.canvas.parentElement;
+                if (!parent) return;
+                const rect = parent.getBoundingClientRect();
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                const w = Math.round(rect.width);
+                const h = Math.round(rect.height);
+                if (w === 0 || h === 0) return;
+
+                this.canvas.width = w * dpr;
+                this.canvas.height = h * dpr;
+                this.ctx.scale(dpr, dpr);
+                this.width = w;
+                this.height = h;
+                this.portrait = h > w;
+
+                this.buildHands();
+                this.buildField();
+                this.buildEmblem();
+                this.last = -1;
+            }
+
+            buildHands() {
+                const { img, crop, width, height, portrait } = this;
+                const rng = createPRNG(7);
+                const targetW = portrait ? width * 1.7 : width * 1.25;
+                const cols = portrait ? 260 : 270;
+                const stepX = targetW / cols;
+                const fontSize = stepX / 1.25 / 0.6;
+                const stepY = fontSize * 1.3;
+                const rows = Math.round(crop.sh / img.width * cols * 0.6 * 1.25 / 1.3);
+
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = cols;
+                offCanvas.height = rows;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.drawImage(img, 0, crop.sy, img.width, crop.sh, 0, 0, cols, rows);
+                const data = offCtx.getImageData(0, 0, cols, rows).data;
+
+                const cells = [];
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const idx = (y * cols + x) * 4;
+                        if (data[idx + 3] < 16) continue;
+                        const lum = this.lum(data, idx);
+                        if (lum <= 250) {
+                            cells.push({ x, y, lum });
+                        }
+                    }
+                }
+
+                const sortedLums = cells.map(c => c.lum).sort((a, b) => a - b);
+                const lumMin = sortedLums[Math.floor(sortedLums.length * 0.04)] ?? 0;
+                const lumMax = sortedLums[Math.floor(sortedLums.length * 0.96)] ?? 255;
+                const lumRange = Math.max(1, lumMax - lumMin);
+
+                let tipL = null, tipR = null;
+                for (const c of cells) {
+                    if (c.x < cols / 2) {
+                        if (!tipL || c.x > tipL.x) tipL = c;
+                    } else {
+                        if (!tipR || c.x < tipR.x) tipR = c;
+                    }
+                }
+
+                const getCoord = (pt) => pt ? { cx: pt.x * stepX + stepX / 2, cy: pt.y * stepY + stepY / 2 } : { cx: targetW / 2, cy: rows * stepY / 2 };
+
+                const sampleColor = (norm) => {
+                    const stops = [
+                        [0.0, 8, 8, 7],
+                        [0.22, 55, 55, 52],
+                        [0.55, 142, 142, 136],
+                        [1.0, 238, 238, 233]
+                    ];
+                    for (let i = 1; i < stops.length; i++) {
+                        if (norm <= stops[i][0]) {
+                            const prev = stops[i - 1], curr = stops[i];
+                            const t = (norm - prev[0]) / (curr[0] - prev[0]);
+                            return [
+                                lerpInt(prev[1], curr[1], t),
+                                lerpInt(prev[2], curr[2], t),
+                                lerpInt(prev[3], curr[3], t)
+                            ];
+                        }
+                    }
+                    return [238, 238, 233];
+                };
+
+                this.hands = {
+                    font: fontSize,
+                    lt: [255, 255, 255],
+                    midCol: 'rgb(142, 142, 136)',
+                    w: targetW,
+                    h: rows * stepY,
+                    stepX: stepX,
+                    tipL: getCoord(tipL),
+                    tipR: getCoord(tipR),
+                    cells: cells.map(c => {
+                        const norm = clamp01((c.lum - lumMin) / lumRange);
+                        const rgb = sampleColor(norm);
+                        return {
+                            cx: c.x * stepX + stepX / 2,
+                            cy: c.y * stepY + stepY / 2,
+                            c: rgb,
+                            col: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
+                            ch: MATRIX_CHARS[Math.floor(rng() * 36)],
+                            thr: 0.16 * rng() + 0.84 * Math.abs(c.x / cols - 0.5) * 2,
+                            seed: Math.floor(rng() * 1000),
+                            live: rng() < 0.09,
+                            tw: 170 + rng() * 340
+                        };
+                    })
+                };
+            }
+
+            buildField() {
+                const { width, height, portrait } = this;
+                const rng = createPRNG(11);
+                const step = portrait ? width / 32 : width / 64;
+                const cols = Math.ceil(width / step);
+                const rows = Math.ceil(height / (step * 1.4));
+                const cells = [];
+
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (rng() > 0.55) continue;
+                        cells.push({
+                            x: c * step + step / 2,
+                            y: r * step * 1.4 + step * 0.7,
+                            seed: Math.floor(rng() * 1000),
+                            a: 0.04 + rng() * 0.08,
+                            rate: 1 + Math.floor(rng() * 3),
+                            ph: rng()
+                        });
+                    }
+                }
+                this.field = { cells, font: Math.round(step * 0.42) };
+            }
+
+            buildEmblem() {
+                const { width, height, portrait } = this;
+                const rng = createPRNG(23);
+                const emblemH = Math.min(height * 0.44, width * (portrait ? 0.6 : 0.38));
+                const emblemW = emblemH;
+                const cols = portrait ? 30 : 42;
+                const stepX = emblemW / cols;
+                const fontSize = stepX / 0.75;
+                const stepY = fontSize * 1.3;
+                const rows = Math.max(1, Math.round(emblemH / stepY));
+
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = cols;
+                offCanvas.height = rows;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.fillStyle = '#FFFFFF';
+                offCtx.font = `900 ${Math.round(rows * 0.85)}px sans-serif`;
+                offCtx.textAlign = 'center';
+                offCtx.textBaseline = 'middle';
+                offCtx.fillText('A', cols / 2, rows / 2);
+
+                const data = offCtx.getImageData(0, 0, cols, rows).data;
+                const cells = [];
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (data[(r * cols + c) * 4 + 3] < 128) continue;
+                        const rndVal = rng();
+                        const colVal = lerpInt(142, 255, rndVal);
+                        cells.push({
+                            dx: (c + 0.5) * stepX - emblemW / 2,
+                            dy: (r + 0.5) * (emblemH / rows) - emblemH / 2,
+                            col: `rgb(${colVal},${colVal},${colVal})`,
+                            ch: MATRIX_CHARS[Math.floor(rng() * 36)],
+                            seed: Math.floor(rng() * 1000),
+                            live: rng() < 0.12,
+                            tw: 170 + rng() * 340,
+                            jitter: rng() * 0.03
+                        });
+                    }
+                }
+                this.emblem = { cells, font: fontSize, lt: [255, 255, 255] };
+            }
+
+            get handsY() {
+                const baseRatio = this.portrait ? 0.8 : 0.76;
+                return this.height * (baseRatio + (0.5 - baseRatio) * this.rise);
+            }
+
+            get gapPx() {
+                return this.portrait ? 0 : this.width * this.gap;
+            }
+
+            get halfPx() {
+                const { tipL, tipR, stepX } = this.hands;
+                const dist = Math.max(0, (tipR.cx - tipL.cx) / 2 - stepX * 0.6);
+                return (this.gapPx + this.open * this.width) / 2 - dist * this.contact;
+            }
+
+            get touch() {
+                const { width, height, hands } = this;
+                const offsetX = (width - hands.w) / 2;
+                const offsetY = this.handsY - hands.h / 2;
+                return {
+                    x: (offsetX + (hands.tipL.cx + hands.tipR.cx) / 2) / width,
+                    y: (offsetY + (hands.tipL.cy + hands.tipR.cy) / 2) / height
+                };
+            }
+
+            get exitWave() {
+                return this.hands.w / 2 / this.width + 0.05;
+            }
+
+            draw(time, force = false) {
+                const cycle = time % 12;
+                const quantTime = Math.floor(time * (time > 4 ? 15 : 30));
+                const p = this.pointer;
+                const poseKey = [this.open, this.rise, this.contact, this.wave, p.on.toFixed(3), p.x.toFixed(3), p.y.toFixed(3)].join();
+
+                if (!force && quantTime === this.last && poseKey === this.drawnPose) return false;
+                this.last = quantTime;
+                this.drawnPose = poseKey;
+
+                const ctx = this.ctx;
+                const w = this.width;
+                const h = this.height;
+
+                ctx.fillStyle = this.bg;
+                ctx.fillRect(0, 0, w, h);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                const touch = this.touch;
+                const touchX = touch.x * w;
+                const touchY = touch.y * h;
+                const waveRadius = this.wave * w;
+                const waveThickness = w * (this.portrait ? 0.06 : 0.035);
+                const waveIntensity = (x, y) => this.wave > 0 ? 1 - Math.abs(Math.hypot(x - touchX, y - touchY) - waveRadius) / waveThickness : 0;
+                const waveAttenuation = 1 - 0.5 * clamp01(this.wave);
+
+                // Glowing spherical focal lens under pointer
+                const pointerX = p.x * w;
+                const pointerY = p.y * h;
+                const lensRadius = w * (this.portrait ? 0.16 : 0.095);
+                const lensIntensity = (x, y) => p.on > 0 ? p.on * clamp01(1 - Math.hypot(x - pointerX, y - pointerY) / lensRadius) : 0;
+
+                // 1. Background Matrix Ambient Field
+                ctx.font = `700 ${this.field.font}px ${FONT_MONO}`;
+                const fieldCycle = Math.floor(time * 24);
+                for (const cell of this.field.cells) {
+                    const cellRate = Math.floor(cycle * cell.rate);
+                    const wInt = waveIntensity(cell.x, cell.y);
+                    if (wInt > 0) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${(wInt * 0.9 * waveAttenuation).toFixed(3)})`;
+                        ctx.fillText(MATRIX_CHARS[(cell.seed + fieldCycle) % 36], cell.x, cell.y);
+                        continue;
+                    }
+                    const lInt = lensIntensity(cell.x, cell.y);
+                    if (lInt > 0) {
+                        ctx.fillStyle = `rgba(255, 255, 255, ${(0.15 + 0.65 * lInt).toFixed(3)})`;
+                        ctx.fillText(MATRIX_CHARS[(cell.seed + fieldCycle) % 36], cell.x, cell.y);
+                        continue;
+                    }
+                    const pulse = cell.a * (0.55 + 0.45 * Math.sin((cycle / 12 + cell.ph) * Math.PI * 2));
+                    ctx.fillStyle = `rgba(232, 232, 227, ${pulse.toFixed(3)})`;
+                    ctx.fillText(MATRIX_CHARS[(cell.seed + cellRate * 7) % 36], cell.x, cell.y);
+                }
+
+                // 2. ASCII Alphanumeric Hands Field
+                const hands = this.hands;
+                const introProgress = easeOutCubic(remap(time, 0.2, 3.6)) * 1.35;
+                const originX = (w - hands.w) / 2;
+                const originY = this.handsY - hands.h / 2;
+                const halfSeparation = this.halfPx;
+                const F_BAND = 0.16;
+                const timeMs = time * 1000;
+                const fastTick = Math.floor(timeMs / 42);
+
+                ctx.font = `700 ${hands.font.toFixed(2)}px ${FONT_MONO}`;
+
+                for (const cell of hands.cells) {
+                    const relThr = introProgress - cell.thr;
+                    if (relThr < -0.16) continue;
+
+                    const posX = originX + cell.cx + (cell.cx < hands.w / 2 ? -halfSeparation : halfSeparation);
+                    const posY = originY + cell.cy;
+                    if (posX < -20 || posX > w + 20) continue;
+
+                    if (relThr < F_BAND) {
+                        const norm = (relThr + F_BAND) / (2 * F_BAND);
+                        ctx.globalAlpha = 0.4 + 0.6 * norm;
+                        ctx.fillStyle = norm > 0.72 ? cell.col : hands.midCol;
+                        ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick + (cell.cx | 0) * 2) % 36], posX, posY);
+                        continue;
+                    }
+
+                    ctx.globalAlpha = 1;
+                    const liveDiff = relThr - F_BAND;
+
+                    if ((this.wave > 0 && waveIntensity(posX, posY) > 0) || lensIntensity(posX, posY) > 0.25) {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
+                        continue;
+                    }
+
+                    if (liveDiff < 0.13) {
+                        const boost = (1 - liveDiff / 0.13) * 0.5;
+                        ctx.fillStyle = `rgb(${lerpInt(cell.c[0], 255, boost)},${lerpInt(cell.c[1], 255, boost)},${lerpInt(cell.c[2], 255, boost)})`;
+                    } else {
+                        ctx.fillStyle = cell.col;
+                    }
+                    ctx.fillText(cell.live ? MATRIX_CHARS[(cell.seed + Math.floor(timeMs / cell.tw)) % 36] : cell.ch, posX, posY);
+                }
+
+                ctx.globalAlpha = 1;
+
+                // 3. Central Shockwave Monogram Emblem Reveal
+                if (this.emblem && this.wave > 0) {
+                    const emblem = this.emblem;
+                    ctx.font = `700 ${emblem.font.toFixed(2)}px ${FONT_MONO}`;
+                    for (const cell of emblem.cells) {
+                        const diff = this.wave - (Math.hypot(cell.dx, cell.dy) / w + cell.jitter);
+                        if (diff < 0) continue;
+
+                        let posX = touchX + cell.dx;
+                        let posY = touchY + cell.dy;
+
+                        if (diff < 0.04) {
+                            ctx.fillStyle = diff < 0.015 ? '#FFFFFF' : `rgb(${emblem.lt.join(',')})`;
+                            ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
+                            continue;
+                        }
+
+                        const lInt = lensIntensity(posX, posY);
+                        if (lInt > 0) {
+                            const dist = Math.hypot(posX - pointerX, posY - pointerY) || 1;
+                            const shift = lInt * emblem.font * 0.38;
+                            posX += (posX - pointerX) / dist * shift;
+                            posY += (posY - pointerY) / dist * shift;
+                            ctx.fillStyle = lInt > 0.55 ? '#FFFFFF' : `rgb(${emblem.lt.join(',')})`;
+                            ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
+                            continue;
+                        }
+
+                        ctx.fillStyle = cell.col;
+                        ctx.fillText(cell.live ? MATRIX_CHARS[(cell.seed + Math.floor(timeMs / cell.tw)) % 36] : cell.ch, posX, posY);
+                    }
+                }
+
+                // 4. Contact Flash Radial Bloom Spark at touch coordinates
+                const contactFlash = remap(this.contact, 0.9, 1.0) * (1 - remap(this.wave, 0, 0.3));
+                if (contactFlash > 0) {
+                    const flashRadius = w * (0.05 + this.wave * 0.6);
+                    const grad = ctx.createRadialGradient(touchX, touchY, 0, touchX, touchY, flashRadius);
+                    grad.addColorStop(0, `rgba(255, 255, 255, ${(0.95 * contactFlash).toFixed(3)})`);
+                    grad.addColorStop(0.3, `rgba(232, 232, 227, ${(0.55 * contactFlash).toFixed(3)})`);
+                    grad.addColorStop(1, 'rgba(8, 8, 7, 0)');
+                    ctx.globalCompositeOperation = 'lighter';
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(touchX - flashRadius, touchY - flashRadius, flashRadius * 2, flashRadius * 2);
+                    ctx.globalCompositeOperation = 'source-over';
+                }
+
+                return true;
+            }
+        }
+
+        // Initialize HandsField & Scrub Trigger on #hero-track
+        const handsCanvas = document.getElementById('hands-canvas');
+        const heroStage = document.getElementById('hero-stage');
+        let handsField = null;
+
+        if (handsCanvas && heroStage) {
+            const heroHandsImg = new Image();
+            const initHands = () => {
+                if (handsField) return;
+                handsField = new HandsField(handsCanvas, heroHandsImg);
+                window.__handsField = handsField;
+                window.addEventListener('resize', () => handsField.resize());
+                
+                let targetPointerX = 0.5, targetPointerY = 0.5;
+                let targetPointerOn = 0;
+                let curPointerX = 0.5, curPointerY = 0.5;
+                let curPointerOn = 0;
+
+                heroStage.addEventListener('pointerenter', () => { targetPointerOn = 1; });
+                heroStage.addEventListener('pointerleave', () => { targetPointerOn = 0; });
+                heroStage.addEventListener('pointermove', (e) => {
+                    const rect = handsCanvas.getBoundingClientRect();
+                    targetPointerX = (e.clientX - rect.left) / rect.width;
+                    targetPointerY = (e.clientY - rect.top) / rect.height;
+                });
+
+                // ScrollTrigger scrub pin on #hero-track
+                const heroTrackEl = document.getElementById('hero-track');
+                const heroContentEl = document.querySelector('.home-hero__content');
+
+                if (heroTrackEl) {
+                    ScrollTrigger.create({
+                        trigger: heroTrackEl,
+                        start: 'top top',
+                        end: 'bottom bottom',
+                        scrub: true,
+                        onUpdate: (self) => {
+                            const p = self.progress;
+                            // 1. Text fade out:
+                            const pText = Math.min(1, Math.max(0, p / 0.22));
+                            if (heroContentEl) {
+                                heroContentEl.style.opacity = String(1 - pText);
+                                heroContentEl.style.transform = `translateY(${-60 * pText}px)`;
+                            }
+                            // 2. Hands rise (0.05 -> 0.40):
+                            const riseP = Math.min(1, Math.max(0, (p - 0.05) / 0.35));
+                            handsField.rise = 1 - Math.pow(1 - riseP, 3);
+                            
+                            // 3. Contact (0.28 -> 0.50):
+                            const contactP = Math.min(1, Math.max(0, (p - 0.28) / 0.22));
+                            handsField.contact = 1 - Math.pow(1 - contactP, 3);
+                            
+                            // 4. Wave shockwave (0.52 -> 0.97):
+                            const waveP = Math.min(1, Math.max(0, (p - 0.52) / 0.45));
+                            handsField.wave = handsField.exitWave * Math.pow(waveP, 1.25);
+                            
+                            // 5. Open / separation at exit (0.85 -> 1.0):
+                            const openP = Math.min(1, Math.max(0, (p - 0.85) / 0.15));
+                            handsField.open = openP;
+                        }
+                    });
+                }
+
+                // Animation loop
+                const startTime = performance.now();
+                function tickHands() {
+                    requestAnimationFrame(tickHands);
+                    const now = (performance.now() - startTime) / 1000;
+                    
+                    curPointerOn += (targetPointerOn - curPointerOn) * 0.15;
+                    curPointerX += (targetPointerX - curPointerX) * 0.18;
+                    curPointerY += (targetPointerY - curPointerY) * 0.18;
+                    
+                    handsField.pointer.on = curPointerOn;
+                    handsField.pointer.x = curPointerX;
+                    handsField.pointer.y = curPointerY;
+                    
+                    handsField.draw(now);
+                }
+                requestAnimationFrame(tickHands);
+            };
+
+            heroHandsImg.onload = initHands;
+            heroHandsImg.src = 'assets/hero-hands.webp';
+            if (heroHandsImg.complete) initHands();
+            if (heroHandsImg.decode) {
+                heroHandsImg.decode().then(initHands).catch(() => {});
+            }
         }
 
         // Title Wipe Bar Reveal
