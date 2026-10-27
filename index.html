@@ -15,21 +15,22 @@
 
     <style>
         :root {
-            --bg: #04040e;
-            --dark: #04040e;
-            --primary: #0004eb;
-            --electric: #3d4bff;
-            --electric-text: #5c68ff;
+            --bg: #080807;
+            --dark: #080807;
+            --primary: #E8E8E3;
+            --primary-dark: #101012;
+            --electric: #D0D0CA;
+            --electric-text: #E8E8E3;
             --fg: #E8E8E3;
             --white: #FFFFFF;
             --grey: #8E8E88;
             --grey-dim: rgba(232, 232, 227, 0.28);
             --line: rgba(232, 232, 227, 0.08);
-            --line-strong: rgba(232, 232, 227, 0.22);
-            --card-bg: #0a0a14;
-            --card-hover: #121222;
-            --accent-mark-bg: var(--primary);
-            --accent-mark-fg: var(--white);
+            --line-strong: rgba(232, 232, 227, 0.20);
+            --card-bg: #101012;
+            --card-hover: #18181c;
+            --accent-mark-bg: #E8E8E3;
+            --accent-mark-fg: #080807;
             
             --container-min: 992px;
             --container-max: 100svw;
@@ -73,8 +74,8 @@
         }
 
         ::selection {
-            background: var(--primary);
-            color: var(--white);
+            background: var(--fg);
+            color: var(--bg);
         }
 
         a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
@@ -82,22 +83,22 @@
             outline-offset: 4px;
         }
 
-        /* --- EDITORIAL MARK ACCENT (Anthracite Studio Signature Cobalt Highlight Box) --- */
+        /* --- EDITORIAL MARK ACCENT (Tactical Stark Inverted Box) --- */
         mark {
             --mark-top: .16em;
             --mark-height: .92em;
             z-index: 1;
-            background: linear-gradient(var(--primary), var(--primary)) 0 var(--mark-top)/100% var(--mark-height) no-repeat;
-            color: var(--white);
+            background: linear-gradient(var(--accent-mark-bg), var(--accent-mark-bg)) 0 var(--mark-top)/100% var(--mark-height) no-repeat;
+            color: var(--accent-mark-fg);
             -webkit-box-decoration-break: clone;
             box-decoration-break: clone;
-            padding: 0 .12em;
+            padding: 0 .14em;
             position: relative;
             display: inline;
             line-height: inherit;
             font-family: inherit;
             font-style: normal;
-            font-weight: inherit;
+            font-weight: 500;
         }
 
         /* --- FILM NOISE OVERLAY --- */
@@ -263,18 +264,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(10, 10, 20, 0.82);
+            background: rgba(16, 16, 18, 0.85);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(232, 232, 227, 0.12);
             border-radius: 9999px;
             padding: 6px 14px 6px 8px;
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .bottom-nav__inner:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 16px 40px rgba(0, 4, 235, 0.15);
+            border-color: rgba(232, 232, 227, 0.3);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
         }
         .bottom-nav__logo {
             display: flex;
@@ -294,7 +295,7 @@
         }
         .bottom-nav__logo:hover {
             transform: scale(1.08);
-            background: #e0e4ff;
+            background: #f0f0eb;
         }
         .bottom-nav__title-wrapper {
             display: flex;
@@ -389,10 +390,10 @@
             gap: 8px;
             padding: 8px 16px;
             border-radius: 9999px;
-            background: rgba(10, 10, 20, 0.75);
+            background: rgba(16, 16, 19, 0.82);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(232, 232, 227, 0.1);
             font-family: var(--font-mono);
             font-size: 11px;
             letter-spacing: 0.12em;
@@ -404,8 +405,8 @@
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: var(--electric);
-            box-shadow: 0 0 6px var(--electric);
+            background: #00ff88;
+            box-shadow: 0 0 6px #00ff88;
         }
         @media (max-width: 991px) {
             .top-status-badge {
@@ -425,16 +426,16 @@
             align-items: center;
             gap: 8px;
             padding: 16px 8px;
-            background: rgba(10, 10, 20, 0.8);
+            background: rgba(16, 16, 19, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(232, 232, 227, 0.1);
             border-right: none;
             border-radius: 6px 0 0 6px;
             font-family: var(--font-mono);
             font-size: 10px;
             letter-spacing: 0.16em;
-            color: #5c68ff;
+            color: var(--grey);
             pointer-events: none;
             text-transform: uppercase;
         }
@@ -2469,7 +2470,7 @@
                 this.canvas = canvas;
                 this.ctx = canvas.getContext('2d');
                 this.img = image;
-                this.bg = '#04040e';
+                this.bg = '#080807';
                 this.gap = options.gap !== undefined ? options.gap : 0.38;
                 this.handsYRatio = options.handsY !== undefined ? options.handsY : 0.88;
                 
@@ -2499,10 +2500,7 @@
                 for (let y = 0; y < targetH; y++) {
                     for (let x = 0; x < 400; x++) {
                         const idx = (y * 400 + x) * 4;
-                        if (data[idx + 3] < 16) continue;
-                        const lum = this.lum(data, idx);
-                        // Hand pixels have luminance > 12 (background is <= 8)
-                        if (lum > 12) {
+                        if (data[idx + 3] > 20) {
                             minY = Math.min(minY, y);
                             maxY = Math.max(maxY, y);
                         }
@@ -2562,17 +2560,15 @@
                 for (let y = 0; y < rows; y++) {
                     for (let x = 0; x < cols; x++) {
                         const idx = (y * cols + x) * 4;
-                        if (data[idx + 3] < 16) continue;
+                        if (data[idx + 3] < 20) continue;
                         const lum = this.lum(data, idx);
-                        if (lum > 12) {
-                            cells.push({ x, y, lum });
-                        }
+                        cells.push({ x, y, lum });
                     }
                 }
 
                 const sortedLums = cells.map(c => c.lum).sort((a, b) => a - b);
-                const lumMin = sortedLums[Math.floor(sortedLums.length * 0.04)] ?? 12;
-                const lumMax = sortedLums[Math.floor(sortedLums.length * 0.96)] ?? 80;
+                const lumMin = sortedLums[Math.floor(sortedLums.length * 0.04)] ?? 10;
+                const lumMax = sortedLums[Math.floor(sortedLums.length * 0.96)] ?? 220;
                 const lumRange = Math.max(1, lumMax - lumMin);
 
                 let tipL = null, tipR = null;
@@ -2586,12 +2582,14 @@
 
                 const getCoord = (pt) => pt ? { cx: pt.x * stepX + stepX / 2, cy: pt.y * stepY + stepY / 2 } : { cx: targetW / 2, cy: rows * stepY / 2 };
 
+                // Tactical greyish palette stops: obsidian -> deep graphite -> tactical mid-grey -> chalk -> bone highlight
                 const sampleColor = (norm) => {
                     const stops = [
-                        [0.0, 4, 4, 14],       // dark obsidian #04040e
-                        [0.22, 0, 2, 141],     // deep cobalt
-                        [0.50, 0, 4, 235],     // signature electric cobalt blue #0004eb
-                        [1.0, 210, 230, 255]   // radiant cyan / white
+                        [0.0, 8, 8, 7],         // dark obsidian #080807
+                        [0.22, 45, 45, 48],     // deep tactical graphite
+                        [0.48, 120, 120, 116],  // tactical mid-grey
+                        [0.75, 195, 195, 190],  // tactical chalk
+                        [1.0, 245, 245, 240]    // bone / stark white highlight
                     ];
                     for (let i = 1; i < stops.length; i++) {
                         if (norm <= stops[i][0]) {
@@ -2604,13 +2602,13 @@
                             ];
                         }
                     }
-                    return [210, 230, 255];
+                    return [245, 245, 240];
                 };
 
                 this.hands = {
                     font: fontSize,
-                    lt: [220, 235, 255],
-                    midCol: 'rgb(0, 4, 235)',
+                    lt: [255, 255, 255],
+                    midCol: 'rgb(140, 140, 136)',
                     w: targetW,
                     h: rows * stepY,
                     stepX: stepX,
@@ -2680,14 +2678,14 @@
                 offCtx.fillText('A', cols / 2, rows / 2);
 
                 const data = offCtx.getImageData(0, 0, cols, rows).data;
-                const primary = [0, 4, 235];
-                const lightCobalt = [lerpInt(primary[0], 255, 0.65), lerpInt(primary[1], 255, 0.65), lerpInt(primary[2], 255, 0.65)];
+                const primary = [140, 140, 136];
+                const lightChalk = [245, 245, 240];
                 const cells = [];
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
                         if (data[(r * cols + c) * 4 + 3] < 96) continue;
                         const rndVal = rng();
-                        const colArr = [lerpInt(primary[0], lightCobalt[0], rndVal), lerpInt(primary[1], lightCobalt[1], rndVal), lerpInt(primary[2], lightCobalt[2], rndVal)];
+                        const colArr = [lerpInt(primary[0], lightChalk[0], rndVal), lerpInt(primary[1], lightChalk[1], rndVal), lerpInt(primary[2], lightChalk[2], rndVal)];
                         cells.push({
                             dx: (c + 0.5) * stepX - emblemW / 2,
                             dy: (r + 0.5) * (emblemH / rows) - emblemH / 2,
@@ -2700,7 +2698,7 @@
                         });
                     }
                 }
-                this.emblem = { cells, font: fontSize, lt: lightCobalt };
+                this.emblem = { cells, font: fontSize, lt: lightChalk };
             }
 
             get handsY() {
@@ -2713,9 +2711,8 @@
             }
 
             get halfPx() {
-                const { tipL, tipR, stepX } = this.hands;
-                const dist = Math.max(0, (tipR.cx - tipL.cx) / 2 - stepX * 0.6);
-                return (this.gapPx + this.open * this.width) / 2 - dist * this.contact;
+                const baseGap = this.gapPx * (1 - this.contact);
+                return (baseGap + this.open * this.width) / 2;
             }
 
             get touch() {
@@ -2765,7 +2762,7 @@
                 const lensRadius = w * (this.portrait ? 0.16 : 0.095);
                 const lensIntensity = (x, y) => p.on > 0 ? p.on * clamp01(1 - Math.hypot(x - pointerX, y - pointerY) / lensRadius) : 0;
 
-                // 1. Background Matrix Ambient Field (Signature Anthracite Cobalt #0004eb)
+                // 1. Background Matrix Ambient Field (Tactical Graphite/Chalk #E8E8E3)
                 ctx.font = `700 ${this.field.font}px ${FONT_MONO}`;
                 const fieldCycle = Math.floor(time * 24);
                 for (const cell of this.field.cells) {
@@ -2783,18 +2780,18 @@
                         continue;
                     }
                     const pulse = cell.a * (0.55 + 0.45 * Math.sin((cycle / 12 + cell.ph) * Math.PI * 2));
-                    ctx.fillStyle = `rgba(0, 4, 235, ${(pulse * 1.2).toFixed(3)})`;
+                    ctx.fillStyle = `rgba(232, 232, 227, ${(pulse * 0.15).toFixed(3)})`;
                     ctx.fillText(MATRIX_CHARS[(cell.seed + cellRate * 7) % 36], cell.x, cell.y);
                 }
 
-                // 2. Chromatic Glitch Mosaic Blocks (Anthracite Studio Signature Glitch)
+                // 2. Chromatic Glitch Mosaic Blocks (Tactical Slate / Graphite)
                 const glitchBlocks = [
-                    { rx: 0.16, ry: 0.72, rw: 110, rh: 44, col: 'rgba(0, 4, 235, 0.85)', drift: 0.008, ch: '010101' },
-                    { rx: 0.44, ry: 0.79, rw: 165, rh: 62, col: 'rgba(0, 4, 235, 0.75)', drift: -0.006, ch: 'AI//SYS' },
-                    { rx: 0.58, ry: 0.73, rw: 90, rh: 42, col: 'rgba(24, 42, 90, 0.75)', drift: 0.012, ch: 'NEURAL' },
-                    { rx: 0.68, ry: 0.78, rw: 65, rh: 32, col: 'rgba(0, 225, 255, 0.35)', drift: -0.010, ch: 'PROTO' },
-                    { rx: 0.30, ry: 0.84, rw: 140, rh: 52, col: 'rgba(0, 4, 235, 0.65)', drift: 0.007, ch: 'SYSTEM' },
-                    { rx: 0.78, ry: 0.83, rw: 75, rh: 40, col: 'rgba(18, 32, 70, 0.80)', drift: -0.008, ch: '99201' }
+                    { rx: 0.16, ry: 0.72, rw: 110, rh: 44, col: 'rgba(25, 25, 28, 0.85)', drift: 0.008, ch: '010101' },
+                    { rx: 0.44, ry: 0.79, rw: 165, rh: 62, col: 'rgba(32, 32, 36, 0.75)', drift: -0.006, ch: 'AI//SYS' },
+                    { rx: 0.58, ry: 0.73, rw: 90, rh: 42, col: 'rgba(28, 28, 32, 0.75)', drift: 0.012, ch: 'NEURAL' },
+                    { rx: 0.68, ry: 0.78, rw: 65, rh: 32, col: 'rgba(35, 35, 40, 0.65)', drift: -0.010, ch: 'PROTO' },
+                    { rx: 0.30, ry: 0.84, rw: 140, rh: 52, col: 'rgba(28, 28, 32, 0.70)', drift: 0.007, ch: 'SYSTEM' },
+                    { rx: 0.78, ry: 0.83, rw: 75, rh: 40, col: 'rgba(25, 25, 28, 0.80)', drift: -0.008, ch: '99201' }
                 ];
                 const glitchFade = clamp01(1 - this.rise * 1.5);
                 if (glitchFade > 0.01) {
@@ -2805,13 +2802,13 @@
                         ctx.globalAlpha = glitchFade;
                         ctx.fillRect(bx, by, b.rw, b.rh);
 
-                        ctx.strokeStyle = 'rgba(0, 225, 255, 0.25)';
+                        ctx.strokeStyle = 'rgba(232, 232, 227, 0.15)';
                         ctx.lineWidth = 1;
                         ctx.strokeRect(bx, by, b.rw, b.rh);
 
                         // Alphanumeric technical stamp inside glitch block
                         ctx.font = `700 9px ${FONT_MONO}`;
-                        ctx.fillStyle = 'rgba(0, 225, 255, 0.6)';
+                        ctx.fillStyle = 'rgba(232, 232, 227, 0.6)';
                         ctx.fillText(b.ch, bx + b.rw / 2, by + b.rh / 2);
                     }
                     ctx.globalAlpha = 1;
@@ -2831,8 +2828,8 @@
                 if (this.contact < 0.75) {
                     ctx.save();
                     const cFade = clamp01(1 - this.contact * 1.3);
-                    ctx.globalAlpha = cFade * 0.45;
-                    ctx.strokeStyle = '#3d4bff';
+                    ctx.globalAlpha = cFade * 0.35;
+                    ctx.strokeStyle = 'rgba(232, 232, 227, 0.25)';
                     ctx.lineWidth = 1.2;
 
                     // Left hand contour curves
@@ -2935,8 +2932,8 @@
                     const flashRadius = w * (0.05 + this.wave * 0.6);
                     const grad = ctx.createRadialGradient(touchX, touchY, 0, touchX, touchY, flashRadius);
                     grad.addColorStop(0, `rgba(255, 255, 255, ${(0.95 * contactFlash).toFixed(3)})`);
-                    grad.addColorStop(0.25, `rgba(61, 75, 255, ${(0.65 * contactFlash).toFixed(3)})`);
-                    grad.addColorStop(1, 'rgba(0, 4, 235, 0)');
+                    grad.addColorStop(0.25, `rgba(232, 232, 227, ${(0.65 * contactFlash).toFixed(3)})`);
+                    grad.addColorStop(1, 'rgba(232, 232, 227, 0)');
                     ctx.globalCompositeOperation = 'lighter';
                     ctx.fillStyle = grad;
                     ctx.fillRect(touchX - flashRadius, touchY - flashRadius, flashRadius * 2, flashRadius * 2);
@@ -3037,7 +3034,7 @@
             };
 
             heroHandsImg.onload = initHands;
-            heroHandsImg.src = 'assets/hero-hands.webp';
+            heroHandsImg.src = 'assets/god-hands.webp';
             if (heroHandsImg.complete) initHands();
             if (heroHandsImg.decode) {
                 heroHandsImg.decode().then(initHands).catch(() => {});
