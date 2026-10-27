@@ -1436,241 +1436,720 @@
 
         /* --- 5. FEATURED PROJECTS (`fp`) --- */
         .fp {
+            --fp-ease-out: cubic-bezier(.25, 1, .5, 1);
+            --fp-ease: cubic-bezier(.5, 1, .89, 1);
+            --fp-muted: rgba(232, 232, 227, 0.6);
+            isolation: isolate;
+            color: var(--white);
             padding: 160px 25px 140px;
+            position: relative;
             max-width: var(--container);
             margin: 0 auto;
-            color: var(--white);
-            isolation: isolate;
-        }
-        .fp__head {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: flex-end;
-            gap: 40px;
-            margin-bottom: 56px;
-        }
-        @media (max-width: 768px) {
-            .fp__head {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-        }
-        .view-toggle {
-            display: flex;
-            border: 1px solid var(--line-strong);
-            border-radius: 9999px;
-            padding: 3px;
-            background: var(--card-bg);
-        }
-        .view-btn {
-            background: none;
-            border: none;
-            color: var(--grey);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            padding: 8px 16px;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .view-btn.is-active {
-            background: var(--white);
-            color: var(--bg);
-            font-weight: 500;
         }
 
-        /* Grid View */
-        .fp__grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-        }
-        @media (max-width: 992px) {
-            .fp__grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        .fp__card {
-            background: var(--card-bg);
-            border: 1px solid var(--line);
-            border-radius: 4px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: border-color 0.3s ease, transform 0.3s var(--ease);
-            text-decoration: none;
-            color: inherit;
-        }
-        .fp__card:hover {
-            border-color: rgba(232, 232, 227, 0.5);
-            transform: translateY(-4px);
-        }
-        .fp__fig {
-            position: relative;
+        .fp__top {
             width: 100%;
-            aspect-ratio: 16/10;
-            overflow: hidden;
-            background: #000;
         }
+
+        .fp__head {
+            grid-template-columns: 1fr 34%;
+            align-items: start;
+            gap: 40px;
+            display: grid;
+        }
+
+        .fp__h2 {
+            margin: 0px;
+        }
+
+        .fp__intro {
+            letter-spacing: -0.01em;
+            font-size: 18px;
+            line-height: 1.45;
+            color: var(--grey);
+            margin: 0;
+            font-weight: 300;
+        }
+
+        /* 20-Column Asymmetrical Grid */
+        .fp__grid {
+            pointer-events: none;
+            grid-template-columns: repeat(20, 1fr);
+            gap: 0px 24px;
+            margin: 150px 0px 0px;
+            padding: 0px;
+            list-style: none;
+            display: grid;
+        }
+
+        .fp__grid[hidden] {
+            display: none !important;
+        }
+
+        .fp__card {
+            grid-row: var(--row);
+        }
+
+        .fp__card[data-slot="1"] {
+            grid-column: 1 / span 11;
+        }
+
+        .fp__card[data-slot="2"] {
+            grid-column: 13 / span 8;
+            margin-top: -130px;
+        }
+
+        .fp__card[data-slot="3"] {
+            grid-column: 5 / span 12;
+            margin-top: 160px;
+        }
+
+        .fp__card[data-slot="4"] {
+            grid-column: 1 / span 8;
+            margin-top: 160px;
+        }
+
+        .fp__card[data-slot="5"] {
+            grid-column: 10 / span 11;
+            margin-top: -240px;
+        }
+
+        .fp__link {
+            width: 100%;
+            color: inherit;
+            pointer-events: auto;
+            will-change: transform;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+            text-decoration: none;
+            display: flex;
+        }
+
+        .fp__link:focus-visible {
+            outline: none;
+        }
+
+        .fp__link:focus-visible .fp__fig {
+            outline: 2px solid var(--white);
+            outline-offset: 4px;
+        }
+
+        .fp__fig {
+            aspect-ratio: 16 / 9;
+            background: rgba(255, 255, 255, 0.04);
+            width: 100%;
+            margin: 0px;
+            position: relative;
+            overflow: clip;
+        }
+
+        .fp__card[data-slot="1"] .fp__fig,
+        .fp__card[data-slot="5"] .fp__fig {
+            aspect-ratio: 3 / 2;
+        }
+
+        .fp__card[data-slot="2"] .fp__fig,
+        .fp__card[data-slot="4"] .fp__fig {
+            aspect-ratio: 4 / 5;
+        }
+
+        .fp__card[data-slot="3"] .fp__fig {
+            aspect-ratio: 16 / 9;
+        }
+
+        .fp__fig img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            scale: 1.15;
+            translate: 0 calc((var(--p, .5) - .5) * 12%);
+            will-change: translate;
+            visibility: hidden;
+            display: block;
+            position: absolute;
+            inset: 0px;
+        }
+
         .fp__fig::before {
             content: "";
-            position: absolute;
-            inset: 0;
+            z-index: 3;
             background: var(--white);
-            clip-path: inset(0 100% 0 0);
-            z-index: 2;
+            clip-path: inset(0px 100% 0px 0px);
             pointer-events: none;
+            position: absolute;
+            inset: 0px;
         }
-        .fp__fig.is-in::before {
-            animation: 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0s 1 normal forwards running fp-bar;
+
+        .fp__fig::after {
+            content: "";
+            z-index: 2;
+            opacity: 0;
+            transition: opacity .35s var(--fp-ease);
+            pointer-events: none;
+            background: linear-gradient(rgba(8, 8, 7, 0) 35%, rgba(8, 8, 7, 0.9));
+            position: absolute;
+            inset: -1px;
         }
+
         .fp__fig.is-in img {
             animation: 0s ease 0.44s 1 normal forwards running fp-show;
         }
-        .fp__fig img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            visibility: hidden;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+
+        .fp__fig.is-in::before {
+            animation: 1.1s cubic-bezier(0.77, 0, 0.18, 1) 0s 1 normal forwards running fp-bar;
         }
-        .fp__card:hover .fp__fig img {
-            transform: scale(1.04);
+
+        @keyframes fp-bar {
+            0% { clip-path: inset(0px 100% 0px 0px); }
+            40% { clip-path: inset(0px); }
+            100% { clip-path: inset(0px 0px 0px 100%); }
         }
-        @keyframes fp-bar { 
-            0% { clip-path: inset(0 100% 0 0); }
-            40% { clip-path: inset(0); }
-            100% { clip-path: inset(0 0 0 100%); }
-        }
-        @keyframes fp-show { 
+
+        @keyframes fp-show {
             100% { visibility: visible; }
         }
 
-        .fp__body {
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            justify-content: space-between;
-            gap: 16px;
+        @keyframes fp-row-in {
+            0% { opacity: 0; translate: 0px 24px; }
         }
-        .fp__meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--grey);
-        }
-        .fp__title {
-            font-family: var(--font-body);
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: var(--white);
-            line-height: 1.2;
-        }
-        .fp__desc {
-            font-size: 0.95rem;
-            color: var(--grey);
-            font-weight: 300;
-            line-height: 1.5;
-        }
+
+        /* Tags inside Figure */
         .fp__tags {
-            display: flex;
+            z-index: 4;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: auto;
+            display: flex;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            overflow: hidden;
         }
+
         .fp__tag {
             font-family: var(--font-mono);
-            font-size: 10px;
-            letter-spacing: 0.08em;
-            background: rgba(232, 232, 227, 0.06);
-            border: 1px solid var(--line);
-            padding: 4px 8px;
-            border-radius: 2px;
-            color: var(--fg);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--white);
+            transition: translate .23s var(--fp-ease);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(8, 8, 7, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            padding: 6px 10px;
+            font-size: 11px;
+            translate: 0px calc(100% + 24px);
+        }
+
+        /* Project Card Title & Caption */
+        .fp__art {
+            align-items: flex-start;
+            gap: 20px;
+            width: 100%;
+            display: flex;
+            position: relative;
+        }
+
+        .fp__dot {
+            background: var(--fp-muted);
+            width: 6px;
+            height: 6px;
+            transition: scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s;
+            position: absolute;
+            top: 8px;
+            left: 0px;
+        }
+
+        .fp__txt {
+            min-width: 0px;
+            transition: translate .5s var(--fp-ease-out) .1s;
+            flex-direction: column;
+            gap: 8px;
+            display: flex;
+            translate: 24px;
+        }
+
+        .fp__title {
+            font-family: var(--font-title);
+            letter-spacing: -0.01em;
+            margin: 0px;
+            font-size: 26px;
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--white);
+        }
+
+        .fp__text {
+            max-width: 440px;
+            color: var(--fp-muted);
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            margin: 4px 0px 0px;
+            font-size: 14px;
+            line-height: 1.45;
+            display: -webkit-box;
+            overflow: hidden;
+            font-weight: 300;
+        }
+
+        .fp__ic {
+            background: var(--white);
+            width: 36px;
+            height: 36px;
+            color: var(--bg);
+            clip-path: inset(50%);
+            transition: clip-path .5s var(--fp-ease-out) .1s;
+            flex: 0 0 auto;
+            place-items: center;
+            margin: 2px 0px 0px auto;
+            display: grid;
+        }
+
+        .fp__ic svg {
+            transition: translate 0.25s cubic-bezier(0.45, 0, 0.55, 1);
+            translate: -200% 200%;
+            stroke: var(--bg);
+        }
+
+        /* Hover States */
+        .is-hover .fp__fig::after {
+            opacity: 1;
+        }
+
+        .is-hover .fp__tag {
+            transition: translate .35s var(--fp-ease) calc((var(--t) - 1 - var(--j)) * 75ms);
+            translate: 0px;
+        }
+
+        .is-hover .fp__dot {
+            transition-delay: 0s;
+            scale: 0;
+        }
+
+        .is-hover .fp__txt {
+            transition-delay: 0s;
+            translate: 0px;
+        }
+
+        .is-hover .fp__ic {
+            clip-path: inset(0%);
+        }
+
+        .is-hover .fp__ic svg {
+            translate: 0 0;
+        }
+
+        .is-reset .fp__ic svg {
+            transition: none;
+            translate: 200% -200%;
+        }
+
+        /* View Switching Mechanism */
+        .fp__views {
+            transition: opacity .28s var(--fp-ease);
+        }
+
+        .fp__views.is-switching {
+            opacity: 0;
         }
 
         /* List View */
         .fp__list {
-            display: none;
-            flex-direction: column;
-            border-top: 1px solid var(--line);
-        }
-        .fp--list .fp__grid { display: none; }
-        .fp--list .fp__list { display: flex; }
-        .fp__row {
-            display: grid;
-            grid-template-columns: 80px 2fr 1.5fr 1fr 40px;
-            align-items: center;
-            padding: 24px 16px;
-            border-bottom: 1px solid var(--line);
-            text-decoration: none;
-            color: var(--fg);
+            margin-top: 150px;
             position: relative;
-            transition: background 0.2s ease, color 0.2s ease;
         }
-        @media (max-width: 768px) {
-            .fp__row {
-                grid-template-columns: 40px 1.5fr 1fr 30px;
-            }
-            .fp__row-desc { display: none; }
+
+        .fp__list[hidden] {
+            display: none !important;
         }
-        .fp__row:hover {
-            background: rgba(232, 232, 227, 0.04);
+
+        .fp__rows {
+            z-index: 1;
+            border-bottom: 1px solid rgba(232, 232, 227, 0.16);
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+            position: relative;
+        }
+
+        .fp__list.is-in .fp__rows > li {
+            animation: fp-row-in 0.6s var(--fp-ease-out) forwards;
+            animation-delay: calc(var(--i) * 60ms);
+        }
+
+        .fp__row {
+            color: var(--white);
+            transition: opacity .35s var(--fp-ease);
+            border-top: 1px solid rgba(232, 232, 227, 0.16);
+            grid-template-columns: minmax(0px, 2fr) minmax(0px, 1fr) 40px;
+            align-items: center;
+            gap: 24px;
+            padding: 26px 0px;
+            text-decoration: none;
+            display: grid;
+        }
+
+        .fp__row:focus-visible {
+            outline: 2px solid var(--white);
+            outline-offset: 4px;
+        }
+
+        .fp__row-meta {
+            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--fp-muted);
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 11.5px;
+            overflow: hidden;
+        }
+
+        .fp__row-name {
+            font-family: var(--font-title);
+            letter-spacing: -0.015em;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: clamp(26px, 3.2vw, 48px);
+            line-height: 1;
+            overflow: hidden;
             color: var(--white);
         }
-        .fp__row-index {
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--grey);
+
+        .fp__row-ic {
+            background: var(--white);
+            clip-path: inset(50%);
+            width: 38px;
+            height: 38px;
+            transition: clip-path .45s var(--fp-ease-out);
+            place-items: center;
+            display: grid;
         }
-        .fp__row-title {
-            font-family: var(--font-body);
-            font-size: 1.3rem;
-            font-weight: 500;
+
+        .fp__row-ic svg {
+            stroke: var(--bg);
         }
-        .fp__row-desc {
-            font-size: 0.9rem;
-            color: var(--grey);
+
+        .fp__list.is-hovering .fp__row {
+            opacity: 0.28;
         }
-        .fp__row-cat {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--grey);
-        }
-        .fp__row-arrow {
-            font-family: var(--font-mono);
-            font-size: 16px;
-            text-align: right;
-        }
-        
-        /* Floating list hover preview */
-        #fp-floating-preview {
-            position: fixed;
-            width: 280px;
-            aspect-ratio: 16/10;
-            pointer-events: none;
-            z-index: 1000;
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid var(--line-strong);
-            background: #000;
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.92);
-            transition: opacity 0.25s ease, transform 0.25s var(--ease);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
-        }
-        #fp-floating-preview.is-active {
+
+        .fp__list.is-hovering .fp__row.is-active {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
         }
-        #fp-floating-preview img {
+
+        .fp__row.is-active .fp__row-meta {
+            color: var(--white);
+        }
+
+        .fp__row.is-active .fp__row-ic {
+            clip-path: inset(0%);
+        }
+
+        /* List Floating Preview Images */
+        .fp__preview {
+            z-index: 0;
+            aspect-ratio: 3 / 2;
+            pointer-events: none;
+            width: min(44vw, 640px);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            translate: -50% -50%;
+            overflow: hidden;
+            border-radius: 4px;
+            background: rgba(14, 14, 13, 0.9);
+        }
+
+        .fp__preview img {
+            object-fit: cover;
+            opacity: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            transition: opacity .35s var(--fp-ease), scale .6s var(--fp-ease-out);
+            position: absolute;
+            inset: 0px;
+            scale: 1.06;
+        }
+
+        .fp__preview img.is-on {
+            opacity: 1;
+            scale: 1;
+        }
+
+        /* CTA Bottom */
+        .fp__cta {
+            justify-content: center;
+            margin-top: 180px;
+            display: flex;
+        }
+
+        .fp--list .fp__cta {
+            margin-top: 80px;
+        }
+
+        .fp__cta-btn {
+            border: 1px solid rgba(232, 232, 227, 0.4);
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--fg);
+            cursor: pointer;
+            background: transparent;
+            padding: 16px 28px;
+            font-size: 11px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            display: inline-block;
+        }
+
+        .fp__cta-btn:hover,
+        .fp__cta-btn:focus-visible {
+            background: var(--white);
+            color: var(--bg);
+            border-color: var(--white);
+        }
+
+        /* Custom Project Cursor Follower */
+        .fp__cursor {
+            z-index: 990;
+            pointer-events: none;
+            display: none;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            will-change: transform;
+        }
+
+        @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+            .fp__cursor {
+                display: block;
+            }
+            .fp__fig {
+                cursor: none;
+            }
+        }
+
+        .fp__cursor-in {
+            transform-origin: 100% 100%;
+            gap: 1px;
+            transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+            display: flex;
+            transform: translate(calc(-100% - 6px), calc(-100% - 6px)) scale(0);
+        }
+
+        .fp__cursor.is-on .fp__cursor-in {
+            transform: translate(calc(-100% - 6px), calc(-100% - 6px)) scale(1);
+        }
+
+        .fp__cursor-txt,
+        .fp__cursor-arr {
+            background: var(--white);
+            height: 34px;
+            color: var(--bg);
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        .fp__cursor-txt {
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            padding: 0px 12px;
+            font-size: 10.5px;
+            font-weight: 500;
+        }
+
+        .fp__cursor-arr {
+            width: 34px;
+        }
+
+        .fp__cursor-arr svg {
+            stroke: var(--bg);
+        }
+
+        /* Floating Sub-Bar View Switcher (Anthracite Studio Pill Bar) */
+        .sub-bar {
+            z-index: 850;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: translate 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s, visibility 0.5s;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            translate: -50% 1.5em;
+        }
+
+        .sub-bar.is-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            translate: -50% 0;
+        }
+
+        .sub-bar__inner {
+            max-width: calc(100vw - 32px);
+            height: 44px;
+            color: var(--white);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background-color: rgba(14, 14, 13, 0.85);
+            border: 1px solid rgba(232, 232, 227, 0.15);
+            transition: width 0.55s cubic-bezier(0.625, 0.05, 0, 1), background-color 0.4s;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .sub-bar__panel {
+            scrollbar-width: none;
+            white-space: nowrap;
+            opacity: 1;
+            align-items: center;
+            height: 100%;
+            padding: 4px;
+            display: flex;
+        }
+
+        .fp-view {
+            --btn: 5.5rem;
+            height: 100%;
+            display: flex;
+            position: relative;
+        }
+
+        .fp-view__pill {
+            width: var(--btn);
+            background: var(--white);
+            transition: translate 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            border-radius: 9999px;
+        }
+
+        .fp-view[data-current="list"] .fp-view__pill {
+            translate: var(--btn) 0;
+        }
+
+        .fp-view__btn {
+            width: var(--btn);
+            height: 100%;
+            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: rgba(232, 232, 227, 0.6);
+            cursor: pointer;
+            background: none;
+            border: 0px;
+            justify-content: center;
+            align-items: center;
+            gap: 0.6em;
+            padding: 0px;
+            font-size: 10px;
+            transition: color 0.3s ease;
+            display: flex;
+            position: relative;
+            z-index: 1;
+        }
+
+        .fp-view__btn svg {
+            flex: 0 0 auto;
+            width: 12px;
+            height: 12px;
+        }
+
+        .fp-view__btn[aria-pressed="true"] {
+            color: var(--bg);
+            font-weight: 600;
+        }
+
+        .fp-view__btn:hover:not([aria-pressed="true"]) {
+            color: var(--white);
+        }
+
+        /* Responsive Breakpoints for Projects */
+        @media (max-width: 809px) {
+            .fp {
+                padding: 100px 20px 80px;
+            }
+            .fp__head {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .fp__grid {
+                grid-template-columns: 1fr;
+                row-gap: 72px;
+                margin-top: 60px;
+            }
+            .fp__card[data-slot] {
+                grid-column: auto;
+                margin-top: 0px;
+            }
+            .fp__card[data-slot] .fp__fig {
+                aspect-ratio: 4 / 5;
+            }
+            .fp__title {
+                font-size: 22px;
+            }
+            .fp__cta {
+                margin-top: 80px;
+            }
+            .fp__list {
+                margin-top: 60px;
+            }
+            .fp__row {
+                grid-template-columns: minmax(0px, 1fr) auto;
+                gap: 6px 16px;
+                padding: 18px 0px;
+            }
+            .fp__row-name {
+                grid-column: 1 / -1;
+                font-size: 24px;
+            }
+            .fp__row-ic {
+                display: none;
+            }
+            .fp__preview {
+                display: none;
+            }
+            .fp__dot,
+            .fp__ic {
+                display: none;
+            }
+            .fp__tag,
+            .fp__txt {
+                translate: 0px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fp__fig img {
+                visibility: visible;
+                translate: 0px;
+            }
+            .fp__fig::before {
+                display: none;
+            }
+            .fp__link {
+                transform: none !important;
+            }
+            .fp__views {
+                transition: none;
+            }
+            .fp__list.is-in .fp__rows > li {
+                animation: none;
+            }
+            .fp-view__pill {
+                transition: none;
+            }
         }
 
         /* --- 6. AWARDS & RECOGNITION (`awards`) --- */
@@ -2558,124 +3037,236 @@
         </div>
     </section>
 
-    <!-- 5. FEATURED PROJECTS (`fp`) -->
-    <section class="fp" id="works" data-txt="Projects">
-        <div class="fp__head">
-            <div>
-                <span class="section-tag">Selected Works</span>
-                <h2 class="section-title reveal" data-reveal>
-                    <span class="reveal__line" style="--line: 0"><span class="reveal__text">Selected works</span></span>
-                    <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>engineered with precision.</mark></span></span>
-                </h2>
+    <!-- 5. FEATURED PROJECTS (`fp`) (Anthracite Studio Exact Architecture) -->
+    <section class="fp" id="works" data-featured-projects="" data-txt="Projects" data-bar="projects-view" aria-labelledby="fp-title">
+        <div class="fp__top">
+            <div class="fp__head">
+                <div>
+                    <span class="section-tag">Selected Works</span>
+                    <h2 class="title title--section fp__h2 reveal" id="fp-title" data-reveal>
+                        <span class="reveal__line" style="--line: 0;">
+                            <span class="reveal__text"><span class="reveal__word">Selected</span> <span class="reveal__word">works,</span></span>
+                        </span>
+                        <span class="reveal__line" style="--line: 1;">
+                            <span class="reveal__text"><mark>engineered with precision.</mark></span>
+                        </span>
+                    </h2>
+                </div>
+                <p class="fp__intro">Autonomous agent swarms, spatial computer vision, vulnerability intelligence engines, and telemetry hardware: custom systems engineered to perform and scale under extreme workloads.</p>
             </div>
-            <div class="view-toggle">
-                <button type="button" class="view-btn is-active" data-view="grid">GRID VIEW</button>
-                <button type="button" class="view-btn" data-view="list">LIST VIEW</button>
+        </div>
+
+        <div class="fp__views" data-fp-views="">
+            <!-- 20-Column Asymmetric Grid -->
+            <ol class="fp__grid">
+                <!-- Slot 1: SpatialTouch / Gesture Arcade (span 11, aspect 3/2) -->
+                <li class="fp__card is-reset" data-fp-card="" data-slot="1" style="--row:1">
+                    <a class="fp__link" href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer">
+                        <figure class="fp__fig" data-fp-fig="">
+                            <img src="./images/gesture-arcade.png" alt="SpatialTouch Gesture Arcade hardware and computer vision display" loading="lazy" decoding="async" width="1080" height="720">
+                            <figcaption class="fp__tags">
+                                <span class="fp__tag" style="--j:0; --t:3">Spatial Vision</span>
+                                <span class="fp__tag" style="--j:1; --t:3">MediaPipe</span>
+                                <span class="fp__tag" style="--j:2; --t:3">ESP32 Hardware</span>
+                            </figcaption>
+                        </figure>
+                        <div class="fp__art">
+                            <span class="fp__dot" aria-hidden="true"></span>
+                            <div class="fp__txt">
+                                <h3 class="fp__title"><span data-scramble-target="">Gesture Gaming: spatial interaction &amp; ultrasonic arrays</span></h3>
+                                <p class="fp__text">Hybrid spatial interaction gaming system combining MediaPipe real-time computer vision and ESP32 ultrasonic transducer arrays.</p>
+                            </div>
+                            <span class="fp__ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Slot 2: Mnemosyne (span 8, row 2, negative margin, aspect 4/5 portrait) -->
+                <li class="fp__card is-reset" data-fp-card="" data-slot="2" style="--row:2">
+                    <a class="fp__link" href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer">
+                        <figure class="fp__fig" data-fp-fig="">
+                            <img src="./images/mnemosyne.png" alt="Mnemosyne academic synthesis engine interface" loading="lazy" decoding="async" width="1080" height="1350">
+                            <figcaption class="fp__tags">
+                                <span class="fp__tag" style="--j:0; --t:2">AI Architecture</span>
+                                <span class="fp__tag" style="--j:1; --t:2">Knowledge Graph</span>
+                            </figcaption>
+                        </figure>
+                        <div class="fp__art">
+                            <span class="fp__dot" aria-hidden="true"></span>
+                            <div class="fp__txt">
+                                <h3 class="fp__title"><span data-scramble-target="">Mnemosyne: academic synthesis &amp; exam intelligence</span></h3>
+                                <p class="fp__text">Autonomous academic synthesis engine generating high-yield study guides and concept maps from university question repositories.</p>
+                            </div>
+                            <span class="fp__ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Slot 3: KAGE Agent (span 12, row 3, aspect 16/9 panoramic) -->
+                <li class="fp__card is-reset" data-fp-card="" data-slot="3" style="--row:3">
+                    <a class="fp__link" href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer">
+                        <figure class="fp__fig" data-fp-fig="">
+                            <img src="./images/kage.png" alt="KAGE autonomous dependency vulnerability triage dashboard" loading="lazy" decoding="async" width="1920" height="1080">
+                            <figcaption class="fp__tags">
+                                <span class="fp__tag" style="--j:0; --t:3">Security Agent</span>
+                                <span class="fp__tag" style="--j:1; --t:3">OSV.dev Engine</span>
+                                <span class="fp__tag" style="--j:2; --t:3">Automated Triage</span>
+                            </figcaption>
+                        </figure>
+                        <div class="fp__art">
+                            <span class="fp__dot" aria-hidden="true"></span>
+                            <div class="fp__txt">
+                                <h3 class="fp__title"><span data-scramble-target="">KAGE Agent: proactive vulnerability triage &amp; threat attribution</span></h3>
+                                <p class="fp__text">Autonomous security agent performing automated dependency vulnerability triage and severity attribution via the Open Source Vulnerabilities API.</p>
+                            </div>
+                            <span class="fp__ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+
+                <!-- Slot 4: NeuroMesh (span 8, row 4, aspect 4/5 portrait) -->
+                <li class="fp__card is-reset" data-fp-card="" data-slot="4" style="--row:4">
+                    <a class="fp__link" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer">
+                        <figure class="fp__fig" data-fp-fig="">
+                            <img src="./images/neuromesh.svg" alt="NeuroMesh multi-agent topology network nodes" loading="lazy" decoding="async" width="1080" height="1350">
+                            <figcaption class="fp__tags">
+                                <span class="fp__tag" style="--j:0; --t:3">Multi-Agent Swarms</span>
+                                <span class="fp__tag" style="--j:1; --t:3">Distributed Systems</span>
+                                <span class="fp__tag" style="--j:2; --t:3">Consensus Engine</span>
+                            </figcaption>
+                        </figure>
+                        <div class="fp__art">
+                            <span class="fp__dot" aria-hidden="true"></span>
+                            <div class="fp__txt">
+                                <h3 class="fp__title"><span data-scramble-target="">NeuroMesh: distributed multi-agent swarm orchestrator</span></h3>
+                                <p class="fp__text">Decentralized consensus framework for distributed LLM agent task allocation, failover mitigation, and dynamic execution graphs.</p>
+                            </div>
+                            <span class="fp__ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                </li>
+            </ol>
+
+            <!-- List View with Central Hover Preview -->
+            <div class="fp__list" data-fp-list="" hidden="">
+                <div class="fp__preview" aria-hidden="true">
+                    <img src="./images/gesture-arcade.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/mnemosyne.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/kage.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/neuromesh.svg" alt="" loading="lazy" decoding="async" data-fp-preview="">
+                </div>
+                <ol class="fp__rows">
+                    <li style="--i:0">
+                        <a class="fp__row" href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                            <span class="fp__row-name"><span data-scramble-target="">Gesture Gaming</span></span>
+                            <span class="fp__row-meta">Spatial Vision &amp; Hardware</span>
+                            <span class="fp__row-ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li style="--i:1">
+                        <a class="fp__row" href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                            <span class="fp__row-name"><span data-scramble-target="">Mnemosyne</span></span>
+                            <span class="fp__row-meta">AI Architecture &amp; NLP</span>
+                            <span class="fp__row-ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li style="--i:2">
+                        <a class="fp__row" href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                            <span class="fp__row-name"><span data-scramble-target="">KAGE Agent</span></span>
+                            <span class="fp__row-meta">Cybersecurity &amp; Autonomous Agents</span>
+                            <span class="fp__row-ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li style="--i:3">
+                        <a class="fp__row" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                            <span class="fp__row-name"><span data-scramble-target="">NeuroMesh</span></span>
+                            <span class="fp__row-meta">Multi-Agent Swarm Orchestrator</span>
+                            <span class="fp__row-ic" aria-hidden="true">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M2 10L10 2M4 2h6v6"></path>
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                </ol>
             </div>
         </div>
 
-        <!-- Grid View Mode -->
-        <div class="fp__grid">
-            <!-- Project 1 -->
-            <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" class="fp__card">
-                <figure class="fp__fig">
-                    <img src="./images/gesture-arcade.png" alt="Gesture Gaming" loading="lazy" />
-                </figure>
-                <div class="fp__body">
-                    <div class="fp__meta">
-                        <span>PROJECT 01</span>
-                        <span>2026</span>
-                    </div>
-                    <div>
-                        <h3 class="fp__title">Gesture Gaming</h3>
-                        <p class="fp__desc">Hybrid spatial interaction gaming system combining MediaPipe real-time computer vision and ESP32 ultrasonic transducer arrays.</p>
-                    </div>
-                    <div class="fp__tags">
-                        <span class="fp__tag">Computer Vision</span>
-                        <span class="fp__tag">MediaPipe</span>
-                        <span class="fp__tag">ESP32</span>
-                        <span class="fp__tag">Python</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Project 2 -->
-            <a href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer" class="fp__card">
-                <figure class="fp__fig">
-                    <img src="./images/mnemosyne.png" alt="Mnemosyne" loading="lazy" />
-                </figure>
-                <div class="fp__body">
-                    <div class="fp__meta">
-                        <span>PROJECT 02</span>
-                        <span>2026</span>
-                    </div>
-                    <div>
-                        <h3 class="fp__title">Mnemosyne</h3>
-                        <p class="fp__desc">AI-driven academic synthesis platform generating targeted high-yield study guides and notes from historical university question repositories.</p>
-                    </div>
-                    <div class="fp__tags">
-                        <span class="fp__tag">AI Systems</span>
-                        <span class="fp__tag">Next.js</span>
-                        <span class="fp__tag">NLP</span>
-                        <span class="fp__tag">FastAPI</span>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Project 3 -->
-            <a href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" class="fp__card">
-                <figure class="fp__fig">
-                    <img src="./images/kage.png" alt="KAGE Agent" loading="lazy" />
-                </figure>
-                <div class="fp__body">
-                    <div class="fp__meta">
-                        <span>PROJECT 03</span>
-                        <span>2025</span>
-                    </div>
-                    <div>
-                        <h3 class="fp__title">KAGE Agent</h3>
-                        <p class="fp__desc">Autonomous security agent performing automated dependency vulnerability triage and severity attribution via the Open Source Vulnerabilities (OSV) API.</p>
-                    </div>
-                    <div class="fp__tags">
-                        <span class="fp__tag">Security Agent</span>
-                        <span class="fp__tag">OSV.dev</span>
-                        <span class="fp__tag">Automation</span>
-                        <span class="fp__tag">Threat Intel</span>
-                    </div>
-                </div>
+        <!-- Bottom CTA -->
+        <div class="fp__cta" data-bar-avoid="">
+            <a class="fp__cta-btn" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer">
+                <span data-scramble-target="">See all projects</span>
             </a>
         </div>
 
-        <!-- List View Mode -->
-        <div class="fp__list">
-            <a href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" class="fp__row" data-preview="./images/gesture-arcade.png">
-                <span class="fp__row-index">01</span>
-                <span class="fp__row-title">Gesture Gaming</span>
-                <span class="fp__row-desc">MediaPipe + ESP32 ultrasonic spatial control</span>
-                <span class="fp__row-cat">Vision / Hardware</span>
-                <span class="fp__row-arrow">↗</span>
-            </a>
-            <a href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer" class="fp__row" data-preview="./images/mnemosyne.png">
-                <span class="fp__row-index">02</span>
-                <span class="fp__row-title">Mnemosyne</span>
-                <span class="fp__row-desc">Autonomous academic synthesis engine</span>
-                <span class="fp__row-cat">AI / Full-Stack</span>
-                <span class="fp__row-arrow">↗</span>
-            </a>
-            <a href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" class="fp__row" data-preview="./images/kage.png">
-                <span class="fp__row-index">03</span>
-                <span class="fp__row-title">KAGE Agent</span>
-                <span class="fp__row-desc">Automated vulnerability triage and remediation</span>
-                <span class="fp__row-cat">Cybersecurity / Agent</span>
-                <span class="fp__row-arrow">↗</span>
-            </a>
-        </div>
-
-        <!-- Floating image preview for list rows -->
-        <div id="fp-floating-preview">
-            <img src="./images/gesture-arcade.png" alt="Project Preview" id="fp-floating-preview-img" />
+        <!-- Custom Cursor Follower for Projects -->
+        <div class="fp__cursor" data-fp-cursor="" aria-hidden="true">
+            <span class="fp__cursor-in">
+                <span class="fp__cursor-txt">View project</span>
+                <span class="fp__cursor-arr">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M2 10L10 2M4 2h6v6"></path>
+                    </svg>
+                </span>
+            </span>
         </div>
     </section>
+
+    <!-- Floating Sub-Bar View Switcher (Anthracite Studio Pill Bar) -->
+    <div class="sub-bar" data-sub-bar="">
+        <div class="sub-bar__inner" data-sub-bar-inner="">
+            <div class="sub-bar__panel is-active" data-bar-panel="projects-view">
+                <div class="fp-view" data-fp-view="" role="group" aria-label="Project display">
+                    <span class="fp-view__pill" aria-hidden="true"></span>
+                    <button type="button" class="fp-view__btn" data-view="grid" aria-pressed="true" aria-label="Show projects as a grid" data-bar-item="" style="--i: 0;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <rect x="1" y="1" width="6" height="6"></rect>
+                            <rect x="9" y="1" width="6" height="6"></rect>
+                            <rect x="1" y="9" width="6" height="6"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                        </svg>
+                        <span data-scramble-target="">Grid</span>
+                    </button>
+                    <button type="button" class="fp-view__btn" data-view="list" aria-pressed="false" aria-label="Show projects as a list" data-bar-item="" style="--i: 1;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <rect x="1" y="2" width="14" height="2"></rect>
+                            <rect x="1" y="7" width="14" height="2"></rect>
+                            <rect x="1" y="12" width="14" height="2"></rect>
+                        </svg>
+                        <span data-scramble-target="">List</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 6. AWARDS & RECOGNITION -->
     <section class="awards" id="awards" data-txt="Recognition">
@@ -4255,19 +4846,272 @@
             hsObserver.observe(hsGridEl);
         }
 
-        // Featured Projects Figures Wipe Reveal
-        const fpFigs = document.querySelectorAll('.fp__fig');
-        if (fpFigs.length > 0) {
-            const fpObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-in');
-                        fpObserver.unobserve(entry.target);
+        // 5. FEATURED PROJECTS: EXACT ANTHRACITE STUDIO MOTION ENGINE
+        (() => {
+            const dampLerp = (current, target, factor, dt) => current + (target - current) * (1 - Math.exp(-factor * 60 * dt));
+            const clamp01 = (v) => Math.min(1, Math.max(0, v));
+            const isPointInside = (pt, r) => pt && pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom;
+
+            class CardsMotion {
+                constructor(root) {
+                    this.root = root;
+                    this.cursor = root.querySelector('[data-fp-cursor]');
+                    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    this.cards = [...root.querySelectorAll('[data-fp-card]')].map(card => ({
+                        card,
+                        link: card.querySelector('.fp__link'),
+                        fig: card.querySelector('[data-fp-fig]'),
+                        title: card.querySelector('[data-scramble-target]'),
+                        y: 0,
+                        revealed: false,
+                        hover: false,
+                        timer: 0
+                    }));
+
+                    if (this.reduced) {
+                        this.cards.forEach(c => this.reveal(c));
+                        return;
                     }
-                });
-            }, { threshold: 0.2 });
-            fpFigs.forEach(fig => fpObserver.observe(fig));
-        }
+
+                    this.pointer = null;
+                    this.cx = 0;
+                    this.cy = 0;
+                    this.cursorOn = false;
+                    this.amp = { desktop: 0.22, mobile: 0.1 };
+                    this.cardLerp = 0.1;
+                    this.cursorLerp = 0.18;
+                    this.running = false;
+                    this.last = performance.now();
+
+                    window.addEventListener('pointermove', (e) => {
+                        if (e.pointerType !== 'touch') {
+                            this.pointer = { x: e.clientX, y: e.clientY };
+                        }
+                    }, { passive: true });
+
+                    document.documentElement.addEventListener('mouseleave', () => {
+                        this.pointer = null;
+                    });
+
+                    this.io = new IntersectionObserver(([entry]) => {
+                        if (entry.isIntersecting) {
+                            this.start();
+                        } else {
+                            this.stop();
+                        }
+                    }, { rootMargin: '30% 0px' });
+                    this.io.observe(root);
+                }
+
+                setHover(c, hover) {
+                    if (c.hover !== hover) {
+                        c.hover = hover;
+                        if (hover) {
+                            clearTimeout(c.timer);
+                            c.card.classList.remove('is-reset');
+                            c.card.classList.add('is-hover');
+                            if (c.title && window.scrambleText) {
+                                window.scrambleText(c.title);
+                            }
+                        } else {
+                            c.card.classList.remove('is-hover');
+                            c.timer = setTimeout(() => c.card.classList.add('is-reset'), 200);
+                        }
+                    }
+                }
+
+                setCursor(on) {
+                    if (this.cursorOn !== on) {
+                        this.cursorOn = on;
+                        if (this.cursor) {
+                            this.cursor.classList.toggle('is-on', on);
+                        }
+                        if (on && this.pointer) {
+                            this.cx = this.pointer.x;
+                            this.cy = this.pointer.y;
+                        }
+                    }
+                }
+
+                reveal(c) {
+                    c.revealed = true;
+                    if (c.fig) {
+                        c.fig.classList.add('is-in');
+                    }
+                }
+
+                start() {
+                    if (!this.running) {
+                        this.running = true;
+                        this.last = performance.now();
+                        this.raf = requestAnimationFrame((t) => this.frame(t));
+                    }
+                }
+
+                stop() {
+                    this.running = false;
+                    cancelAnimationFrame(this.raf);
+                    this.setCursor(false);
+                }
+
+                frame(time) {
+                    if (!this.running) return;
+                    const dt = Math.min(0.1, (time - this.last) / 1000);
+                    this.last = time;
+
+                    const vh = window.innerHeight;
+                    const isDesktop = window.matchMedia('(min-width: 810px)').matches;
+                    const amp = isDesktop ? this.amp.desktop : this.amp.mobile;
+                    let cursorHit = false;
+
+                    for (const c of this.cards) {
+                        if (c.card.hidden) continue;
+
+                        const cardRect = c.card.getBoundingClientRect();
+                        const targetY = (clamp01((vh - cardRect.top) / (vh + cardRect.height)) - 0.5) * c.link.offsetHeight * amp;
+                        c.y = dampLerp(c.y, targetY, this.cardLerp, dt);
+                        if (Math.abs(targetY - c.y) < 0.05) c.y = targetY;
+
+                        c.link.style.transform = `translate3d(0, ${c.y.toFixed(2)}px, 0)`;
+
+                        const linkRect = c.link.getBoundingClientRect();
+                        const figH = c.fig.offsetHeight || linkRect.width;
+                        const p = clamp01((vh - linkRect.top) / (vh + figH));
+                        c.fig.style.setProperty('--p', p.toFixed(4));
+
+                        if (!c.revealed && (linkRect.top + 0.2 * figH < vh || linkRect.top < 0)) {
+                            this.reveal(c);
+                        }
+
+                        const insideCard = isPointInside(this.pointer, linkRect);
+                        this.setHover(c, insideCard);
+
+                        if (insideCard && isPointInside(this.pointer, c.fig.getBoundingClientRect())) {
+                            cursorHit = true;
+                        }
+                    }
+
+                    if (this.cursor) {
+                        this.setCursor(cursorHit);
+                        if (this.cursorOn && this.pointer) {
+                            this.cx = dampLerp(this.cx, this.pointer.x, this.cursorLerp, dt);
+                            this.cy = dampLerp(this.cy, this.pointer.y, this.cursorLerp, dt);
+                            this.cursor.style.transform = `translate3d(${this.cx.toFixed(1)}px, ${this.cy.toFixed(1)}px, 0)`;
+                        }
+                    }
+
+                    this.raf = requestAnimationFrame((t) => this.frame(t));
+                }
+            }
+
+            class FeaturedProjects {
+                constructor(root) {
+                    this.root = root;
+                    this.views = root.querySelector('[data-fp-views]');
+                    this.grid = root.querySelector('.fp__grid');
+                    this.list = root.querySelector('[data-fp-list]');
+                    this.toggle = document.querySelector('[data-fp-view]');
+                    if (!this.views || !this.grid || !this.list || !this.toggle) return;
+
+                    this.buttons = [...this.toggle.querySelectorAll('[data-view]')];
+                    this.rows = [...this.list.querySelectorAll('[data-fp-row]')];
+                    this.previews = [...this.list.querySelectorAll('[data-fp-preview]')];
+                    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                    this.view = 'grid';
+                    this.busy = false;
+
+                    const saved = localStorage.getItem('fp-view');
+                    if (saved === 'list') {
+                        this.apply('list');
+                    }
+
+                    this.buttons.forEach(btn => {
+                        btn.addEventListener('click', () => this.set(btn.dataset.view));
+                    });
+
+                    this.rows.forEach((row, idx) => {
+                        row.addEventListener('pointerenter', (e) => {
+                            if (e.pointerType !== 'touch') this.hover(idx);
+                        });
+                        row.addEventListener('focus', () => this.hover(idx));
+                        row.addEventListener('blur', () => this.hover(-1));
+                    });
+
+                    this.list.addEventListener('pointerleave', () => this.hover(-1));
+                }
+
+                hover(idx) {
+                    this.list.classList.toggle('is-hovering', idx >= 0);
+                    this.rows.forEach((r, i) => {
+                        const active = i === idx;
+                        r.classList.toggle('is-active', active);
+                        if (active) {
+                            const title = r.querySelector('[data-scramble-target]');
+                            if (title && window.scrambleText) window.scrambleText(title);
+                        }
+                    });
+                    this.previews.forEach((p, i) => {
+                        p.classList.toggle('is-on', i === idx);
+                    });
+                }
+
+                apply(view) {
+                    this.view = view;
+                    const isList = view === 'list';
+                    this.grid.hidden = isList;
+                    this.list.hidden = !isList;
+                    this.root.classList.toggle('fp--list', isList);
+                    this.toggle.dataset.current = view;
+                    this.buttons.forEach(b => {
+                        b.setAttribute('aria-pressed', String(b.dataset.view === view));
+                    });
+                    this.hover(-1);
+                }
+
+                set(view) {
+                    if (view === this.view || this.busy) return;
+                    try { localStorage.setItem('fp-view', view); } catch (e) {}
+
+                    if (this.reduced) {
+                        this.apply(view);
+                        return;
+                    }
+
+                    this.busy = true;
+                    this.toggle.dataset.current = view;
+                    this.views.classList.add('is-switching');
+
+                    setTimeout(() => {
+                        this.apply(view);
+                        if (view === 'list') {
+                            this.list.classList.remove('is-in');
+                            void this.list.offsetWidth;
+                            this.list.classList.add('is-in');
+                        }
+                        this.views.classList.remove('is-switching');
+                        this.busy = false;
+                        window.dispatchEvent(new Event('resize'));
+                    }, 280);
+                }
+            }
+
+            // Floating Sub-Bar Visibility Controller
+            const subBar = document.querySelector('[data-sub-bar]');
+            const fpSection = document.getElementById('works');
+            if (subBar && fpSection) {
+                const subBarObserver = new IntersectionObserver(([entry]) => {
+                    subBar.classList.toggle('is-visible', entry.isIntersecting);
+                }, { threshold: 0.08 });
+                subBarObserver.observe(fpSection);
+            }
+
+            // Initialize both systems
+            const fpEl = document.querySelector('[data-featured-projects]');
+            if (fpEl) {
+                window.__cardsMotion = new CardsMotion(fpEl);
+                window.__featuredProjects = new FeaturedProjects(fpEl);
+            }
+        })();
 
         // Awards Staggered Items Reveal
         const awardsGroupEl = document.querySelector('[data-awards-list]');
