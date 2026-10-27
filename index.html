@@ -852,7 +852,7 @@
 
         .logo-wall__collection {
             width: 100%;
-            max-width: 1180px;
+            max-width: 1260px;
             margin: 0 auto;
         }
 
@@ -883,22 +883,22 @@
         }
 
         .logo-wall__logo-before {
-            padding-top: 46%;
+            padding-top: 52%;
         }
 
         .logo-wall__logo-target {
             justify-content: center;
             align-items: center;
-            width: 78%;
-            height: 60%;
+            width: 86%;
+            height: 72%;
             display: flex;
             position: absolute;
         }
 
         .logo-wall__pixels {
             pointer-events: none;
-            width: 78%;
-            height: 60%;
+            width: 86%;
+            height: 72%;
             display: grid;
             position: absolute;
             z-index: 3;
@@ -932,13 +932,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .logo-wall__icon {
-            width: 18px;
-            height: 18px;
-            color: rgba(232, 232, 227, 0.65);
+            width: 22px;
+            height: 22px;
+            color: rgba(232, 232, 227, 0.7);
             flex-shrink: 0;
             transition: color 0.3s ease, transform 0.3s var(--ease);
         }
@@ -948,8 +948,8 @@
             letter-spacing: -0.01em;
             text-align: center;
             text-wrap: balance;
-            color: rgba(232, 232, 227, 0.72);
-            font-size: clamp(17px, 1.45vw, 22px);
+            color: rgba(232, 232, 227, 0.76);
+            font-size: clamp(20px, 1.75vw, 26px);
             line-height: 1.1;
             text-decoration: none;
             transition: color 0.3s ease;
@@ -963,18 +963,18 @@
         .logo-wall__logo:hover .logo-wall__icon,
         .logo-wall__logo:focus-visible .logo-wall__icon {
             color: var(--white);
-            transform: scale(1.1);
+            transform: scale(1.12);
         }
 
         .logo-wall__role {
             font-family: var(--font-mono);
-            font-size: 8.5px;
-            letter-spacing: 0.1em;
+            font-size: 10px;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--grey);
-            margin-top: 5px;
+            margin-top: 6px;
             white-space: nowrap;
-            opacity: 0.7;
+            opacity: 0.75;
             transition: color 0.3s ease, opacity 0.3s ease;
         }
 
@@ -987,6 +987,16 @@
         @media screen and (max-width: 991px) {
             .logo-wall__item {
                 width: 25%;
+            }
+            .logo-wall__icon {
+                width: 20px;
+                height: 20px;
+            }
+            .logo-wall__name {
+                font-size: clamp(19px, 2.2vw, 24px);
+            }
+            .logo-wall__role {
+                font-size: 9.5px;
             }
             [data-logo-wall-list] [data-logo-wall-item]:nth-child(n+5) {
                 display: none;
@@ -1001,7 +1011,17 @@
                 width: 50%;
             }
             .logo-wall__logo-before {
-                padding-top: 40%;
+                padding-top: 46%;
+            }
+            .logo-wall__icon {
+                width: 20px;
+                height: 20px;
+            }
+            .logo-wall__name {
+                font-size: 19px;
+            }
+            .logo-wall__role {
+                font-size: 9px;
             }
             [data-logo-wall-list] [data-logo-wall-item]:nth-child(n+3) {
                 display: none;
