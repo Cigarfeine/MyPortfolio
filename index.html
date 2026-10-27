@@ -2328,111 +2328,353 @@
             padding-top: 16px;
         }
 
-        /* --- 8. FOOTER WITH BINARY/ASCII REVEAL --- */
-        .site-footer {
-            padding: 0 25px 80px;
-            max-width: var(--container);
-            margin: 0 auto;
-            color: var(--fg);
-        }
-        .site-footer__top {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 48px;
-            padding: 80px 0 60px;
-            border-bottom: 1px solid var(--line);
-        }
-        @media (max-width: 768px) {
-            .site-footer__top {
-                grid-template-columns: 1fr;
-            }
-        }
-        .footer-binary-reveal {
-            position: relative;
+        /* --- 8. ANTHRACITE STUDIO FOOTER & BINARY REVEAL --- */
+        .binary-reveal {
+            background: var(--bg);
             width: 100%;
-            height: 220px;
-            background: #000;
-            border: 1px solid var(--line);
-            border-radius: 4px;
-            margin-bottom: 64px;
+            padding-bottom: clamp(16px, 3vw, 48px);
+            position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-top: 1px solid var(--line);
         }
-        #footer-binary-canvas {
-            position: absolute;
-            inset: 0;
+
+        .binary-reveal__stage {
             width: 100%;
-            height: 100%;
-        }
-        .footer-reveal-text {
             position: relative;
-            z-index: 2;
-            font-family: var(--font-body);
-            font-size: clamp(2.5rem, 7vw, 6rem);
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            color: var(--white);
-            pointer-events: none;
-            text-transform: uppercase;
         }
-        .footer-main {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
+
+        .binary-reveal__stage canvas {
+            width: 100%;
+            display: block;
+        }
+
+        .binary-reveal__logo {
+            width: calc(100% - (2 * clamp(16px, 3vw, 48px)));
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .binary-reveal__logo svg {
+            width: 100%;
+            height: auto;
+            fill: var(--white);
+            display: block;
+            overflow: visible;
+        }
+
+        .binary-reveal__logo .txt,
+        .binary-reveal__logo .blk {
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .binary-reveal__logo .bar {
+            fill: var(--white);
+            clip-path: inset(0px 100% 0px 0px);
+        }
+
+        .binary-reveal.is-revealed .binary-reveal__logo .bar {
+            animation: 1.9s cubic-bezier(0.77, 0, 0.18, 1) 0s 1 normal forwards running br-bar;
+        }
+
+        .binary-reveal.is-revealed .binary-reveal__logo .txt {
+            animation: 0s ease 0.75s 1 normal forwards running br-show;
+        }
+
+        .binary-reveal.is-revealed .binary-reveal__logo .blk {
+            animation: 0s ease 1.35s 1 normal forwards running br-show;
+        }
+
+        @keyframes br-bar { 
+            0% { clip-path: inset(0px 100% 0px 0px); opacity: 1; }
+            40% { clip-path: inset(0px); opacity: 1; }
+            72% { clip-path: inset(0px 0px 0px 42.27%); opacity: 1; }
+            100% { clip-path: inset(0px 0px 0px 42.27%); opacity: 0; }
+        }
+
+        @keyframes br-show { 
+            100% { opacity: 1; }
+        }
+
+        .site-footer {
+            background: var(--bg);
+            color: var(--white);
+            border-top: 1px solid var(--line);
+            width: 100%;
+        }
+
+        .site-footer__top {
+            justify-content: space-between;
+            align-items: flex-start;
             gap: 48px;
-            margin-bottom: 64px;
+            padding: 64px 48px;
+            display: flex;
         }
-        @media (max-width: 768px) {
-            .footer-main {
-                grid-template-columns: 1fr;
-            }
+
+        .site-footer__info {
+            flex-direction: column;
+            min-width: 0px;
+            display: flex;
+            gap: 16px;
         }
-        .footer-cta-title {
-            font-family: var(--font-body);
-            font-size: clamp(2rem, 4vw, 3.5rem);
-            font-weight: 500;
-            line-height: 1.1;
+
+        .site-footer__item {
+            font-family: var(--font-title);
             color: var(--white);
-            margin-bottom: 24px;
+            white-space: pre-line;
+            overflow-wrap: anywhere;
+            font-size: clamp(2.5rem, 4.2vw, 4.5rem);
+            font-weight: 400;
+            line-height: 120%;
+            text-decoration: none;
+            letter-spacing: -0.01em;
+            transition: color 0.25s var(--ease);
         }
-        .footer-links-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            font-family: var(--font-mono);
-            font-size: 12px;
+
+        .site-footer__email {
+            width: fit-content;
         }
-        .footer-link-group-title {
-            color: var(--grey);
-            margin-bottom: 12px;
-            letter-spacing: 0.12em;
+
+        .site-footer__email:hover {
+            color: var(--accent);
         }
-        .footer-links-list {
+
+        .site-footer__location {
+            color: var(--fg-muted);
+            font-size: clamp(1.8rem, 2.8vw, 3rem);
+            line-height: 130%;
+        }
+
+        .site-footer__expertise {
+            flex-direction: column;
+            flex: 0 0 460px;
+            padding-top: 8px;
+            display: flex;
+        }
+
+        .site-footer__heading {
+            font-family: var(--font-title);
+            color: var(--white);
+            margin: 0px 0px 32px;
+            font-size: 3rem;
+            font-weight: 400;
+            line-height: 1.1;
+        }
+
+        .site-footer__tags {
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 0px;
+            padding: 0px;
             list-style: none;
             display: flex;
-            flex-direction: column;
-            gap: 8px;
         }
-        .footer-links-list a {
-            color: var(--fg);
+
+        .site-footer__tag {
+            border: 1px solid var(--white);
+            background: var(--white);
+            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--bg);
+            align-items: center;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.3;
+            text-decoration: none;
+            display: flex;
+            transition: all 0.25s var(--ease);
+        }
+
+        .site-footer__tag:hover,
+        .site-footer__tag:focus-visible {
+            color: var(--white);
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .site-footer__bottom {
+            padding: 0px 48px;
+        }
+
+        .site-footer__row {
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px 40px;
+            padding: 24px 0px;
+            display: flex;
+        }
+
+        .site-footer__row--meta {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0px 28px;
+        }
+
+        .site-footer__nav,
+        .site-footer__legal {
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 28px;
+            display: flex;
+        }
+
+        .site-footer__link {
+            color: var(--fg-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
             text-decoration: none;
             transition: color 0.2s ease;
         }
-        .footer-links-list a:hover {
+
+        .site-footer__link:hover {
             color: var(--white);
         }
-        .footer-bottom-bar {
-            display: flex;
+
+        .site-footer__link[aria-current] {
+            color: var(--white);
+            align-items: center;
+            gap: 8px;
+            display: inline-flex;
+        }
+
+        .site-footer__link[aria-current]::before {
+            content: "";
+            background: var(--white);
+            width: 6px;
+            height: 6px;
+        }
+
+        .site-footer__copyright,
+        .site-footer__legal-link {
+            letter-spacing: 0.05em;
+            font-family: var(--font-mono);
+            color: rgba(255, 255, 255, 0.45);
+            margin: 0px;
+            font-size: 0.75rem;
+            line-height: 1.8;
+            text-decoration: none;
+        }
+
+        .site-footer__credit {
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
+            gap: 6px 24px;
+            display: flex;
+        }
+
+        .site-footer__signature {
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--grey);
-            border-top: 1px solid var(--line);
-            padding-top: 24px;
-            gap: 16px;
+            color: rgba(255, 255, 255, 0.55);
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1.8;
+            text-decoration: none;
+            display: inline-flex;
+            transition: color 0.2s ease;
+        }
+
+        .site-footer__signature svg {
+            flex: 0 0 auto;
+            width: 12px;
+            height: auto;
+        }
+
+        .site-footer__signature:hover,
+        .site-footer__signature:focus-visible {
+            color: var(--white);
+        }
+
+        .site-footer__legal {
+            gap: 6px 24px;
+        }
+
+        .site-footer button.site-footer__legal-link {
+            cursor: pointer;
+            background: transparent;
+            border: 0px;
+            padding: 0px;
+            font-family: inherit;
+            transition: color 0.2s ease;
+        }
+
+        .site-footer__legal-link:hover,
+        .site-footer__legal-link:focus-visible {
+            color: var(--white);
+        }
+
+        .site-footer__social {
+            align-items: center;
+            gap: 20px;
+            margin: 0px;
+            padding: 0px;
+            list-style: none;
+            display: flex;
+        }
+
+        .site-footer__social-link {
+            font-family: var(--font-mono);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            text-decoration: none;
+            display: flex;
+            transition: color 0.2s ease;
+        }
+
+        .site-footer__social-link:hover {
+            color: var(--white);
+        }
+
+        @media (max-width: 1024px) {
+            .site-footer__expertise { flex-basis: 340px; }
+            .site-footer__top { padding: 48px 32px; }
+            .site-footer__bottom { padding: 0px 32px 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .site-footer__top {
+                flex-direction: column;
+                gap: 40px;
+                padding: 40px 20px;
+            }
+            .site-footer__item {
+                font-size: 2.25rem;
+            }
+            .site-footer__location {
+                font-size: 1.5rem;
+            }
+            .site-footer__expertise {
+                flex-basis: auto;
+                width: 100%;
+            }
+            .site-footer__heading {
+                margin-bottom: 20px;
+                font-size: 2rem;
+            }
+            .site-footer__bottom {
+                padding: 0px 20px 80px;
+            }
+            .site-footer__row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            .site-footer__nav {
+                gap: 8px 20px;
+            }
+            .site-footer__social {
+                flex-wrap: wrap;
+                gap: 12px 16px;
+            }
         }
 
         /* --- IDLE SCREENSAVER CANVAS --- */
@@ -3349,52 +3591,96 @@
         </div>
     </section>
 
-    <!-- 8. SITE FOOTER WITH BINARY/ASCII REVEAL -->
-    <footer class="site-footer" id="contact" data-txt="Contact">
-        <div class="footer-binary-reveal" id="footer-binary-reveal">
-            <canvas id="footer-binary-canvas"></canvas>
-            <div class="footer-reveal-text">MUHAMMED ARSHAD</div>
+    <!-- 8. SITE FOOTER WITH BINARY/ASCII REVEAL & ARSHAD RAFI BANNER -->
+    <footer class="site-footer" id="contact" data-theme="dark" data-txt="Contact">
+        <div class="binary-reveal" data-binary-reveal="" data-src="./images/footer-sample.webp">
+            <div class="binary-reveal__stage">
+                <canvas></canvas>
+            </div>
+            <div class="binary-reveal__logo">
+                <svg viewBox="0 0 1455 111" role="img" aria-label="ARSHAD RAFI">
+                    <defs>
+                        <mask id="rafiCutout">
+                            <rect x="615" y="0" width="840" height="111" fill="#fff" />
+                            <text x="1395" y="102" text-anchor="end" font-family="'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="120" letter-spacing="0.04em" fill="#000" transform="scale(1, 1.05)" transform-origin="1395 102">RAFI</text>
+                            <rect x="1412" y="88" width="14" height="14" fill="#000" />
+                        </mask>
+                    </defs>
+                    <g class="txt">
+                        <text x="0" y="102" font-family="'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="120" letter-spacing="0.015em" transform="scale(1, 1.05)" transform-origin="0 102">ARSHAD</text>
+                        <!-- Pixel A Monogram -->
+                        <path d="M547.495 97.2441H535.702V110.706H512.006V83.7832H547.495V97.2441ZM595 110.706H571.304V83.7832H595V110.706ZM512.005 97.2441H500.102V83.7832H512.005V97.2441ZM512.005 83.7822H500.102V56.8594H512.005V83.7822ZM523.798 83.7822H512.006V43.3984H523.798V83.7822ZM559.398 83.7822H535.702V70.3213H547.495V56.8594H559.398V83.7822ZM583.096 83.7822H571.304V43.3984H583.096V83.7822ZM571.303 70.3213H559.399V43.3984H571.303V70.3213ZM559.398 29.9365H535.702V43.3975H512.006V29.9365H523.798V3.01367H559.398V29.9365ZM571.303 43.3975H559.399V3.01367H571.303V43.3975Z"></path>
+                    </g>
+                    <rect class="blk" x="615" y="0" width="840" height="111" mask="url(#rafiCutout)" />
+                    <rect class="bar" x="0" y="0" width="1455" height="111" />
+                </svg>
+            </div>
         </div>
 
-        <div class="footer-main">
-            <div>
-                <span class="section-tag">Contact</span>
-                <h2 class="footer-cta-title reveal" data-reveal>
-                    <span class="reveal__line" style="--line: 0"><span class="reveal__text">Got an ambitious project?</span></span>
-                    <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>Let's engineer it.</mark></span></span>
-                </h2>
-                <a class="btn-primary" href="mailto:arshadrafi566@gmail.com" data-cursor="SEND">
+        <div class="site-footer__top" data-txt="Contact">
+            <div class="site-footer__info">
+                <a class="site-footer__item site-footer__email" href="mailto:arshadrafi566@gmail.com">
                     <span data-scramble-target>arshadrafi566@gmail.com</span>
                 </a>
+                <span class="site-footer__item site-footer__location">Based in Kerala, India
+Available anywhere, remotely</span>
             </div>
-
-            <div class="footer-links-grid">
-                <div>
-                    <div class="footer-link-group-title">NAVIGATION</div>
-                    <ul class="footer-links-list">
-                        <li><a href="#hero" data-scramble-target>Home</a></li>
-                        <li><a href="#clients" data-scramble-target>Stack</a></li>
-                        <li><a href="#manifesto" data-scramble-target>Manifesto</a></li>
-                        <li><a href="#services" data-scramble-target>Capabilities</a></li>
-                        <li><a href="#works" data-scramble-target>Works</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <div class="footer-link-group-title">TRANSMISSIONS</div>
-                    <ul class="footer-links-list">
-                        <li><a href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer" data-scramble-target>GitHub ↗</a></li>
-                        <li><a href="https://www.linkedin.com/in/arshad-rafi-204458351" target="_blank" rel="noopener noreferrer" data-scramble-target>LinkedIn ↗</a></li>
-                        <li><a href="https://www.instagram.com/ar.shaed" target="_blank" rel="noopener noreferrer" data-scramble-target>Instagram ↗</a></li>
-                        <li><a href="https://wa.me/917736889417" target="_blank" rel="noopener noreferrer" data-scramble-target>WhatsApp ↗</a></li>
-                    </ul>
-                </div>
-            </div>
+            <nav class="site-footer__expertise" aria-labelledby="footer-expertise">
+                <p class="site-footer__heading" id="footer-expertise">Expertise</p>
+                <ul class="site-footer__tags">
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>AI Swarms &amp; Agents</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Autonomous Systems</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Full-Stack Web</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Spatial Computing</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>NLP &amp; LLM Pipelines</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Cybersecurity Audit</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Edge Embedded IoT</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>React &amp; Next.js</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Distributed Consensus</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>System Architecture</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Accessibility (A11y)</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Performance Profiling</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Reverse Engineering</span></a></li>
+                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Computer Vision</span></a></li>
+                </ul>
+            </nav>
         </div>
 
-        <div class="footer-bottom-bar">
-            <span>© 2026 MUHAMMED ARSHAD. ALL RIGHTS RESERVED.</span>
-            <span>BUILT WITH PRECISION IN KERALA, INDIA.</span>
-            <span id="footer-clock">00:00:00 UTC</span>
+        <div class="site-footer__bottom">
+            <div class="site-footer__row">
+                <nav class="site-footer__nav" aria-label="Site pages">
+                    <a class="site-footer__link" href="#hero" aria-current="page"><span data-scramble-target>Home</span></a>
+                    <a class="site-footer__link" href="#clients"><span data-scramble-target>Stack</span></a>
+                    <a class="site-footer__link" href="#manifesto"><span data-scramble-target>Manifesto</span></a>
+                    <a class="site-footer__link" href="#services"><span data-scramble-target>Capabilities</span></a>
+                    <a class="site-footer__link" href="#works"><span data-scramble-target>Works</span></a>
+                    <a class="site-footer__link" href="#awards"><span data-scramble-target>Recognition</span></a>
+                    <a class="site-footer__link" href="#testimonials"><span data-scramble-target>Signals</span></a>
+                    <a class="site-footer__link" href="#contact"><span data-scramble-target>Contact</span></a>
+                </nav>
+                <ul class="site-footer__social">
+                    <li><a class="site-footer__social-link" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer"><span data-scramble-target>GitHub ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://www.linkedin.com/in/arshad-rafi-204458351" target="_blank" rel="noopener noreferrer"><span data-scramble-target>LinkedIn ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://www.instagram.com/ar.shaed" target="_blank" rel="noopener noreferrer"><span data-scramble-target>Instagram ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://wa.me/917736889417" target="_blank" rel="noopener noreferrer"><span data-scramble-target>WhatsApp ↗</span></a></li>
+                </ul>
+            </div>
+            <div class="site-footer__row site-footer__row--meta">
+                <div class="site-footer__credit">
+                    <p class="site-footer__copyright">© 2026 ARSHAD RAFI. ALL RIGHTS RESERVED.</p>
+                    <a class="site-footer__signature" href="#hero" aria-label="engineered with precision and rigor by Arshad Rafi">
+                        <span>ENGINEERED WITH RIGOR &amp; TACTICAL PRECISION BY</span>
+                        <svg viewBox="0 0 312 354" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:12px;height:auto;fill:currentColor;">
+                            <path fill="currentColor" d="M311.947 353.98H242.32C241.26 343.017 234.255 226.447 213.657 226.401C194.488 226.401 172.784 290.442 160.665 306.475C110.483 372.708 0.396374 374.855 0.949341 269.384C1.36407 184.834 65.2778 57.027 118.685 0.97998H226.652L311.947 353.98ZM141.449 83.3832C112.649 89.7324 66.3377 198.081 64.218 239.054C62.8356 266.232 81.1296 271.897 106.566 265.273C135.136 257.828 132.648 212.195 165.227 199.131C187.438 190.224 218.588 191.869 202.736 143.358C199.649 133.857 189.465 81.4647 167.715 81.4647C160.711 81.4647 150.02 81.4647 141.449 83.3832Z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <nav class="site-footer__legal" aria-label="System telemetry">
+                    <span class="site-footer__legal-link">HQ: KERALA, INDIA</span>
+                    <span class="site-footer__legal-link" id="footer-live-clock">00:00:00 UTC</span>
+                    <button type="button" class="site-footer__legal-link" onclick="window.scrollTo({top:0,behavior:'smooth'})"><span>BACK TO TOP ↑</span></button>
+                </nav>
+            </div>
         </div>
     </footer>
 
@@ -5157,83 +5443,350 @@
             testimonialsObserver.observe(testimonialsEl);
         }
 
-        // 10. FOOTER BINARY / ASCII REVEAL CANVAS
-        const footerBinaryBox = document.getElementById('footer-binary-reveal');
-        const footerBinaryCanvas = document.getElementById('footer-binary-canvas');
-        if (footerBinaryCanvas && footerBinaryBox) {
-            const fCtx = footerBinaryCanvas.getContext('2d');
-            let fWidth = 0, fHeight = 0;
-            let fMouseX = -999, fMouseY = -999;
-            let fHover = false;
-            const F_GLYPHS = '0123456789+-_=/:;[]{}X';
+        // 10. ANTHRACITE STUDIO BINARY REVEAL ENGINE
+        class BinaryReveal {
+            constructor(root, options = {}) {
+                this.root = root;
+                this.canvas = root.querySelector('.binary-reveal__stage canvas') || root.querySelector('canvas');
+                this.o = Object.assign({
+                    src: './images/footer-sample.webp',
+                    cellPx: 5,
+                    contrast: 1.3,
+                    cutoff: 250,
+                    tracking: 1.25,
+                    lineHeight: 1.3,
+                    duration: 4600,
+                    charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+                    primary: '#E8E8E3',
+                    bg: '#080807',
+                    font: "'JetBrains Mono', 'Space Grotesk', ui-monospace, monospace",
+                    logoDelay: 500,
+                    trim: true,
+                    padY: 0.08
+                }, options);
 
-            function resizeFooterCanvas() {
-                const rect = footerBinaryBox.getBoundingClientRect();
-                fWidth = rect.width;
-                fHeight = rect.height;
-                footerBinaryCanvas.width = fWidth;
-                footerBinaryCanvas.height = fHeight;
+                this.progress = 0;
+                this.armed = true;
+
+                const img = new Image();
+                const imgLoaded = new Promise(res => { img.onload = res; img.onerror = res; });
+                img.src = this.o.src;
+
+                const fontLoaded = document.fonts ? document.fonts.load('700 16px ' + this.o.font).catch(() => {}) : Promise.resolve();
+
+                Promise.all([imgLoaded, fontLoaded]).then(() => {
+                    if (this.destroyed) return;
+                    this.img = img;
+                    this.crop = this.o.trim ? this.computeCrop(img) : { sx: 0, sy: 0, sw: img.width || 1200, sh: img.height || 600 };
+                    this.build();
+                    this.draw();
+                    this.observe();
+                });
+
+                let resizeTimer;
+                this.onResize = () => {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        this.build();
+                        this.draw();
+                    }, 150);
+                };
+                window.addEventListener('resize', this.onResize);
             }
-            window.addEventListener('resize', resizeFooterCanvas);
-            resizeFooterCanvas();
 
-            footerBinaryBox.addEventListener('mousemove', (e) => {
-                const rect = footerBinaryBox.getBoundingClientRect();
-                fMouseX = e.clientX - rect.left;
-                fMouseY = e.clientY - rect.top;
-                fHover = true;
-            });
-            footerBinaryBox.addEventListener('mouseleave', () => {
-                fHover = false;
-            });
+            destroy() {
+                this.destroyed = true;
+                cancelAnimationFrame(this.raf);
+                this.stopTwinkle();
+                clearTimeout(this.fT);
+                this.io?.disconnect();
+                window.removeEventListener('resize', this.onResize);
+            }
 
-            function drawFooterBinary(time) {
-                requestAnimationFrame(drawFooterBinary);
-                if (!fWidth || !fHeight) return;
+            hexToRgb(hex) {
+                let c = hex.replace('#', '');
+                if (c.length === 3) c = c.split('').map(x => x + x).join('');
+                const n = parseInt(c, 16);
+                return [n >> 16 & 255, n >> 8 & 255, n & 255];
+            }
 
-                fCtx.fillStyle = '#000';
-                fCtx.fillRect(0, 0, fWidth, fHeight);
+            mix(a, b, t) {
+                return Math.round(a + (b - a) * t);
+            }
 
-                const step = 20;
-                const cols = Math.ceil(fWidth / step);
-                const rows = Math.ceil(fHeight / step);
-                fCtx.font = '10px "JetBrains Mono", monospace';
-                fCtx.textAlign = 'center';
-                fCtx.textBaseline = 'middle';
-
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        const x = c * step + step / 2;
-                        const y = r * step + step / 2;
-                        const dist = fHover ? Math.hypot(x - fMouseX, y - fMouseY) : 999;
-
-                        let alpha = 0.08;
-                        let glyph = (c + r) % 2 === 0 ? '0' : '1';
-
-                        if (dist < 140) {
-                            const norm = 1 - dist / 140;
-                            alpha = 0.2 + norm * 0.7;
-                            glyph = F_GLYPHS[(c * 7 + r * 13 + Math.floor(time * 0.02)) % F_GLYPHS.length];
-                            fCtx.fillStyle = `rgba(255, 255, 255, ${alpha.toFixed(2)})`;
-                        } else {
-                            fCtx.fillStyle = `rgba(232, 232, 227, ${alpha.toFixed(2)})`;
-                        }
-                        fCtx.fillText(glyph, x, y);
+            rampAt(ramp, val) {
+                if (val <= ramp[0][0]) return [ramp[0][1], ramp[0][2], ramp[0][3]];
+                for (let i = 1; i < ramp.length; i++) {
+                    const r = ramp[i];
+                    if (val <= r[0]) {
+                        const prev = ramp[i - 1];
+                        const t = (val - prev[0]) / (r[0] - prev[0]);
+                        return [
+                            Math.round(prev[1] + (r[1] - prev[1]) * t),
+                            Math.round(prev[2] + (r[2] - prev[2]) * t),
+                            Math.round(prev[3] + (r[3] - prev[3]) * t)
+                        ];
                     }
                 }
+                const last = ramp[ramp.length - 1];
+                return [last[1], last[2], last[3]];
             }
-            requestAnimationFrame(drawFooterBinary);
+
+            observe() {
+                this.io = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const ratio = entry.intersectionRatio;
+                        if (!entry.isIntersecting || ratio <= 0.15) {
+                            if (!this.armed) {
+                                this.armed = true;
+                                cancelAnimationFrame(this.raf);
+                                this.stopTwinkle();
+                                this.progress = 0;
+                                this.draw();
+                                this.resetFooter();
+                            }
+                            return;
+                        }
+                        if (this.armed && ratio >= 0.5) {
+                            this.armed = false;
+                            this.stopTwinkle();
+                            this.start = performance.now();
+                            this.tick();
+                            this.revealFooter();
+                        } else if (this.armed) {
+                            this.progress = 0;
+                            this.draw();
+                        }
+                    });
+                }, { threshold: [0, 0.15, 0.3, 0.5, 0.7] });
+
+                this.io.observe(this.root.querySelector('.binary-reveal__stage') || this.root);
+            }
+
+            tick() {
+                const elapsed = performance.now() - this.start;
+                const t = Math.min(1, elapsed / this.o.duration);
+                this.progress = 1 - Math.pow(1 - t, 3);
+                this.draw();
+                if (t < 1) {
+                    this.raf = requestAnimationFrame(() => this.tick());
+                } else {
+                    this.progress = 1;
+                    this.draw();
+                    this.startTwinkle();
+                }
+            }
+
+            startTwinkle() {
+                if (this.tw) return;
+                let last = 0;
+                const loop = (now) => {
+                    if (now - last > 66) {
+                        last = now;
+                        this.draw();
+                    }
+                    this.tw = requestAnimationFrame(loop);
+                };
+                this.tw = requestAnimationFrame(loop);
+            }
+
+            stopTwinkle() {
+                if (this.tw) {
+                    cancelAnimationFrame(this.tw);
+                    this.tw = null;
+                }
+            }
+
+            resetFooter() {
+                clearTimeout(this.fT);
+                this.root.classList.remove('is-revealed');
+            }
+
+            revealFooter() {
+                this.resetFooter();
+                void this.root.offsetWidth;
+                this.fT = setTimeout(() => {
+                    this.root.classList.add('is-revealed');
+                }, this.o.logoDelay);
+            }
+
+            computeCrop(img) {
+                if (!img.width || !img.height) return { sx: 0, sy: 0, sw: 1200, sh: 600 };
+                const n = Math.min(400, img.width);
+                const r = Math.max(1, Math.round(img.height * n / img.width));
+                const canvas = document.createElement('canvas');
+                canvas.width = n;
+                canvas.height = r;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, n, r);
+                const data = ctx.getImageData(0, 0, n, r).data;
+                let top = r, bottom = -1;
+                for (let y = 0; y < r; y++) {
+                    for (let x = 0; x < n; x++) {
+                        const idx = (y * n + x) * 4;
+                        if (data[idx + 3] < 16) continue;
+                        let lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
+                        lum = Math.max(0, Math.min(255, (lum - 128) * this.o.contrast + 128));
+                        if (lum <= this.o.cutoff) {
+                            if (y < top) top = y;
+                            if (y > bottom) bottom = y;
+                        }
+                    }
+                }
+                if (bottom < 0) return { sx: 0, sy: 0, sw: img.width, sh: img.height };
+                const scale = img.height / r;
+                const pad = (bottom - top + 1) * this.o.padY;
+                const sy = Math.max(0, (top - pad) * scale);
+                const sh = Math.min(img.height, (bottom + 1 + pad) * scale) - sy;
+                return { sx: 0, sy, sw: img.width, sh };
+            }
+
+            build() {
+                const canvas = this.canvas;
+                if (!canvas || !this.img) return;
+                const crop = this.crop;
+                const width = canvas.clientWidth || this.root.clientWidth || 1200;
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                const cols = Math.max(40, Math.min(300, Math.round(width / this.o.cellPx)));
+                const aspect = crop.sh / (crop.sw || 1);
+                const cellW = (width * dpr) / cols;
+                const spacingX = cellW * this.o.tracking;
+                const fontSize = cellW / 0.6;
+                const lineHeight = fontSize * this.o.lineHeight;
+                const rows = Math.max(1, Math.round(aspect * cols * 0.6 * this.o.tracking / this.o.lineHeight));
+
+                canvas.width = Math.round(cols * spacingX);
+                canvas.height = Math.round(rows * lineHeight);
+                canvas.style.height = (width * canvas.height / canvas.width) + 'px';
+
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = cols;
+                offCanvas.height = rows;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.drawImage(this.img, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, cols, rows);
+                const imgData = offCtx.getImageData(0, 0, cols, rows).data;
+
+                const primaryRgb = this.hexToRgb(this.o.primary);
+                const bgRgb = this.hexToRgb(this.o.bg);
+                const dimRgb = [this.mix(0, primaryRgb[0], 0.35), this.mix(0, primaryRgb[1], 0.35), this.mix(0, primaryRgb[2], 0.35)];
+                const flashRgb = [this.mix(primaryRgb[0], 255, 0.45), this.mix(primaryRgb[1], 255, 0.45), this.mix(primaryRgb[2], 255, 0.45)];
+                const ramp = [
+                    [0, bgRgb[0], bgRgb[1], bgRgb[2]],
+                    [0.3, dimRgb[0], dimRgb[1], dimRgb[2]],
+                    [0.58, primaryRgb[0], primaryRgb[1], primaryRgb[2]],
+                    [1, flashRgb[0], flashRgb[1], flashRgb[2]]
+                ];
+                this.fl = flashRgb;
+                const mid = this.rampAt(ramp, 0.62);
+                this.midCol = `rgb(${mid.join(',')})`;
+
+                const charset = this.o.charset.length ? this.o.charset : '01';
+                const cells = [];
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const idx = (y * cols + x) * 4;
+                        if (imgData[idx + 3] < 16) continue;
+                        let lum = 0.299 * imgData[idx] + 0.587 * imgData[idx + 1] + 0.114 * imgData[idx + 2];
+                        lum = Math.max(0, Math.min(255, (lum - 128) * this.o.contrast + 128));
+                        if (lum <= this.o.cutoff) {
+                            cells.push({ x, y, lum });
+                        }
+                    }
+                }
+
+                const sorted = cells.map(c => c.lum).sort((a, b) => a - b);
+                const low = sorted.length ? sorted[Math.floor(sorted.length * 0.04)] : 0;
+                const high = sorted.length ? sorted[Math.floor(sorted.length * 0.96)] : 255;
+                const range = Math.max(1, high - low);
+
+                this.cells = cells.map(c => {
+                    const norm = Math.max(0, Math.min(1, (c.lum - low) / range));
+                    const rgb = this.rampAt(ramp, norm);
+                    const centerDist = Math.abs(c.x / cols - 0.5) * 2;
+                    return {
+                        cx: c.x * spacingX + spacingX / 2,
+                        cy: c.y * lineHeight + lineHeight / 2,
+                        cr: rgb[0],
+                        cg: rgb[1],
+                        cb: rgb[2],
+                        col: `rgb(${rgb.join(',')})`,
+                        ch: charset[Math.floor(Math.random() * charset.length)],
+                        thr: 0.16 * Math.random() + 0.84 * centerDist,
+                        seed: Math.floor(Math.random() * 1000),
+                        live: Math.random() < 0.08,
+                        tw: 170 + Math.random() * 340
+                    };
+                });
+
+                this.fontSize = fontSize;
+                this.cw = width;
+                this.charset = charset;
+                this.root.style.background = this.o.bg;
+            }
+
+            draw() {
+                const canvas = this.canvas;
+                if (!canvas || !this.cells) return;
+                if (canvas.clientWidth && Math.abs(canvas.clientWidth - this.cw) > 4) {
+                    this.build();
+                }
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = '700 ' + this.fontSize.toFixed(2) + 'px ' + this.o.font;
+
+                const chars = this.charset;
+                const now = performance.now();
+                const prog = Math.min(1.35, this.progress * 1.32);
+                const animIndex = Math.floor(now / 42);
+                const span = 0.16;
+
+                for (const cell of this.cells) {
+                    const diff = prog - cell.thr;
+                    if (diff < -span) continue;
+                    if (diff < span) {
+                        const alpha = (diff + span) / (2 * span);
+                        ctx.globalAlpha = 0.4 + 0.6 * alpha;
+                        ctx.fillStyle = alpha > 0.72 ? cell.col : this.midCol;
+                        ctx.fillText(chars[(cell.seed + animIndex + (cell.cx | 0) * 2) % chars.length], cell.cx, cell.cy);
+                        continue;
+                    }
+                    ctx.globalAlpha = 1;
+                    const flashDiff = diff - span;
+                    if (flashDiff < 0.13) {
+                        const factor = (1 - flashDiff / 0.13) * 0.5;
+                        const fl = this.fl;
+                        ctx.fillStyle = `rgb(${this.mix(cell.cr, fl[0], factor)},${this.mix(cell.cg, fl[1], factor)},${this.mix(cell.cb, fl[2], factor)})`;
+                    } else {
+                        ctx.fillStyle = cell.col;
+                    }
+                    ctx.fillText(cell.live ? chars[(cell.seed + Math.floor(now / cell.tw)) % chars.length] : cell.ch, cell.cx, cell.cy);
+                }
+                ctx.globalAlpha = 1;
+            }
         }
 
-        // 10. CLOCK TELEMETRY
-        function updateClock() {
-            const clockEl = document.getElementById('footer-clock');
-            if (!clockEl) return;
-            const now = new Date();
-            clockEl.textContent = now.toUTCString().replace('GMT', 'UTC');
+        // Initialize Binary Reveal
+        const binaryRevealEl = document.querySelector('[data-binary-reveal]');
+        if (binaryRevealEl) {
+            new BinaryReveal(binaryRevealEl, {
+                src: binaryRevealEl.dataset.src || './images/footer-sample.webp',
+                primary: '#E8E8E3',
+                bg: '#080807'
+            });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+
+        // Live Telemetry UTC Clock
+        function updateFooterClock() {
+            const clock = document.getElementById('footer-live-clock');
+            if (clock) {
+                const now = new Date();
+                clock.textContent = now.toUTCString().replace('GMT', 'UTC');
+            }
+        }
+        setInterval(updateFooterClock, 1000);
+        updateFooterClock();
 
         // 11. IDLE SCREENSAVER (Anthracite Studio Screensaver Engine)
         const screensaverEl = document.getElementById('screensaver');
