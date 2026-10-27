@@ -1178,113 +1178,260 @@
             }
         }
 
-        /* --- 4. SERVICES & CAPABILITIES (`hs`) --- */
+        /* --- 4. SERVICES & CAPABILITIES (`hs`) (Anthracite Studio Exact) --- */
         .hs {
-            padding: 0 25px;
+            --hs-muted: rgba(232, 232, 227, 0.6);
+            --hs-line: rgba(232, 232, 227, 0.18);
+            --hs-ease: cubic-bezier(.77, 0, .18, 1);
+            color: var(--white);
+            padding: 140px 25px 0;
             max-width: var(--container);
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hs__head {
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 24px;
+            display: flex;
+            margin-bottom: 24px;
+        }
+
+        .hs__title {
+            margin: 0;
+            font-family: var(--font-title);
+            letter-spacing: -0.02em;
+            font-style: normal;
+            font-weight: 400;
+            font-size: clamp(48px, 6vw, 104px);
+            line-height: 0.95;
             color: var(--white);
         }
-        .hs__head {
-            margin-bottom: 56px;
+
+        @media only screen and (min-width: 768px) {
+            .hs__title .reveal__line:first-child {
+                text-indent: 100px;
+            }
         }
+
+        /* Tactical Highlight mark */
+        .hs__title mark {
+            --mark-top: .18em;
+            --mark-height: .94em;
+            z-index: 1;
+            background: var(--accent-mark-bg); /* Tactical #E8E8E3, zero blue */
+            color: var(--accent-mark-fg);      /* #080807 */
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            padding: 0 0.08em;
+            position: relative;
+            border-radius: 0;
+        }
+
+        /* Top-Right CTA Button */
+        .hs__all {
+            flex: 0 0 auto;
+            border: 1px solid rgba(232, 232, 227, 0.45);
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--white);
+            cursor: pointer;
+            background: transparent;
+            padding: 16px 28px;
+            font-size: 12px;
+            text-decoration: none;
+            transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .hs__all:hover,
+        .hs__all:focus-visible {
+            background: var(--white);
+            color: var(--dark);
+            border-color: var(--white);
+        }
+
+        /* 4-Column Grid */
         .hs__grid {
+            grid-template-columns: repeat(4, minmax(0px, 1fr));
+            gap: 0px 32px;
+            margin-top: 64px;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0 32px;
         }
-        @media (max-width: 1024px) {
-            .hs__grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 32px;
-            }
-        }
-        @media (max-width: 600px) {
-            .hs__grid {
-                grid-template-columns: 1fr;
-            }
-        }
+
         .hs__col {
             padding-top: 24px;
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 360px;
+            justify-content: flex-start;
         }
+
+        /* Top Separator Line */
         .hs__col::before {
             content: "";
             background: var(--hs-line);
-            transform-origin: 0 center;
+            transform-origin: 0px center;
             height: 1px;
-            transition: transform 1.2s var(--hs-ease) calc(var(--i) * 0.12s);
+            transition: transform 1.2s var(--hs-ease) calc(var(--i) * .12s);
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0px;
+            left: 0px;
+            right: 0px;
             transform: scaleX(0);
         }
+
         .hs__grid.is-in .hs__col::before {
             transform: scaleX(1);
         }
-        .js-reveal .hs__col > * {
-            opacity: 0;
-            translate: 0 24px;
-        }
+
+        /* Column Content Entrance Animation */
         .hs__col > * {
-            transition: opacity 0.8s ease calc(var(--i) * 0.12s + 0.15s), translate 1s cubic-bezier(0.25, 1, 0.5, 1) calc(var(--i) * 0.12s + 0.15s);
+            opacity: 0;
+            translate: 0px 24px;
+            transition-duration: 0.8s, 1s;
+            transition-timing-function: ease, cubic-bezier(0.25, 1, 0.5, 1);
+            transition-property: opacity, translate;
+            transition-delay: calc(var(--i) * .12s + .15s);
         }
+
         .hs__grid.is-in .hs__col > * {
             opacity: 1;
-            translate: 0;
+            translate: 0px;
         }
+
+        /* Pixel Art SVG Icons with staggered wave */
         .hs__icon {
-            width: 32px;
-            height: 32px;
-            fill: var(--white);
-            margin-bottom: 24px;
+            width: 33px;
+            height: 33px;
+            fill: var(--accent-mark-bg); /* Tactical #E8E8E3, zero blue */
+            margin-bottom: 20px;
+            display: block;
         }
-        .hs__num {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.14em;
-            color: var(--grey);
-            margin-bottom: 8px;
+
+        .hs__icon rect {
+            opacity: 0;
+            transition: opacity .25s ease calc(var(--i) * .12s + .3s + var(--k) * 60ms);
         }
-        .hs__col-title {
-            font-family: var(--font-body);
-            font-size: 1.4rem;
-            font-weight: 500;
+
+        .hs__grid.is-in .hs__icon rect {
+            opacity: 1;
+        }
+
+        /* Column Typography */
+        .hs__label {
+            font-family: var(--font-title);
+            letter-spacing: -0.015em;
+            margin: 0px;
+            font-size: clamp(26px, 2.4vw, 36px);
+            font-weight: 400;
+            line-height: 1.05;
             color: var(--white);
-            margin-bottom: 16px;
-            line-height: 1.2;
         }
-        .hs__col-desc {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: var(--grey);
+
+        .hs__pitch {
+            max-width: 30ch;
+            color: var(--hs-muted);
+            margin: 12px 0px 0px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.45;
             font-weight: 300;
-            margin-bottom: 24px;
         }
+
         .hs__list {
+            margin: 28px 0px 0px;
+            padding: 0px;
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            border-top: 1px solid var(--line);
-            padding-top: 16px;
+            gap: 2px;
         }
-        .hs__item {
+
+        .hs__link {
             font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--fg);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--white);
+            align-items: baseline;
+            gap: 0.4em;
+            padding: 6px 0px;
+            font-size: 11.5px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            width: fit-content;
         }
-        .hs__item::before {
-            content: "+";
-            color: var(--grey);
+
+        .hs__link:hover,
+        .hs__link:focus-visible {
+            color: var(--white);
+        }
+
+        .hs__arrow {
+            opacity: 0;
+            transition: opacity 0.3s ease, translate 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            translate: -0.3em 0.3em;
+            display: inline-block;
+        }
+
+        .hs__link:hover .hs__arrow,
+        .hs__link:focus-visible .hs__arrow {
+            opacity: 1;
+            translate: 0px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1099px) {
+            .hs__grid {
+                grid-template-columns: repeat(2, minmax(0px, 1fr));
+                gap: 48px 32px;
+            }
+        }
+
+        @media (max-width: 809px) {
+            .hs {
+                padding: 80px 20px 0;
+            }
+            .hs__head {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 24px;
+            }
+            .hs__grid {
+                grid-template-columns: minmax(0px, 1fr);
+                gap: 40px;
+                margin-top: 40px;
+            }
+            .hs__arrow {
+                opacity: 1;
+                translate: 0px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hs__col::before {
+                transition: none;
+                transform: none;
+            }
+            .hs__col > * {
+                opacity: 1;
+                transition: none;
+                translate: 0px;
+            }
+            .hs__icon rect {
+                opacity: 1;
+                transition: none;
+            }
+            .reveal .reveal__text {
+                visibility: visible;
+                animation: none;
+            }
+            .reveal .reveal__text::after {
+                display: none;
+            }
         }
 
         /* --- 5. FEATURED PROJECTS (`fp`) --- */
@@ -2211,98 +2358,201 @@
         </div>
     </section>
 
-    <!-- 4. SERVICES & CAPABILITIES (`hs`) -->
-    <section class="hs" id="services" data-txt="Capabilities">
-        <span class="section-tag">Capabilities</span>
-        <h2 class="section-title reveal" data-reveal>
-            <span class="reveal__line" style="--line: 0"><span class="reveal__text">From research to code,</span></span>
-            <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>all the way to deployment.</mark></span></span>
-        </h2>
+    <!-- 4. SERVICES & CAPABILITIES (`hs`) (Anthracite Studio Exact) -->
+    <section class="hs" id="services" data-txt="Services" aria-labelledby="hs-title">
+        <div class="hs__head">
+            <h2 class="title title--section hs__title reveal" id="hs-title" data-reveal>
+                <span class="reveal__line" style="--line: 0;">
+                    <span class="reveal__text">From research to code,</span>
+                </span>
+                <span class="reveal__line" style="--line: 1;">
+                    <span class="reveal__text"><mark>all the way to AI.</mark></span>
+                </span>
+            </h2>
+
+            <a class="fp__cta-btn hs__all" href="#works" data-cursor="VIEW">
+                <span data-scramble-target>All services</span>
+            </a>
+        </div>
 
         <div class="hs__grid" data-hs-grid>
-            <!-- 01 -->
-            <div class="hs__col" style="--i: 0">
-                <div>
-                    <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
-                        <rect x="0" y="0" width="3" height="3" />
-                        <rect x="4" y="0" width="3" height="3" />
-                        <rect x="8" y="0" width="3" height="3" />
-                        <rect x="4" y="4" width="3" height="3" />
-                        <rect x="4" y="8" width="3" height="3" />
-                    </svg>
-                    <div class="hs__num">01</div>
-                    <h3 class="hs__col-title">Neural Systems &amp; Autonomous Agents</h3>
-                    <p class="hs__col-desc">Architecting multi-agent loops, automated tool execution, and local model fine-tuning with rigorous safety bounds.</p>
-                </div>
+            <!-- Column 0: Design & content -->
+            <div class="hs__col" style="--i:0">
+                <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
+                    <rect x="0" y="0" width="1" height="1" style="--k:0"></rect>
+                    <rect x="0" y="1" width="1" height="1" style="--k:1"></rect>
+                    <rect x="1" y="1" width="1" height="1" style="--k:2"></rect>
+                    <rect x="0" y="2" width="1" height="1" style="--k:2"></rect>
+                    <rect x="1" y="2" width="1" height="1" style="--k:3"></rect>
+                    <rect x="2" y="2" width="1" height="1" style="--k:4"></rect>
+                    <rect x="0" y="3" width="1" height="1" style="--k:3"></rect>
+                    <rect x="1" y="3" width="1" height="1" style="--k:4"></rect>
+                    <rect x="2" y="3" width="1" height="1" style="--k:5"></rect>
+                    <rect x="3" y="3" width="1" height="1" style="--k:6"></rect>
+                    <rect x="0" y="4" width="1" height="1" style="--k:4"></rect>
+                    <rect x="1" y="4" width="1" height="1" style="--k:5"></rect>
+                    <rect x="2" y="4" width="1" height="1" style="--k:6"></rect>
+                    <rect x="3" y="4" width="1" height="1" style="--k:0"></rect>
+                    <rect x="4" y="4" width="1" height="1" style="--k:1"></rect>
+                    <rect x="0" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="1" y="5" width="1" height="1" style="--k:6"></rect>
+                    <rect x="2" y="5" width="1" height="1" style="--k:0"></rect>
+                    <rect x="3" y="5" width="1" height="1" style="--k:1"></rect>
+                    <rect x="4" y="5" width="1" height="1" style="--k:2"></rect>
+                    <rect x="5" y="5" width="1" height="1" style="--k:3"></rect>
+                    <rect x="0" y="6" width="1" height="1" style="--k:6"></rect>
+                    <rect x="1" y="6" width="1" height="1" style="--k:0"></rect>
+                    <rect x="2" y="6" width="1" height="1" style="--k:1"></rect>
+                    <rect x="3" y="6" width="1" height="1" style="--k:2"></rect>
+                    <rect x="4" y="6" width="1" height="1" style="--k:3"></rect>
+                    <rect x="5" y="6" width="1" height="1" style="--k:4"></rect>
+                    <rect x="6" y="6" width="1" height="1" style="--k:5"></rect>
+                    <rect x="0" y="7" width="1" height="1" style="--k:0"></rect>
+                    <rect x="1" y="7" width="1" height="1" style="--k:1"></rect>
+                    <rect x="2" y="7" width="1" height="1" style="--k:2"></rect>
+                    <rect x="3" y="7" width="1" height="1" style="--k:3"></rect>
+                    <rect x="4" y="7" width="1" height="1" style="--k:4"></rect>
+                    <rect x="5" y="7" width="1" height="1" style="--k:5"></rect>
+                    <rect x="6" y="7" width="1" height="1" style="--k:6"></rect>
+                    <rect x="7" y="7" width="1" height="1" style="--k:0"></rect>
+                    <rect x="0" y="8" width="1" height="1" style="--k:1"></rect>
+                    <rect x="1" y="8" width="1" height="1" style="--k:2"></rect>
+                    <rect x="2" y="8" width="1" height="1" style="--k:3"></rect>
+                    <rect x="3" y="8" width="1" height="1" style="--k:4"></rect>
+                    <rect x="4" y="8" width="1" height="1" style="--k:5"></rect>
+                    <rect x="0" y="9" width="1" height="1" style="--k:2"></rect>
+                    <rect x="1" y="9" width="1" height="1" style="--k:3"></rect>
+                    <rect x="4" y="9" width="1" height="1" style="--k:6"></rect>
+                    <rect x="5" y="9" width="1" height="1" style="--k:0"></rect>
+                    <rect x="0" y="10" width="1" height="1" style="--k:3"></rect>
+                    <rect x="5" y="10" width="1" height="1" style="--k:1"></rect>
+                    <rect x="6" y="10" width="1" height="1" style="--k:2"></rect>
+                </svg>
+                <h3 class="hs__label">Design &amp; content</h3>
+                <p class="hs__pitch">Mockups, identity and copy that serve your goals.</p>
                 <ul class="hs__list">
-                    <li class="hs__item">Autonomous Tool-Calling</li>
-                    <li class="hs__item">Local LLM Fine-Tuning</li>
-                    <li class="hs__item">Semantic Vector Retrieval</li>
-                    <li class="hs__item">Deterministic Sandboxing</li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">UI/UX Web Design<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Visual Identity<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Web Animations<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
-            <!-- 02 -->
-            <div class="hs__col" style="--i: 1">
-                <div>
-                    <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
-                        <rect x="0" y="4" width="11" height="3" />
-                        <rect x="4" y="0" width="3" height="11" />
-                        <rect x="2" y="2" width="2" height="2" />
-                        <rect x="7" y="7" width="2" height="2" />
-                    </svg>
-                    <div class="hs__num">02</div>
-                    <h3 class="hs__col-title">Spatial Vision &amp; Interaction</h3>
-                    <p class="hs__col-desc">Low-latency hand detection, spatial tracking, and building human-machine interfaces that respond intuitively in physical 3D space.</p>
-                </div>
+            <!-- Column 1: Web development -->
+            <div class="hs__col" style="--i:1">
+                <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
+                    <rect x="6" y="1" width="1" height="1" style="--k:0"></rect>
+                    <rect x="6" y="2" width="1" height="1" style="--k:1"></rect>
+                    <rect x="2" y="3" width="1" height="1" style="--k:5"></rect>
+                    <rect x="5" y="3" width="1" height="1" style="--k:1"></rect>
+                    <rect x="8" y="3" width="1" height="1" style="--k:4"></rect>
+                    <rect x="1" y="4" width="1" height="1" style="--k:5"></rect>
+                    <rect x="5" y="4" width="1" height="1" style="--k:2"></rect>
+                    <rect x="9" y="4" width="1" height="1" style="--k:6"></rect>
+                    <rect x="0" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="5" y="5" width="1" height="1" style="--k:3"></rect>
+                    <rect x="10" y="5" width="1" height="1" style="--k:1"></rect>
+                    <rect x="1" y="6" width="1" height="1" style="--k:0"></rect>
+                    <rect x="5" y="6" width="1" height="1" style="--k:4"></rect>
+                    <rect x="9" y="6" width="1" height="1" style="--k:1"></rect>
+                    <rect x="2" y="7" width="1" height="1" style="--k:2"></rect>
+                    <rect x="4" y="7" width="1" height="1" style="--k:4"></rect>
+                    <rect x="8" y="7" width="1" height="1" style="--k:1"></rect>
+                    <rect x="4" y="8" width="1" height="1" style="--k:5"></rect>
+                    <rect x="4" y="9" width="1" height="1" style="--k:6"></rect>
+                </svg>
+                <h3 class="hs__label">Web development</h3>
+                <p class="hs__pitch">Full-stack web applications and systems built from scratch, which you manage on your own.</p>
                 <ul class="hs__list">
-                    <li class="hs__item">MediaPipe Hand Mesh</li>
-                    <li class="hs__item">OpenCV Realtime Vision</li>
-                    <li class="hs__item">Touchless Spatial Input</li>
-                    <li class="hs__item">Multi-Modal Ergonomics</li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Custom Business Platforms<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">High-Throughput APIs<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">System Modernization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
-            <!-- 03 -->
-            <div class="hs__col" style="--i: 2">
-                <div>
-                    <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
-                        <rect x="0" y="0" width="11" height="2" />
-                        <rect x="0" y="9" width="11" height="2" />
-                        <rect x="0" y="0" width="2" height="11" />
-                        <rect x="9" y="0" width="2" height="11" />
-                        <rect x="4" y="4" width="3" height="3" />
-                    </svg>
-                    <div class="hs__num">03</div>
-                    <h3 class="hs__col-title">Proactive Cyber Security</h3>
-                    <p class="hs__col-desc">Automated vulnerability triage, supply-chain dependency scanning, and testing neural systems against adversarial exploits.</p>
-                </div>
+            <!-- Column 2: SEO & GEO -->
+            <div class="hs__col" style="--i:2">
+                <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
+                    <rect x="2" y="0" width="1" height="1" style="--k:2"></rect>
+                    <rect x="3" y="0" width="1" height="1" style="--k:3"></rect>
+                    <rect x="4" y="0" width="1" height="1" style="--k:4"></rect>
+                    <rect x="5" y="0" width="1" height="1" style="--k:5"></rect>
+                    <rect x="1" y="1" width="1" height="1" style="--k:2"></rect>
+                    <rect x="6" y="1" width="1" height="1" style="--k:0"></rect>
+                    <rect x="0" y="2" width="1" height="1" style="--k:2"></rect>
+                    <rect x="7" y="2" width="1" height="1" style="--k:2"></rect>
+                    <rect x="0" y="3" width="1" height="1" style="--k:3"></rect>
+                    <rect x="7" y="3" width="1" height="1" style="--k:3"></rect>
+                    <rect x="0" y="4" width="1" height="1" style="--k:4"></rect>
+                    <rect x="7" y="4" width="1" height="1" style="--k:4"></rect>
+                    <rect x="0" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="7" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="1" y="6" width="1" height="1" style="--k:0"></rect>
+                    <rect x="6" y="6" width="1" height="1" style="--k:5"></rect>
+                    <rect x="7" y="6" width="1" height="1" style="--k:6"></rect>
+                    <rect x="2" y="7" width="1" height="1" style="--k:2"></rect>
+                    <rect x="3" y="7" width="1" height="1" style="--k:3"></rect>
+                    <rect x="4" y="7" width="1" height="1" style="--k:4"></rect>
+                    <rect x="5" y="7" width="1" height="1" style="--k:5"></rect>
+                    <rect x="7" y="7" width="1" height="1" style="--k:0"></rect>
+                    <rect x="8" y="7" width="1" height="1" style="--k:1"></rect>
+                    <rect x="8" y="8" width="1" height="1" style="--k:2"></rect>
+                    <rect x="9" y="8" width="1" height="1" style="--k:3"></rect>
+                    <rect x="9" y="9" width="1" height="1" style="--k:4"></rect>
+                    <rect x="10" y="9" width="1" height="1" style="--k:5"></rect>
+                    <rect x="10" y="10" width="1" height="1" style="--k:6"></rect>
+                </svg>
+                <h3 class="hs__label">SEO &amp; GEO</h3>
+                <p class="hs__pitch">Earn lasting rankings and get cited by ChatGPT or Perplexity.</p>
                 <ul class="hs__list">
-                    <li class="hs__item">OSV Automated Triage</li>
-                    <li class="hs__item">Supply Chain Audit</li>
-                    <li class="hs__item">Adversarial Robustness</li>
-                    <li class="hs__item">Zero-Trust Boundaries</li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Search Optimization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Visibility (GEO)<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Performance Audit<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
-            <!-- 04 -->
-            <div class="hs__col" style="--i: 3">
-                <div>
-                    <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
-                        <rect x="1" y="1" width="9" height="9" fill="none" stroke="currentColor" />
-                        <rect x="3" y="3" width="5" height="5" />
-                        <rect x="0" y="5" width="2" height="1" />
-                        <rect x="9" y="5" width="2" height="1" />
-                    </svg>
-                    <div class="hs__num">04</div>
-                    <h3 class="hs__col-title">Embedded Hardware &amp; IoT</h3>
-                    <p class="hs__col-desc">Bridging firmware and web backends through high-speed serial protocols, ultrasonic sensors, and microcontrollers.</p>
-                </div>
+            <!-- Column 3: Artificial intelligence -->
+            <div class="hs__col" style="--i:3">
+                <svg class="hs__icon" viewBox="0 0 11 11" shape-rendering="crispEdges" aria-hidden="true">
+                    <rect x="5" y="0" width="1" height="1" style="--k:5"></rect>
+                    <rect x="5" y="1" width="1" height="1" style="--k:6"></rect>
+                    <rect x="5" y="2" width="1" height="1" style="--k:0"></rect>
+                    <rect x="4" y="3" width="1" height="1" style="--k:0"></rect>
+                    <rect x="5" y="3" width="1" height="1" style="--k:1"></rect>
+                    <rect x="6" y="3" width="1" height="1" style="--k:2"></rect>
+                    <rect x="3" y="4" width="1" height="1" style="--k:0"></rect>
+                    <rect x="4" y="4" width="1" height="1" style="--k:1"></rect>
+                    <rect x="5" y="4" width="1" height="1" style="--k:2"></rect>
+                    <rect x="6" y="4" width="1" height="1" style="--k:3"></rect>
+                    <rect x="7" y="4" width="1" height="1" style="--k:4"></rect>
+                    <rect x="0" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="1" y="5" width="1" height="1" style="--k:6"></rect>
+                    <rect x="2" y="5" width="1" height="1" style="--k:0"></rect>
+                    <rect x="3" y="5" width="1" height="1" style="--k:1"></rect>
+                    <rect x="4" y="5" width="1" height="1" style="--k:2"></rect>
+                    <rect x="5" y="5" width="1" height="1" style="--k:3"></rect>
+                    <rect x="6" y="5" width="1" height="1" style="--k:4"></rect>
+                    <rect x="7" y="5" width="1" height="1" style="--k:5"></rect>
+                    <rect x="8" y="5" width="1" height="1" style="--k:6"></rect>
+                    <rect x="9" y="5" width="1" height="1" style="--k:0"></rect>
+                    <rect x="10" y="5" width="1" height="1" style="--k:1"></rect>
+                    <rect x="3" y="6" width="1" height="1" style="--k:2"></rect>
+                    <rect x="4" y="6" width="1" height="1" style="--k:3"></rect>
+                    <rect x="5" y="6" width="1" height="1" style="--k:4"></rect>
+                    <rect x="6" y="6" width="1" height="1" style="--k:5"></rect>
+                    <rect x="7" y="6" width="1" height="1" style="--k:6"></rect>
+                    <rect x="4" y="7" width="1" height="1" style="--k:4"></rect>
+                    <rect x="5" y="7" width="1" height="1" style="--k:5"></rect>
+                    <rect x="6" y="7" width="1" height="1" style="--k:6"></rect>
+                    <rect x="5" y="8" width="1" height="1" style="--k:6"></rect>
+                    <rect x="5" y="9" width="1" height="1" style="--k:0"></rect>
+                    <rect x="5" y="10" width="1" height="1" style="--k:1"></rect>
+                </svg>
+                <h3 class="hs__label">Artificial intelligence</h3>
+                <p class="hs__pitch">Automate repetitive tasks, orchestrate agent loops, and train your teams.</p>
                 <ul class="hs__list">
-                    <li class="hs__item">ESP32 Sensor Fusion</li>
-                    <li class="hs__item">Low-Latency Serial COM</li>
-                    <li class="hs__item">Hardware-in-the-Loop</li>
-                    <li class="hs__item">Realtime Telemetry</li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Automation &amp; Agents<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Neural Model Tuning<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Strategy &amp; Defense<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
         </div>
