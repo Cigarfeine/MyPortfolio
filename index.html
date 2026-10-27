@@ -250,273 +250,253 @@
             transition: width 0.05s linear;
         }
 
-        /* --- ANTHRACITE STUDIO FLOATING NAV BAR (TOP CENTER CAPSULE) --- */
+        /* --- ANTHRACITE STUDIO MORPHING NAV CAPSULE --- */
+        [data-bottom-nav-init] {
+            --closed-width: min(calc(100vw - 32px), 438px);
+            --open-width: min(calc(100vw - 32px), 438px);
+            --bar-height: 50px;
+        }
+
         .bottom-nav {
             position: fixed;
-            top: 20px;
+            top: 16px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9000;
-            width: auto;
-            min-width: 420px;
         }
-        @media (max-width: 768px) {
-            .bottom-nav {
-                top: 16px;
-                min-width: 290px;
-                width: calc(100% - 32px);
-            }
-        }
+
         .bottom-nav__inner {
+            position: relative;
+            width: var(--closed-width);
+            height: var(--bar-height);
             display: flex;
+            flex-flow: column;
+            justify-content: flex-start;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            height: 50px;
-            background: rgba(16, 16, 18, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            overflow: clip;
+            color: var(--white);
+            background-color: rgba(8, 8, 7, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(232, 232, 227, 0.12);
-            border-radius: 9999px;
-            padding: 0 16px 0 10px;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0px;
+            will-change: width, height;
+            transition: background-color 0.4s ease, border-color 0.3s ease;
         }
         .bottom-nav__inner:hover {
-            border-color: rgba(232, 232, 227, 0.3);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-        }
-        .bottom-nav__logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: var(--white);
-            color: var(--dark);
-            border-radius: 50%;
-            text-decoration: none;
-            font-family: var(--font-title);
-            font-size: 19px;
-            font-style: italic;
-            font-weight: 700;
-            transition: transform 0.3s var(--ease), background 0.3s ease;
-            flex-shrink: 0;
-        }
-        .bottom-nav__logo:hover {
-            transform: scale(1.08);
-            background: #f0f0eb;
-        }
-        .bottom-nav__title-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.12em;
-            color: var(--fg);
-        }
-        .nav-pulse-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
-            animation: pulse-dot-anim 1.8s infinite;
-        }
-        @keyframes pulse-dot-anim {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.35; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        .bottom-nav__toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            color: var(--fg);
-            border-radius: 50%;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-        .bottom-nav__toggle:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--white);
-        }
-        .bottom-nav__toggle-bar {
-            width: 18px;
-            height: 1.5px;
-            background: currentColor;
-            transition: transform 0.3s var(--ease), width 0.3s var(--ease);
-        }
-        .bottom-nav.is-open .bottom-nav__toggle-bar.is--top {
-            transform: translateY(3.75px) rotate(45deg);
-        }
-        .bottom-nav.is-open .bottom-nav__toggle-bar.is--btm {
-            transform: translateY(-3.75px) rotate(-45deg);
+            border-color: rgba(232, 232, 227, 0.25);
         }
 
-        /* --- NAVIGATION OVERLAY PANEL (DROPS DOWN FROM TOP) --- */
-        .bottom-nav__panel {
-            position: absolute;
-            top: calc(100% + 12px);
-            bottom: auto;
-            left: 0;
+        /* Light section contrast adaptation */
+        .nav-on-light .bottom-nav__inner {
+            background-color: rgba(8, 8, 7, 0.92);
+        }
+
+        /* Top bar row (50px fixed height) */
+        .bottom-nav__bar {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             width: 100%;
-            background: rgba(8, 8, 16, 0.95);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid var(--line-strong);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-10px) scale(0.98);
-            transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
-        }
-        .bottom-nav.is-open .bottom-nav__panel {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
+            height: var(--bar-height);
+            flex: 0 0 auto;
+            padding: 0 13px 0 9px;
         }
 
-        /* --- TOP RIGHT CORNER STATUS BADGE --- */
-        .top-status-badge {
-            position: fixed;
-            top: 20px;
-            right: 25px;
-            z-index: 9000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            height: 50px;
-            padding: 0 18px;
-            border-radius: 9999px;
-            background: rgba(16, 16, 19, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(232, 232, 227, 0.12);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.10em;
-            color: var(--grey);
-            pointer-events: none;
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            transition: border-color 0.3s ease;
-        }
-        .top-status-badge .status-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #00ff88;
-            box-shadow: 0 0 6px #00ff88;
-        }
-        @media (max-width: 991px) {
-            .top-status-badge {
-                display: none;
-            }
-        }
-
-        /* --- RIGHT EDGE VERTICAL NOMINEE / RESEARCH BADGE --- */
-        .vertical-edge-badge {
-            position: fixed;
-            right: 0;
+        /* Center title */
+        .bottom-nav__title {
+            position: absolute;
             top: 50%;
-            transform: translateY(-50%) rotate(180deg);
-            writing-mode: vertical-rl;
-            z-index: 8000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 16px 8px;
-            background: rgba(16, 16, 19, 0.85);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(232, 232, 227, 0.1);
-            border-right: none;
-            border-radius: 6px 0 0 6px;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-family: var(--font-mono);
             font-size: 10px;
-            letter-spacing: 0.16em;
-            color: var(--grey);
-            pointer-events: none;
+            letter-spacing: -0.2px;
             text-transform: uppercase;
+            color: var(--white);
+            white-space: nowrap;
+            pointer-events: none;
         }
-        @media (max-width: 991px) {
-            .vertical-edge-badge {
-                display: none;
+
+        @media (max-width: 809px) {
+            .bottom-nav__title {
+                font-size: 11px;
             }
         }
-        .bottom-nav__list {
-            list-style: none;
+
+        /* Brand Logo (Geometric Monogram SVG) */
+        .bottom-nav__logo {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .bottom-nav__list-item a {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            color: var(--fg);
-            text-decoration: none;
-            font-size: 1.15rem;
-            font-family: var(--font-body);
-            padding: 6px 0;
-            border-bottom: 1px solid var(--line);
-            transition: color 0.2s ease, border-color 0.2s ease;
-        }
-        .bottom-nav__list-item a:hover {
-            color: var(--white);
-            border-color: rgba(232, 232, 227, 0.4);
-        }
-        .bottom-nav__list-item span.index {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--grey);
-        }
-        .bottom-nav__secondary {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .nav-btn {
-            display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 12px 16px;
-            border-radius: 9999px;
+            align-items: center;
+            width: 2.5em;
+            color: var(--white);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+        .bottom-nav__logo:hover {
+            opacity: 0.8;
+        }
+        .bottom-nav__logo svg {
+            width: auto;
+            height: 1.6em;
+            display: block;
+        }
+
+        /* Hamburger Toggle Button */
+        .bottom-nav__toggle {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 36px;
+            padding: 0;
+            gap: 4px;
+            color: var(--white);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .bottom-nav__toggle-bar {
+            display: block;
+            flex: 0 0 auto;
+            width: 16px;
+            height: 2px;
+            background-color: currentColor;
+            transform-origin: center;
+        }
+
+        /* Expandable Menu Panel */
+        .bottom-nav__panel {
+            display: flex;
+            flex-flow: column;
+            flex: 0 0 auto;
+            width: 100%;
+            max-height: calc(-7em + 100svh);
+            padding: 1.25em 1em 1em;
+            gap: 1.25em;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-width: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .bottom-nav[data-bottom-nav-open="true"] .bottom-nav__panel {
+            pointer-events: auto;
+        }
+
+        /* Primary links list */
+        .bottom-nav__list {
+            display: flex;
+            flex-flow: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            width: 100%;
+        }
+
+        .bottom-nav__list-item {
+            display: block;
+            width: 100%;
+        }
+
+        .bottom-nav__link {
+            display: block;
+            font-family: var(--font-body);
+            font-size: 2em;
+            font-weight: 500;
+            line-height: 1.1;
+            letter-spacing: -0.05em;
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.18em 0;
+            transition: color 0.2s ease;
+        }
+
+        .bottom-nav__link:hover {
+            color: #a8a8a2;
+        }
+
+        .bottom-nav__link[aria-current="page"]::before,
+        .bottom-nav__link[aria-current="true"]::before {
+            content: "";
+            display: inline-block;
+            width: 0.26em;
+            height: 0.26em;
+            margin-right: 0.35em;
+            vertical-align: 0.2em;
+            background: #ffffff;
+        }
+
+        /* Divider */
+        .bottom-nav__divider {
+            width: 100%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.12);
+            transform-origin: left center;
+        }
+
+        /* Secondary Action Buttons (50/50 split) */
+        .bottom-nav__secondary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .bottom-nav__col {
+            width: 50%;
+            display: flex;
+            flex-flow: column;
+        }
+
+        .menu-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 14px 6px;
             font-family: var(--font-mono);
             font-size: 11px;
-            letter-spacing: 0.1em;
+            font-weight: 400;
+            line-height: normal;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
             text-decoration: none;
-            transition: all 0.25s var(--ease);
+            background-color: var(--white);
+            color: var(--dark);
+            border: 1px solid var(--white);
+            border-radius: 0;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
-        .nav-btn.outline {
-            border: 1px solid var(--line-strong);
-            color: var(--fg);
-        }
-        .nav-btn.outline:hover {
-            border-color: var(--white);
+
+        .menu-btn:hover,
+        .menu-btn:focus-visible {
+            background-color: transparent;
             color: var(--white);
-            background: rgba(232, 232, 227, 0.05);
+            border-color: var(--white);
         }
-        .nav-btn.solid {
-            background: var(--white);
-            color: var(--bg);
-            font-weight: 500;
-        }
-        .nav-btn.solid:hover {
-            background: #D5D5CF;
-            transform: translateY(-1px);
+
+        /* Touch target expansions for coarse pointer */
+        @media (pointer: coarse) {
+            .bottom-nav__logo,
+            .bottom-nav__toggle {
+                position: relative;
+            }
+            .bottom-nav__logo::after,
+            .bottom-nav__toggle::after {
+                content: "";
+                position: absolute;
+                inset: -9px;
+            }
         }
 
         /* --- BUTTONS --- */
@@ -1643,67 +1623,66 @@
             </div>
         </div>
         <div class="preloader-head">
-            <span>ARSHAD // AI RESEARCHER &amp; BUILDER</span>
-            <span>STATUS: 2026 // STANDBY</span>
+            <span>ARSHAD — AI RESEARCH &amp; SYSTEMS</span>
+            <span>2026</span>
         </div>
     </div>
 
     <!-- ANTHRACITE STUDIO FLOATING NAV BAR -->
-    <nav class="bottom-nav" id="bottom-nav">
-        <div class="bottom-nav__inner">
-            <a href="#hero" class="bottom-nav__logo" aria-label="Home" data-cursor="HOME">A</a>
-            <div class="bottom-nav__title-wrapper">
-                <span class="nav-pulse-dot"></span>
-                <span id="nav-section-title" data-default-text="MUHAMMED ARSHAD">MUHAMMED ARSHAD</span>
+    <nav class="bottom-nav" id="bottom-nav" data-bottom-nav-init data-bottom-nav-open="false">
+        <div class="bottom-nav__inner" data-bottom-nav-inner>
+            <div class="bottom-nav__bar" data-bottom-nav-bar>
+                <a href="#hero" class="bottom-nav__logo" aria-label="Home" data-cursor="HOME">
+                    <svg viewBox="0 0 600 680" fill="none" aria-hidden="true">
+                        <path d="M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z" fill="currentColor"></path>
+                    </svg>
+                </a>
+                <span class="bottom-nav__title" id="nav-section-title" data-default-text="MUHAMMED ARSHAD" data-current="MUHAMMED ARSHAD">MUHAMMED ARSHAD</span>
+                <button class="bottom-nav__toggle" id="bottom-nav-toggle" data-bottom-nav-toggle aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu" data-cursor="MENU">
+                    <span class="bottom-nav__toggle-bar is--top"></span>
+                    <span class="bottom-nav__toggle-bar is--btm"></span>
+                </button>
             </div>
-            <button class="bottom-nav__toggle" id="bottom-nav-toggle" aria-expanded="false" aria-label="Toggle Navigation Menu" data-cursor="MENU">
-                <span class="bottom-nav__toggle-bar is--top"></span>
-                <span class="bottom-nav__toggle-bar is--btm"></span>
-            </button>
-        </div>
 
-        <!-- Pop-up Navigation Menu Panel -->
-        <div class="bottom-nav__panel" id="bottom-nav-panel" aria-hidden="true">
-            <ul class="bottom-nav__list">
-                <li class="bottom-nav__list-item">
-                    <a href="#hero"><span data-scramble-target>Home</span><span class="index">01</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#clients"><span data-scramble-target>Tech &amp; Stack</span><span class="index">02</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#manifesto"><span data-scramble-target>Manifesto</span><span class="index">03</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#services"><span data-scramble-target>Capabilities</span><span class="index">04</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#works"><span data-scramble-target>Selected Works</span><span class="index">05</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#awards"><span data-scramble-target>Recognition</span><span class="index">06</span></a>
-                </li>
-                <li class="bottom-nav__list-item">
-                    <a href="#contact"><span data-scramble-target>Contact</span><span class="index">07</span></a>
-                </li>
-            </ul>
-            <div class="bottom-nav__secondary">
-                <a href="#works" class="nav-btn outline"><span data-scramble-target>See Projects</span></a>
-                <a href="mailto:arshadrafi566@gmail.com" class="nav-btn solid"><span data-scramble-target>Contact Me</span></a>
+            <!-- Expandable Navigation Menu Panel (Single morphing container) -->
+            <div class="bottom-nav__panel" id="bottom-nav-panel" data-bottom-nav-panel aria-hidden="true">
+                <ul class="bottom-nav__list">
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#hero" class="bottom-nav__link" aria-current="page"><span data-scramble-target>Home</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#clients" class="bottom-nav__link"><span data-scramble-target>Stack</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#manifesto" class="bottom-nav__link"><span data-scramble-target>Manifesto</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#services" class="bottom-nav__link"><span data-scramble-target>Capabilities</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#works" class="bottom-nav__link"><span data-scramble-target>Selected Works</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#awards" class="bottom-nav__link"><span data-scramble-target>Recognition</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="#contact" class="bottom-nav__link"><span data-scramble-target>Contact</span></a>
+                    </li>
+                </ul>
+
+                <div class="bottom-nav__divider" data-bottom-nav-divider></div>
+
+                <div class="bottom-nav__secondary" data-bottom-nav-reveal>
+                    <div class="bottom-nav__col">
+                        <a href="#works" class="menu-btn"><span data-scramble-target>See the projects</span></a>
+                    </div>
+                    <div class="bottom-nav__col">
+                        <a href="mailto:arshadrafi566@gmail.com" class="menu-btn"><span data-scramble-target>Contact me</span></a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
-
-    <!-- TOP RIGHT CORNER STATUS BADGE (Anthracite Studio Technical Header) -->
-    <div class="top-status-badge">
-        <span class="status-dot"></span>
-        <span>SYS_LOC [10.8505° N, 76.2711° E] KERALA</span>
-    </div>
-
-    <!-- RIGHT EDGE VERTICAL ACCENT BADGE -->
-    <div class="vertical-edge-badge">
-        <span>[ 2026 // AI RESEARCH &amp; SYSTEMS ]</span>
-    </div>
 
     <!-- 1. HERO PINNED TRACK (Anthracite Studio 220vh Scrub Pin Sequence) -->
     <div class="home-hero-track" id="hero-track">
@@ -1740,7 +1719,7 @@
     <!-- 2. TECH STACK & CLIENT WALL -->
     <section class="clients" id="clients" data-txt="Stack & Ecosystem">
         <div class="clients-head">
-            <span class="section-tag">[ 01 // CORE STACK &amp; PROTOCOLS ]</span>
+            <span class="section-tag">Stack &amp; Ecosystem</span>
             <button type="button" class="clients-toggle" id="stack-toggle" data-scramble-target>Grid View: Active</button>
         </div>
         <div class="clients-grid">
@@ -1786,7 +1765,7 @@
     <!-- 3. MANIFESTO & PIXEL-FRAME PORTRAIT REVEAL -->
     <section class="manifesto" id="manifesto" data-txt="Manifesto">
         <div class="manifesto__text-col">
-            <span class="section-tag">[ 02 // MANIFESTO ]</span>
+            <span class="section-tag">Manifesto</span>
             <p class="manifesto__text" id="manifesto-text">
                 <!-- Injected via JS for word-by-word scroll reveal -->
             </p>
@@ -1800,7 +1779,7 @@
 
     <!-- 4. SERVICES & CAPABILITIES (`hs`) -->
     <section class="hs" id="services" data-txt="Capabilities">
-        <span class="section-tag">[ 03 // DISCIPLINARY FOCUS ]</span>
+        <span class="section-tag">Capabilities</span>
         <h2 class="section-title reveal" data-reveal>
             <span class="reveal__line" style="--line: 0"><span class="reveal__text">From research to code,</span></span>
             <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>all the way to deployment.</mark></span></span>
@@ -1817,7 +1796,7 @@
                         <rect x="4" y="4" width="3" height="3" />
                         <rect x="4" y="8" width="3" height="3" />
                     </svg>
-                    <div class="hs__num">DISCIPLINE // 01</div>
+                    <div class="hs__num">01</div>
                     <h3 class="hs__col-title">Neural Systems &amp; Autonomous Agents</h3>
                     <p class="hs__col-desc">Architecting multi-agent loops, automated tool execution, and local model fine-tuning with rigorous safety bounds.</p>
                 </div>
@@ -1838,7 +1817,7 @@
                         <rect x="2" y="2" width="2" height="2" />
                         <rect x="7" y="7" width="2" height="2" />
                     </svg>
-                    <div class="hs__num">DISCIPLINE // 02</div>
+                    <div class="hs__num">02</div>
                     <h3 class="hs__col-title">Spatial Vision &amp; Interaction</h3>
                     <p class="hs__col-desc">Low-latency hand detection, spatial tracking, and building human-machine interfaces that respond intuitively in physical 3D space.</p>
                 </div>
@@ -1860,7 +1839,7 @@
                         <rect x="9" y="0" width="2" height="11" />
                         <rect x="4" y="4" width="3" height="3" />
                     </svg>
-                    <div class="hs__num">DISCIPLINE // 03</div>
+                    <div class="hs__num">03</div>
                     <h3 class="hs__col-title">Proactive Cyber Security</h3>
                     <p class="hs__col-desc">Automated vulnerability triage, supply-chain dependency scanning, and testing neural systems against adversarial exploits.</p>
                 </div>
@@ -1881,7 +1860,7 @@
                         <rect x="0" y="5" width="2" height="1" />
                         <rect x="9" y="5" width="2" height="1" />
                     </svg>
-                    <div class="hs__num">DISCIPLINE // 04</div>
+                    <div class="hs__num">04</div>
                     <h3 class="hs__col-title">Embedded Hardware &amp; IoT</h3>
                     <p class="hs__col-desc">Bridging firmware and web backends through high-speed serial protocols, ultrasonic sensors, and microcontrollers.</p>
                 </div>
@@ -1899,7 +1878,7 @@
     <section class="fp" id="works" data-txt="Projects">
         <div class="fp__head">
             <div>
-                <span class="section-tag">[ 04 // SELECTED WORKS ]</span>
+                <span class="section-tag">Selected Works</span>
                 <h2 class="section-title reveal" data-reveal>
                     <span class="reveal__line" style="--line: 0"><span class="reveal__text">Selected works</span></span>
                     <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>engineered with precision.</mark></span></span>
@@ -1920,8 +1899,8 @@
                 </figure>
                 <div class="fp__body">
                     <div class="fp__meta">
-                        <span>[ PLT-001 ]</span>
-                        <span>2026 // 21.0 kHz</span>
+                        <span>PROJECT 01</span>
+                        <span>2026</span>
                     </div>
                     <div>
                         <h3 class="fp__title">Gesture Gaming</h3>
@@ -1943,8 +1922,8 @@
                 </figure>
                 <div class="fp__body">
                     <div class="fp__meta">
-                        <span>[ SYS-002 ]</span>
-                        <span>2026 // 14.5 kHz</span>
+                        <span>PROJECT 02</span>
+                        <span>2026</span>
                     </div>
                     <div>
                         <h3 class="fp__title">Mnemosyne</h3>
@@ -1966,8 +1945,8 @@
                 </figure>
                 <div class="fp__body">
                     <div class="fp__meta">
-                        <span>[ NET-003 ]</span>
-                        <span>2026 // 33.3 kHz</span>
+                        <span>PROJECT 03</span>
+                        <span>2025</span>
                     </div>
                     <div>
                         <h3 class="fp__title">KAGE Agent</h3>
@@ -2017,7 +1996,7 @@
     <!-- 6. AWARDS & RECOGNITION -->
     <section class="awards" id="awards" data-txt="Recognition">
         <div>
-            <span class="section-tag">[ 05 // RECOGNITION &amp; CITATIONS ]</span>
+            <span class="section-tag">Recognition</span>
             <h2 class="section-title reveal awards__title" data-reveal>
                 <span class="reveal__line" style="--line: 0"><span class="reveal__text">Noticed</span></span>
                 <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>by the community.</mark></span></span>
@@ -2059,7 +2038,7 @@
     <!-- 7. SIGNALS & METRICS (`testimonials`) -->
     <section class="testimonials" id="testimonials" data-txt="Signals">
         <div class="testimonials__head">
-            <span class="section-tag">[ 06 // SIGNALS &amp; TELEMETRY ]</span>
+            <span class="section-tag">Signals</span>
             <h2 class="section-title reveal" data-reveal>
                 <span class="reveal__line" style="--line: 0"><span class="reveal__text">Signals &amp;</span></span>
                 <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>telemetry.</mark></span></span>
@@ -2090,8 +2069,7 @@
                 « Arshad operates at the exact intersection of rigorous low-level engineering and thoughtful interactive design. When a problem looks intractable, he crafts a solution that feels obvious in hindsight. »
             </p>
             <div class="quote-author">
-                <span>PEER COLLABORATOR // RESEARCH CONSORTIUM</span>
-                <span>STATUS: VERIFIED</span>
+                <span>PEER COLLABORATOR</span>
             </div>
         </div>
     </section>
@@ -2105,7 +2083,7 @@
 
         <div class="footer-main">
             <div>
-                <span class="section-tag">[ 07 // INITIATE TRANSMISSION ]</span>
+                <span class="section-tag">Contact</span>
                 <h2 class="footer-cta-title reveal" data-reveal>
                     <span class="reveal__line" style="--line: 0"><span class="reveal__text">Got an ambitious project?</span></span>
                     <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>Let's engineer it.</mark></span></span>
@@ -2153,6 +2131,7 @@
     <!-- SCRIPTS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/CustomEase.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     
     <!-- ASCII Hands + Ambient Field Engine -->
@@ -2160,6 +2139,10 @@
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
+        if (window.CustomEase) {
+            gsap.registerPlugin(CustomEase);
+            CustomEase.create("osmo", "M0,0 C0.625,0.05 0,1 1,1");
+        }
 
         const isMobile = window.innerWidth <= 991;
 
@@ -2171,30 +2154,32 @@
         const textEl = document.getElementById('preloader-text');
 
         const preloaderPhrases = [
-            "[ COMPILING SCENE ]",
-            "[ DECRYPTING ASSETS ]",
-            "[ INITIATING NEURAL FIELD ]",
-            "[ ESTABLISHING TELEMETRY ]"
+            "INITIALIZING ENVIRONMENT",
+            "LOADING SYSTEM ASSETS",
+            "CONFIGURING INTERFACES"
         ];
 
         let preloaderInterval = setInterval(() => {
-            progress += Math.floor(Math.random() * 8) + 4;
+            progress += Math.floor(Math.random() * 8) + 5;
             if (progress % 12 === 0 && progress < 90) {
                 textEl.textContent = preloaderPhrases[Math.floor(Math.random() * preloaderPhrases.length)];
             }
             if (progress >= 100) {
                 progress = 100;
-                textEl.textContent = "[ SYSTEM READY ]";
+                textEl.textContent = "READY";
                 clearInterval(preloaderInterval);
                 gsap.to(preloader, {
                     yPercent: -100,
-                    duration: 1.0,
-                    ease: "power4.inOut"
+                    duration: 0.7,
+                    ease: "power4.inOut",
+                    onComplete: () => {
+                        preloader.style.display = 'none';
+                    }
                 });
             }
             percentEl.textContent = progress + '%';
             if (barEl) barEl.style.width = progress + '%';
-        }, 25);
+        }, 16);
 
         // 2. SMOOTH SCROLL (Anthracite Studio Lenis Engine)
         let lenis;
@@ -2300,41 +2285,242 @@
             }
         });
 
-        // 5. ANTHRACITE STUDIO NAVIGATION & DYNAMIC SCRAMBLE TITLE
-        const bottomNav = document.getElementById('bottom-nav');
-        const bottomNavToggle = document.getElementById('bottom-nav-toggle');
-        const navSectionTitle = document.getElementById('nav-section-title');
+        // 5. ANTHRACITE STUDIO EXACT MORPHING NAVBAR & SCROLL CONTROLLER
+        function initAnthraciteNav() {
+            const nav = document.getElementById('bottom-nav');
+            if (!nav) return;
 
-        bottomNavToggle.addEventListener('click', () => {
-            const isOpen = bottomNav.classList.toggle('is-open');
-            bottomNavToggle.setAttribute('aria-expanded', String(isOpen));
-        });
+            const inner = nav.querySelector('[data-bottom-nav-inner]');
+            const bar = nav.querySelector('[data-bottom-nav-bar]');
+            const panel = nav.querySelector('[data-bottom-nav-panel]');
+            const toggle = nav.querySelector('[data-bottom-nav-toggle]');
+            const title = document.getElementById('nav-section-title');
+            if (!inner || !bar || !panel || !toggle) return;
 
-        document.querySelectorAll('.bottom-nav__list-item a, .bottom-nav__secondary a').forEach(link => {
-            link.addEventListener('click', () => {
-                bottomNav.classList.remove('is-open');
-                bottomNavToggle.setAttribute('aria-expanded', 'false');
+            const revealItems = panel.querySelectorAll('[data-bottom-nav-reveal]');
+            const barTop = toggle.querySelector('.bottom-nav__toggle-bar.is--top');
+            const barBtm = toggle.querySelector('.bottom-nav__toggle-bar.is--btm');
+            const divider = nav.querySelector('[data-bottom-nav-divider]');
+
+            let isOpen = false;
+            let pauseDuration = 0;
+            let dims = { closedW: 0, closedH: 50, openW: 0, openH: 405 };
+            let tl = null;
+
+            const navEase = window.CustomEase ? "osmo" : "power3.inOut";
+
+            function setOpenState(state) {
+                isOpen = state;
+                nav.setAttribute('data-bottom-nav-open', String(state));
+                toggle.setAttribute('aria-expanded', String(state));
+                toggle.setAttribute('aria-label', state ? (toggle.dataset.labelClose || 'Close menu') : (toggle.dataset.labelOpen || 'Open menu'));
+                panel.setAttribute('aria-hidden', String(!state));
+                if (!state) {
+                    inner.scrollTop = 0;
+                }
+            }
+
+            function setInitial() {
+                gsap.set(inner, { height: bar.offsetHeight || 50 });
+                gsap.set(panel, { autoAlpha: 0 });
+            }
+
+            function openNav() {
+                isOpen = true;
+                setOpenState(true);
+
+                // Compute exact open height
+                panel.style.visibility = 'hidden';
+                panel.style.display = 'flex';
+                panel.style.opacity = '1';
+                const openH = (bar.offsetHeight || 50) + panel.scrollHeight;
+                panel.style.visibility = '';
+                panel.style.display = '';
+                panel.style.opacity = '';
+
+                gsap.killTweensOf([inner, barTop, barBtm, revealItems, divider, panel]);
+
+                const tl = gsap.timeline({ defaults: { ease: navEase } });
+                tl.to(inner, {
+                    height: openH,
+                    duration: 0.65,
+                    ease: navEase
+                }, 0)
+                .to(barTop, {
+                    y: 3.5,
+                    rotation: 45,
+                    duration: 0.4,
+                    ease: "back.out(2)"
+                }, 0.05)
+                .to(barBtm, {
+                    y: -3.5,
+                    rotation: -45,
+                    duration: 0.4,
+                    ease: "back.out(2)"
+                }, 0.05)
+                .set(panel, { autoAlpha: 1 }, 0.08)
+                .fromTo(revealItems, {
+                    opacity: 0,
+                    yPercent: 70
+                }, {
+                    opacity: 1,
+                    yPercent: 0,
+                    duration: 0.55,
+                    stagger: 0.03,
+                    ease: "power3.out"
+                }, 0.1);
+
+                if (divider) {
+                    tl.fromTo(divider, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.7, ease: navEase }, 0.06);
+                }
+            }
+
+            function closeNav() {
+                isOpen = false;
+                setOpenState(false);
+
+                gsap.killTweensOf([inner, barTop, barBtm, revealItems, divider, panel]);
+
+                const tl = gsap.timeline({ defaults: { ease: "power3.inOut" } });
+                tl.to(revealItems, {
+                    opacity: 0,
+                    yPercent: 15,
+                    duration: 0.2,
+                    stagger: { each: 0.015, from: "end" },
+                    ease: "power2.in"
+                }, 0)
+                .to(inner, {
+                    height: bar.offsetHeight || 50,
+                    duration: 0.45,
+                    ease: "power3.inOut"
+                }, 0.06)
+                .to([barTop, barBtm], {
+                    y: 0,
+                    rotation: 0,
+                    duration: 0.3,
+                    ease: "power3.in"
+                }, 0.06)
+                .set(panel, { autoAlpha: 0 });
+            }
+
+            function toggleMenu() {
+                if (isOpen) {
+                    closeNav();
+                } else {
+                    openNav();
+                }
+            }
+
+            function closeMenu() {
+                if (isOpen) closeNav();
+            }
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleMenu();
             });
-        });
 
-        // Track active section on scroll and scramble update the title
-        const trackedSections = document.querySelectorAll('[data-txt]');
-        let currentSectionTxt = '';
-
-        const sectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const txt = entry.target.getAttribute('data-txt');
-                    if (txt && txt !== currentSectionTxt) {
-                        currentSectionTxt = txt;
-                        scrambleText(navSectionTitle, 0.4);
-                        navSectionTitle.dataset.originalText = txt.toUpperCase();
+            // Close on link click
+            nav.querySelectorAll('.bottom-nav__link, .menu-btn').forEach(link => {
+                link.addEventListener('click', () => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        closeMenu();
                     }
+                });
+            });
+
+            // Close on Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isOpen) {
+                    closeMenu();
+                    toggle.focus();
                 }
             });
-        }, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
 
-        trackedSections.forEach(sec => sectionObserver.observe(sec));
+            // Close on click outside
+            document.addEventListener('pointerdown', (e) => {
+                if (isOpen && !nav.contains(e.target)) {
+                    closeMenu();
+                }
+            });
+
+            // Resize handling
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (isOpen) {
+                        panel.style.visibility = 'hidden';
+                        panel.style.display = 'flex';
+                        panel.style.opacity = '1';
+                        const openH = (bar.offsetHeight || 50) + panel.scrollHeight;
+                        panel.style.visibility = '';
+                        panel.style.display = '';
+                        panel.style.opacity = '';
+                        gsap.set(inner, { height: openH });
+                    } else {
+                        gsap.set(inner, { height: bar.offsetHeight || 50 });
+                    }
+                }, 150);
+            });
+
+            setInitial();
+
+            // Dynamic Section Title & Active Current Link Observer (Centerline rootMargin: "-50% 0px -50% 0px")
+            const sections = document.querySelectorAll('[data-txt]');
+            if (title && sections.length) {
+                const defaultTitle = title.dataset.defaultText || 'MUHAMMED ARSHAD';
+                const intersectingSections = new Set();
+                const navLinks = nav.querySelectorAll('.bottom-nav__link');
+
+                function updateCurrentSection(sec) {
+                    const txt = sec ? sec.getAttribute('data-txt') : defaultTitle;
+                    if (title.dataset.current !== txt) {
+                        title.dataset.current = txt;
+                        title.dataset.originalText = txt.toUpperCase();
+                        scrambleText(title, 0.38);
+                    }
+
+                    // Update [aria-current="page"] on matching link
+                    if (sec) {
+                        const secId = '#' + sec.id;
+                        navLinks.forEach(nl => {
+                            if (nl.getAttribute('href') === secId) {
+                                nl.setAttribute('aria-current', 'page');
+                            } else {
+                                nl.removeAttribute('aria-current');
+                            }
+                        });
+                    } else {
+                        navLinks.forEach((nl, i) => {
+                            if (i === 0) nl.setAttribute('aria-current', 'page');
+                            else nl.removeAttribute('aria-current');
+                        });
+                    }
+                }
+
+                const centerObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            intersectingSections.add(entry.target);
+                        } else {
+                            intersectingSections.delete(entry.target);
+                        }
+                    });
+
+                    const currentSec = [...intersectingSections].pop();
+                    updateCurrentSection(currentSec);
+                }, {
+                    rootMargin: '-50% 0px -50% 0px',
+                    threshold: 0
+                });
+
+                sections.forEach(s => centerObserver.observe(s));
+            }
+        }
+
+        initAnthraciteNav();
 
         // 6. MANIFESTO WORD-BY-WORD SCROLL HIGHLIGHT
         const manifestoTextEl = document.getElementById('manifesto-text');
