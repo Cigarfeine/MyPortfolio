@@ -31,7 +31,6 @@
             --card-hover: #18181c;
             --accent-mark-bg: #E8E8E3;
             --accent-mark-fg: #080807;
-            --accent-blue: #0004eb;
             
             --container-min: 992px;
             --container-max: 100svw;
@@ -535,7 +534,7 @@
         .fp__cta-btn:focus-visible {
             background: var(--fg);
             color: var(--bg);
-            --scramble-color: var(--accent-blue, #0004eb);
+            --scramble-color: var(--dark);
         }
 
         .btn-primary {
@@ -915,11 +914,11 @@
             --mark-top: 0.18em;
             --mark-height: 0.94em;
             z-index: 1;
-            background: linear-gradient(var(--accent-blue, #0004eb), var(--accent-blue, #0004eb)) 0 var(--mark-top) / 0% var(--mark-height) no-repeat;
-            color: var(--white);
+            background: linear-gradient(var(--accent-mark-bg), var(--accent-mark-bg)) 0 var(--mark-top) / 0% var(--mark-height) no-repeat;
+            color: var(--accent-mark-fg);
             -webkit-box-decoration-break: clone;
             box-decoration-break: clone;
-            padding: 0 0.04em;
+            padding: 0 0.08em;
             position: relative;
             transition: background-size 0.6s cubic-bezier(0.65, 0, 0.35, 1);
         }
@@ -930,6 +929,11 @@
 
         .manifesto__mark:has(.is-on) {
             background-size: 100% var(--mark-height);
+        }
+
+        .manifesto__mark:has(.is-on) .manifesto__word {
+            color: var(--accent-mark-fg);
+            opacity: 1;
         }
 
         .manifesto__intro {
@@ -1850,41 +1854,42 @@
         </div>
     </section>
 
-    <!-- 3. MANIFESTO & PIXEL-FRAME PORTRAIT REVEAL (Anthracite Studio Exact) -->
+    <!-- 3. MANIFESTO & PIXEL-FRAME PORTRAIT REVEAL -->
     <section class="manifesto" id="manifesto" data-manifesto data-txt="Manifesto">
         <h2 class="sr-only">Manifesto</h2>
         <p class="manifesto__text">
-            <span class="sr-only">I design and build websites that are optimised, fast and that convert. From the first mockup to the last line of code, every detail serves your goals.</span>
+            <span class="sr-only">I research and engineer systems that are autonomous, resilient, and exact. From low-level neural model pipelines to hardware sensor arrays, every line of code serves a deliberate mission.</span>
             <span class="manifesto__word" aria-hidden="true">I </span>
-            <span class="manifesto__word" aria-hidden="true">design </span>
+            <span class="manifesto__word" aria-hidden="true">research </span>
             <span class="manifesto__word" aria-hidden="true">and </span>
-            <span class="manifesto__word" aria-hidden="true">build </span>
-            <span class="manifesto__word" aria-hidden="true">websites </span>
+            <span class="manifesto__word" aria-hidden="true">engineer </span>
+            <span class="manifesto__word" aria-hidden="true">systems </span>
             <span class="manifesto__word" aria-hidden="true">that </span>
             <span class="manifesto__word" aria-hidden="true">are </span>
-            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">optimised,</span></mark> 
-            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">fast</span></mark> 
+            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">autonomous,</span></mark> 
+            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">resilient,</span></mark> 
             <span class="manifesto__word" aria-hidden="true">and </span>
-            <span class="manifesto__word" aria-hidden="true">that </span>
-            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">convert.</span></mark> 
+            <mark class="manifesto__mark" aria-hidden="true"><span class="manifesto__word">exact.</span></mark> 
             <span class="manifesto__word" aria-hidden="true">From </span>
-            <span class="manifesto__word" aria-hidden="true">the </span>
-            <span class="manifesto__word" aria-hidden="true">first </span>
-            <span class="manifesto__word" aria-hidden="true">mockup </span>
+            <span class="manifesto__word" aria-hidden="true">low-level </span>
+            <span class="manifesto__word" aria-hidden="true">neural </span>
+            <span class="manifesto__word" aria-hidden="true">model </span>
+            <span class="manifesto__word" aria-hidden="true">pipelines </span>
             <span class="manifesto__word" aria-hidden="true">to </span>
-            <span class="manifesto__word" aria-hidden="true">the </span>
-            <span class="manifesto__word" aria-hidden="true">last </span>
+            <span class="manifesto__word" aria-hidden="true">hardware </span>
+            <span class="manifesto__word" aria-hidden="true">sensor </span>
+            <span class="manifesto__word" aria-hidden="true">arrays, </span>
+            <span class="manifesto__word" aria-hidden="true">every </span>
             <span class="manifesto__word" aria-hidden="true">line </span>
             <span class="manifesto__word" aria-hidden="true">of </span>
-            <span class="manifesto__word" aria-hidden="true">code, </span>
-            <span class="manifesto__word" aria-hidden="true">every </span>
-            <span class="manifesto__word" aria-hidden="true">detail </span>
+            <span class="manifesto__word" aria-hidden="true">code </span>
             <span class="manifesto__word" aria-hidden="true">serves </span>
-            <span class="manifesto__word" aria-hidden="true">your </span>
-            <span class="manifesto__word" aria-hidden="true">goals.</span>
+            <span class="manifesto__word" aria-hidden="true">a </span>
+            <span class="manifesto__word" aria-hidden="true">deliberate </span>
+            <span class="manifesto__word" aria-hidden="true">mission.</span>
         </p>
         <div class="manifesto__intro">
-            <p class="manifesto__desc">As a designer and developer, I see every project through from start to finish. No middlemen, no subcontracting: you talk to the person doing the work, and you get a quick answer.</p>
+            <p class="manifesto__desc">As an AI researcher and systems architect, I build end-to-end intelligent systems from neural pipelines to bare-metal deployment. No noise, no intermediaries: direct technical execution and production reliability.</p>
             <div class="manifesto__btns">
                 <a class="fp__cta-btn" href="#contact" data-cursor="CONTACT"><span data-scramble-target>Let’s talk about your project</span></a>
                 <a class="fp__cta-btn" href="#services" data-cursor="STACK"><span data-scramble-target>More about me</span></a>
