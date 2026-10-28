@@ -35,32 +35,6 @@ Personal engineering portfolio and systems showcase designed with an editorial, 
 | **Typography** | Space Grotesk, Inter, JetBrains Mono |
 | **Design Tokens** | Minimalist dark palette (`#080807`), subtle hairline borders (`rgba(255,255,255,0.08)`) |
 
----
-
-## Featured Works
-
-1. **Gesture Gaming:** Spatial vision and hardware-accelerated gesture recognition pipelines.
-2. **Mnemosyne:** Neural language model architecture and cognitive memory systems.
-3. **Kage:** Low-level security tooling and proactive vulnerability auditing.
-4. **NeuroMesh:** Decentralized multi-agent swarm consensus and dynamic execution graphs.
-
----
-
-## Local Development
-
-Serve the repository using any local HTTP static server:
-
-```bash
-# Python 3
-python3 -m http.server 3000
-
-# Node.js
-npx serve .
-```
-
-Open `http://localhost:3000/` in any modern web browser.
-
----
 
 ## License
 
