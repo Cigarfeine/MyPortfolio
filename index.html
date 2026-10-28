@@ -2328,111 +2328,26 @@
             justify-content: space-between;
             gap: 16px;
             margin-bottom: 56px;
+        }
+
+        .ethos__meta {
             font-family: var(--font-mono);
             font-size: 11px;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: var(--grey);
         }
 
-        .ethos__tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--white);
-        }
-
-        .ethos__tag-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--white);
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-            animation: ethosPulse 2.4s ease-in-out infinite;
-        }
-
-        @keyframes ethosPulse {
-            0%, 100% { opacity: 0.35; transform: scale(0.85); }
-            50% { opacity: 1; transform: scale(1.15); }
-        }
-
-        .ethos__telemetry {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--grey);
-        }
-
-        .ethos__telemetry-sep {
-            opacity: 0.4;
-        }
-
-        @media (max-width: 640px) {
-            .ethos__telemetry {
-                display: none;
-            }
-        }
-
         .ethos__body {
             position: relative;
-            padding: 48px 32px;
-            background: rgba(255, 255, 255, 0.015);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 2px;
-            transition: border-color 0.4s ease, background-color 0.4s ease;
-        }
-
-        .ethos__body:hover {
-            border-color: rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.025);
-        }
-
-        @media (max-width: 640px) {
-            .ethos__body {
-                padding: 32px 16px;
-            }
-        }
-
-        /* Tactical corner viewfinders matching Anthracite reticle aesthetic */
-        .ethos__corner {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            pointer-events: none;
-            border-color: var(--white);
-            opacity: 0.55;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .ethos__corner.is--tl {
-            top: -1px; left: -1px;
-            border-top: 1.5px solid;
-            border-left: 1.5px solid;
-        }
-        .ethos__corner.is--tr {
-            top: -1px; right: -1px;
-            border-top: 1.5px solid;
-            border-right: 1.5px solid;
-        }
-        .ethos__corner.is--bl {
-            bottom: -1px; left: -1px;
-            border-bottom: 1.5px solid;
-            border-left: 1.5px solid;
-        }
-        .ethos__corner.is--br {
-            bottom: -1px; right: -1px;
-            border-bottom: 1.5px solid;
-            border-right: 1.5px solid;
-        }
-
-        .ethos__body:hover .ethos__corner {
-            opacity: 1;
-            transform: scale(1.15);
+            padding: 0;
+            background: transparent;
+            border: none;
         }
 
         .ethos__quote {
             margin: 0;
-            padding: 16px 0 32px;
+            padding: 8px 0 32px;
         }
 
         .ethos__text {
@@ -2446,6 +2361,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
+            cursor: pointer;
         }
 
         .ethos__line {
@@ -2516,85 +2432,19 @@
         .ethos__footer {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding-top: 28px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            margin-top: 16px;
-        }
-
-        .ethos__author {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
+            justify-content: flex-start;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+            margin-top: 8px;
         }
 
         .ethos__author-name {
             font-family: var(--font-mono);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
-            letter-spacing: 0.12em;
-            color: var(--white);
-        }
-
-        .ethos__author-role {
-            font-family: var(--font-mono);
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            color: var(--grey);
-        }
-
-        .ethos__interactive-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: transparent;
-            border: 1px solid var(--line-strong);
-            border-radius: 2px;
-            padding: 8px 16px;
-            font-family: var(--font-mono);
-            font-size: 10px;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: var(--grey);
-            cursor: pointer;
-            transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s ease, background-color 0.25s ease;
-        }
-
-        .ethos__interactive-btn:hover {
-            border-color: var(--white);
-            color: var(--white);
-            background: rgba(255, 255, 255, 0.04);
-            transform: translateY(-1px);
-        }
-
-        .ethos__interactive-btn:active {
-            transform: scale(0.98);
-        }
-
-        .ethos__btn-dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: var(--grey);
-            transition: background-color 0.25s ease, box-shadow 0.25s ease;
-        }
-
-        .ethos__interactive-btn:hover .ethos__btn-dot {
-            background: var(--white);
-            box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
-        }
-
-        @media (max-width: 640px) {
-            .ethos__footer {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 16px;
-            }
-            .ethos__interactive-btn {
-                width: 100%;
-                justify-content: center;
-            }
         }
 
         /* --- 8. ANTHRACITE STUDIO FOOTER & BINARY REVEAL --- */
@@ -3794,26 +3644,13 @@
     <!-- 7. ETHOS // PERSPECTIVE (Single Monumental Quote replacing Signals & telemetry) -->
     <section class="ethos" id="ethos" data-txt="Ethos">
         <div id="testimonials" style="position: absolute; pointer-events: none; opacity: 0; top: 0;" aria-hidden="true"></div>
-        <div class="ethos__container" data-cursor="DECODE">
+        <div class="ethos__container">
             <header class="ethos__header">
-                <div class="ethos__tag">
-                    <span class="ethos__tag-dot"></span>
-                    <span class="ethos__tag-label">CORE THESIS // 01</span>
-                </div>
-                <div class="ethos__telemetry">
-                    <span class="ethos__telemetry-item">KERALA [10.85°N]</span>
-                    <span class="ethos__telemetry-sep">/</span>
-                    <span class="ethos__telemetry-item">AUTONOMOUS COGNITION</span>
-                </div>
+                <span class="section-tag">Ethos</span>
+                <span class="ethos__meta">Kerala, India</span>
             </header>
 
             <div class="ethos__body">
-                <!-- Tactical corner viewfinders matching Anthracite reticle aesthetic -->
-                <span class="ethos__corner is--tl" aria-hidden="true"></span>
-                <span class="ethos__corner is--tr" aria-hidden="true"></span>
-                <span class="ethos__corner is--bl" aria-hidden="true"></span>
-                <span class="ethos__corner is--br" aria-hidden="true"></span>
-
                 <blockquote class="ethos__quote" data-quote-scroll>
                     <p class="ethos__text">
                         <span class="sr-only">“I don’t chase the future. I reverse-engineer it.”</span>
@@ -3835,14 +3672,7 @@
                 </blockquote>
 
                 <footer class="ethos__footer">
-                    <div class="ethos__author">
-                        <span class="ethos__author-name">MUHAMMED ARSHAD</span>
-                        <span class="ethos__author-role">AI RESEARCH &amp; SYSTEMS ARCHITECTURE</span>
-                    </div>
-                    <button class="ethos__interactive-btn" type="button" data-decode-btn data-cursor="DECODE">
-                        <span class="ethos__btn-dot"></span>
-                        <span class="ethos__btn-text" data-scramble-target>TRIGGER DECODE WAVE</span>
-                    </button>
+                    <span class="ethos__author-name">Arshad</span>
                 </footer>
             </div>
         </div>
