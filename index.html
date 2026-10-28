@@ -700,6 +700,12 @@
         .reveal.is-revealed .reveal__text::after {
             animation: reveal-bar var(--reveal-duration) cubic-bezier(0.77, 0, 0.18, 1) var(--line-delay) forwards;
         }
+        .reveal.reveal--done .reveal__text {
+            visibility: visible !important;
+        }
+        .reveal.reveal--done .reveal__text::after {
+            clip-path: inset(0 0 0 100%) !important;
+        }
 
         @keyframes reveal-bar { 
             0% { clip-path: inset(0 100% 0 0); }
@@ -3764,7 +3770,7 @@ Available anywhere, remotely</span>
                 <nav class="site-footer__legal" aria-label="System telemetry">
                     <span class="site-footer__legal-link">HQ: KERALA, INDIA</span>
                     <span class="site-footer__legal-link" id="footer-live-clock">00:00:00 UTC</span>
-                    <button type="button" class="site-footer__legal-link" onclick="window.scrollTo({top:0,behavior:'smooth'})"><span>BACK TO TOP ↑</span></button>
+                    <button type="button" class="site-footer__legal-link" id="footer-back-to-top" onclick="if(window.triggerPageTransition){window.triggerPageTransition(document.getElementById('hero'));}else{window.scrollTo({top:0,behavior:'smooth'});if(window.resetRevealsForHome)window.resetRevealsForHome();}"><span>BACK TO TOP ↑</span></button>
                 </nav>
             </div>
         </div>
@@ -4046,6 +4052,15 @@ Available anywhere, remotely</span>
             if (!overlay || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
                 if (typeof targetElementOrFn === 'function') targetElementOrFn();
                 else if (targetElementOrFn) {
+                    const isHeroTarget = (
+                        targetElementOrFn === document.getElementById('hero') ||
+                        targetElementOrFn.id === 'hero' ||
+                        targetElementOrFn.closest?.('#hero') ||
+                        targetElementOrFn === 0
+                    );
+                    if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
+                        window.resetRevealsForHome();
+                    }
                     if (window.__lenis) window.__lenis.scrollTo(targetElementOrFn);
                     else targetElementOrFn.scrollIntoView({ behavior: 'smooth' });
                 }
@@ -4072,6 +4087,17 @@ Available anywhere, remotely</span>
             if (typeof targetElementOrFn === 'function') {
                 targetElementOrFn();
             } else if (targetElementOrFn) {
+                const isHeroTarget = (
+                    targetElementOrFn === document.getElementById('hero') ||
+                    targetElementOrFn.id === 'hero' ||
+                    targetElementOrFn.closest?.('#hero') ||
+                    targetElementOrFn === 0
+                );
+                if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
+                    window.resetRevealsForHome();
+                } else if (typeof window.armSectionReveal === 'function') {
+                    window.armSectionReveal(targetElementOrFn);
+                }
                 if (window.__lenis) {
                     window.__lenis.scrollTo(targetElementOrFn, { immediate: true });
                 } else {
@@ -5612,27 +5638,120 @@ Available anywhere, remotely</span>
             }
         }
 
-        // Title Wipe Bar Reveal
+        // Title Wipe Bar Reveal & Replay System (Anthracite Studio Reveal Architecture)
+        const revealElements = Array.from(document.querySelectorAll('.reveal'));
+        const hsGridEl = document.querySelector('[data-hs-grid]');
+
+        function scheduleRevealDone(el) {
+            if (el.__revealTimer) clearTimeout(el.__revealTimer);
+            const style = getComputedStyle(el);
+            const delay = parseFloat(style.getPropertyValue('--reveal-delay')) || 0;
+            const duration = parseFloat(style.getPropertyValue('--reveal-duration')) || 1.2;
+            const lineCount = el.querySelectorAll('.reveal__line').length || 1;
+            const totalSec = delay + duration + 0.08 * (lineCount - 1);
+            el.__revealTimer = setTimeout(() => {
+                el.classList.add('reveal--done');
+            }, totalSec * 1000 + 50);
+        }
+
+        function resetSingleReveal(el) {
+            if (!el) return;
+            if (el.__revealTimer) {
+                clearTimeout(el.__revealTimer);
+                el.__revealTimer = null;
+            }
+            el.classList.remove('is-revealed', 'reveal--done');
+            void el.offsetWidth; // Force CSS animation restart from frame 0
+        }
+
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-revealed');
+                    scheduleRevealDone(entry.target);
                     revealObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
         // Capabilities Grid Reveal
-        const hsGridEl = document.querySelector('[data-hs-grid]');
+        let hsObserver = null;
         if (hsGridEl) {
-            const hsObserver = new IntersectionObserver(([entry]) => {
+            hsObserver = new IntersectionObserver(([entry]) => {
                 if (entry && entry.isIntersecting) {
                     hsGridEl.classList.add('is-in');
                     hsObserver.unobserve(hsGridEl);
                 }
             }, { threshold: 0.15 });
-            hsObserver.observe(hsGridEl);
+        }
+
+        function armAllReveals() {
+            revealElements.forEach(el => {
+                resetSingleReveal(el);
+                revealObserver.observe(el);
+            });
+            if (hsGridEl && hsObserver) {
+                hsGridEl.classList.remove('is-in');
+                hsObserver.observe(hsGridEl);
+            }
+            const awardsEl = document.querySelector('[data-awards-list]');
+            if (awardsEl && window.__awardsObserver) {
+                awardsEl.classList.remove('is-in');
+                window.__awardsObserver.observe(awardsEl);
+            }
+        }
+
+        function armSectionReveal(target) {
+            if (!target) return;
+            const section = target.nodeType === Node.ELEMENT_NODE ? (target.closest('section') || target) : null;
+            if (!section) return;
+            const reveals = section.querySelectorAll ? Array.from(section.querySelectorAll('.reveal')) : [];
+            if (section.classList.contains('reveal')) reveals.push(section);
+            reveals.forEach(el => {
+                resetSingleReveal(el);
+                revealObserver.observe(el);
+            });
+            if (section.id === 'services' && hsGridEl && hsObserver) {
+                hsGridEl.classList.remove('is-in');
+                hsObserver.observe(hsGridEl);
+            }
+            const awardsEl = document.querySelector('[data-awards-list]');
+            if (section.id === 'awards' && awardsEl && window.__awardsObserver) {
+                awardsEl.classList.remove('is-in');
+                window.__awardsObserver.observe(awardsEl);
+            }
+        }
+
+        window.resetRevealsForHome = armAllReveals;
+        window.armSectionReveal = armSectionReveal;
+
+        // Initialize observers
+        revealElements.forEach(el => revealObserver.observe(el));
+        if (hsGridEl && hsObserver) hsObserver.observe(hsGridEl);
+
+        // Reset and re-arm reveals on all Home links & logo clicks
+        document.querySelectorAll('a[href="#hero"], .bottom-nav__logo, #footer-back-to-top').forEach(link => {
+            link.addEventListener('click', () => {
+                armAllReveals();
+            });
+        });
+
+        // Re-arm reveals when user manually scrolls back to the top of the page
+        let hasArmedAtTop = true;
+        const onScrollCheckTop = () => {
+            const y = window.scrollY || window.pageYOffset || 0;
+            if (y <= 120) {
+                if (!hasArmedAtTop) {
+                    hasArmedAtTop = true;
+                    armAllReveals();
+                }
+            } else if (y > 400) {
+                hasArmedAtTop = false;
+            }
+        };
+        window.addEventListener('scroll', onScrollCheckTop, { passive: true });
+        if (window.__lenis) {
+            window.__lenis.on('scroll', onScrollCheckTop);
         }
 
         // 5. FEATURED PROJECTS: EXACT ANTHRACITE STUDIO MOTION ENGINE
@@ -5912,6 +6031,7 @@ Available anywhere, remotely</span>
                 }
             }, { threshold: 0.15 });
             awardsObserver.observe(awardsGroupEl);
+            window.__awardsObserver = awardsObserver;
         }
 
         // 9. ETHOS QUOTE SCROLL REVEAL & INTERACTIVE DECODE ENGINE
