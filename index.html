@@ -2311,31 +2311,20 @@
 
         @media (max-width: 768px) {
             .ethos {
-                padding: 60px 16px 100px;
+                padding: 40px 20px 100px;
             }
         }
 
         .ethos__container {
             position: relative;
-            border-top: 1px solid var(--line-strong);
-            border-bottom: 1px solid var(--line-strong);
-            padding: 48px 0 56px;
+            padding: 0;
         }
 
         .ethos__header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            margin-bottom: 56px;
-        }
-
-        .ethos__meta {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--grey);
+            justify-content: flex-start;
+            margin-bottom: clamp(32px, 4vw, 56px);
         }
 
         .ethos__body {
@@ -2347,7 +2336,7 @@
 
         .ethos__quote {
             margin: 0;
-            padding: 8px 0 32px;
+            padding: 8px 0 28px;
         }
 
         .ethos__text {
@@ -2433,9 +2422,8 @@
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            padding-top: 24px;
-            border-top: 1px solid var(--line);
-            margin-top: 8px;
+            padding-top: 16px;
+            margin-top: 0;
         }
 
         .ethos__author-name {
@@ -2454,7 +2442,6 @@
             padding-bottom: clamp(16px, 3vw, 48px);
             position: relative;
             overflow: hidden;
-            border-top: 1px solid var(--line);
         }
 
         .binary-reveal__stage {
@@ -3647,7 +3634,6 @@
         <div class="ethos__container">
             <header class="ethos__header">
                 <span class="section-tag">Ethos</span>
-                <span class="ethos__meta">Kerala, India</span>
             </header>
 
             <div class="ethos__body">
