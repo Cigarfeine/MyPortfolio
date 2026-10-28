@@ -1,3 +1,7 @@
 node_modules/
 .hallmark/
 CONV_ACSII/
+
+# Markdown documents (preserve public README.md)
+*.md
+!README.md
