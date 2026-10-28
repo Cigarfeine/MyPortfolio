@@ -8,6 +8,32 @@
     <meta name="description" content="Muhammed Arshad — AI Researcher & Builder in Kerala exploring artificial intelligence, cybersecurity, and visual storytelling." />
     <meta name="application-name" content="too curious to stay normal. 👀" />
     <meta name="apple-mobile-web-app-title" content="too curious to stay normal. 👀" />
+    <meta name="theme-color" content="#04040E" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://arshadrafi.dev/" />
+
+    <!-- Open Graph / WhatsApp / LinkedIn / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arshadrafi.dev/" />
+    <meta property="og:site_name" content="Arshad Rafi" />
+    <meta property="og:title" content="Arshad | AI Researcher & Builder" />
+    <meta property="og:description" content="Muhammed Arshad — AI Researcher & Builder in Kerala exploring artificial intelligence, cybersecurity, and visual storytelling." />
+    <meta property="og:image" content="https://arshadrafi.dev/images/og-image.jpg" />
+    <meta property="og:image:secure_url" content="https://arshadrafi.dev/images/og-image.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Muhammed Arshad — AI Research & Systems, engineered for the Frontier." />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://arshadrafi.dev/" />
+    <meta name="twitter:title" content="Arshad | AI Researcher & Builder" />
+    <meta name="twitter:description" content="Muhammed Arshad — AI Researcher & Builder in Kerala exploring artificial intelligence, cybersecurity, and visual storytelling." />
+    <meta name="twitter:image" content="https://arshadrafi.dev/images/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Muhammed Arshad — AI Research & Systems, engineered for the Frontier." />
     
     <!-- Fonts: Instrument Serif (Editorial Accent) + Space Grotesk (Modern Display) + JetBrains Mono (Technical Core) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -640,27 +666,31 @@
             padding: 0 25px;
         }
 
-        .section-tag {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            letter-spacing: 0.16em;
-            color: var(--grey);
-            text-transform: uppercase;
-            margin-bottom: 24px;
-            display: inline-block;
-        }
 
         .section-title, .title.title--section {
             font-family: var(--font-body);
-            font-size: clamp(44px, 5.5vw, 96px);
+            font-size: clamp(38px, 5.5vw, 96px);
             font-weight: 500;
-            line-height: 0.96;
+            line-height: 1.08;
             letter-spacing: -0.03em;
             margin-bottom: 48px;
             color: var(--white);
         }
-        .section-title mark {
-            font-size: 1.05em;
+        .title.title--section mark,
+        .section-title mark,
+        .fp__h2 mark,
+        .awards__title mark,
+        .hs__title mark {
+            --mark-top: 0.12em;
+            --mark-height: 0.96em;
+            z-index: -1;
+            background: linear-gradient(var(--accent-mark-bg), var(--accent-mark-bg)) 0 var(--mark-top) / 100% var(--mark-height) no-repeat;
+            color: var(--accent-mark-fg);
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            padding: 0 0.08em;
+            position: relative;
+            border-radius: 0;
         }
 
         /* --- EXACT TITLE WIPE REVEAL (Anthracite Studio Reveal System) --- */
@@ -676,8 +706,28 @@
             --line-delay: calc(var(--reveal-delay) + var(--line, 0) * 80ms);
             display: block;
         }
+        .reveal__line:nth-child(1) {
+            position: relative;
+            z-index: 3;
+        }
+        .reveal__line:nth-child(2) {
+            position: relative;
+            z-index: 2;
+        }
+        .reveal__line:nth-child(3) {
+            position: relative;
+            z-index: 1;
+        }
         .reveal__line + .reveal__line {
             text-indent: 0;
+            margin-top: clamp(16px, 2vw, 28px);
+        }
+        .reveal__line:has(mark),
+        .reveal__line mark {
+            --reveal-color: var(--accent-mark-bg);
+        }
+        :where(:has(> mark)) {
+            isolation: isolate;
         }
         .reveal__text {
             text-indent: 0;
@@ -687,29 +737,34 @@
         }
         .reveal__text::after {
             content: "";
-            inset: -2px -6px -2px -6px;
+            inset: var(--bar-top, 0px) 0 var(--bar-bottom, 0px) 0;
             background: var(--reveal-color);
             clip-path: inset(0 100% 0 0);
             visibility: visible;
             position: absolute;
-            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
         }
         .reveal.is-revealed .reveal__text {
             animation: reveal-show 0s calc(var(--line-delay) + var(--reveal-duration) * 0.4) forwards;
         }
-        .reveal.is-revealed .reveal__text::after {
+        .reveal.is-revealed:not(.reveal--done) .reveal__text::after {
+            opacity: 1;
             animation: reveal-bar var(--reveal-duration) cubic-bezier(0.77, 0, 0.18, 1) var(--line-delay) forwards;
         }
         .reveal.reveal--done .reveal__text {
             visibility: visible !important;
         }
         .reveal.reveal--done .reveal__text::after {
+            display: none !important;
+            opacity: 0 !important;
             clip-path: inset(0 0 0 100%) !important;
+            animation: none !important;
         }
 
         @keyframes reveal-bar { 
             0% { clip-path: inset(0 100% 0 0); }
-            40% { clip-path: inset(0); }
+            40% { clip-path: inset(0 0 0 0); }
             100% { clip-path: inset(0 0 0 100%); }
         }
         @keyframes reveal-show { 
@@ -1238,6 +1293,10 @@
         }
 
         /* --- 4. SERVICES & CAPABILITIES (`hs`) (Anthracite Studio Exact) --- */
+        .hs, .fp, .awards, .ethos, .manifesto, section[id] {
+            scroll-margin-top: 80px;
+        }
+
         .hs {
             --hs-muted: rgba(232, 232, 227, 0.6);
             --hs-line: rgba(232, 232, 227, 0.18);
@@ -1258,33 +1317,20 @@
             margin-bottom: 24px;
         }
 
+
         .hs__title {
             margin: 0;
-            font-family: var(--font-title);
-            letter-spacing: -0.02em;
+            font-family: var(--font-body);
+            letter-spacing: -0.03em;
             font-style: normal;
-            font-weight: 400;
-            font-size: clamp(48px, 6vw, 104px);
-            line-height: 0.95;
+            font-weight: 500;
+            font-size: clamp(38px, 5.5vw, 96px);
+            line-height: 1.08;
             color: var(--white);
         }
 
         .hs__title .reveal__line {
             text-indent: 0;
-        }
-
-        /* Tactical Highlight mark */
-        .hs__title mark {
-            --mark-top: .18em;
-            --mark-height: .94em;
-            z-index: 1;
-            background: var(--accent-mark-bg); /* Tactical #E8E8E3, zero blue */
-            color: var(--accent-mark-fg);      /* #080807 */
-            -webkit-box-decoration-break: clone;
-            box-decoration-break: clone;
-            padding: 0 0.08em;
-            position: relative;
-            border-radius: 0;
         }
 
         /* Top-Right CTA Button */
@@ -2337,12 +2383,6 @@
             padding: 0;
         }
 
-        .ethos__header {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            margin-bottom: clamp(32px, 4vw, 56px);
-        }
 
         .ethos__body {
             position: relative;
@@ -2522,7 +2562,7 @@
         .site-footer {
             background: var(--bg);
             color: var(--white);
-            border-top: 1px solid var(--line);
+            border-top: none;
             width: 100%;
         }
 
@@ -3377,17 +3417,17 @@
     <section class="fp" id="works" data-featured-projects="" data-txt="Projects" data-bar="projects-view" aria-labelledby="fp-title">
         <div class="fp__top">
             <div class="fp__head">
-                <div>
-                    <span class="section-tag">Selected Works</span>
-                    <h2 class="title title--section fp__h2 reveal" id="fp-title" data-reveal>
-                        <span class="reveal__line" style="--line: 0;">
-                            <span class="reveal__text"><span class="reveal__word">Selected</span> <span class="reveal__word">works,</span></span>
-                        </span>
-                        <span class="reveal__line" style="--line: 1;">
-                            <span class="reveal__text"><mark>engineered with precision.</mark></span>
-                        </span>
-                    </h2>
-                </div>
+                <h2 class="title title--section fp__h2 reveal" id="fp-title" data-reveal>
+                    <span class="reveal__line" style="--line: 0;">
+                        <span class="reveal__text">Selected works,</span>
+                    </span>
+                    <span class="reveal__line" style="--line: 1;">
+                        <span class="reveal__text"><mark>engineered with</mark></span>
+                    </span>
+                    <span class="reveal__line" style="--line: 2;">
+                        <span class="reveal__text"><mark>precision.</mark></span>
+                    </span>
+                </h2>
                 <p class="fp__intro">Autonomous agent swarms, spatial computer vision, vulnerability intelligence engines, and telemetry hardware: custom systems engineered to perform and scale under extreme workloads.</p>
             </div>
         </div>
@@ -3606,13 +3646,11 @@
 
     <!-- 6. AWARDS & RECOGNITION -->
     <section class="awards" id="awards" data-txt="Recognition">
-        <div>
-            <span class="section-tag">Recognition</span>
-            <h2 class="section-title reveal awards__title" data-reveal>
-                <span class="reveal__line" style="--line: 0"><span class="reveal__text">Noticed</span></span>
-                <span class="reveal__line" style="--line: 1"><span class="reveal__text"><mark>by the community.</mark></span></span>
-            </h2>
-        </div>
+        <h2 class="section-title reveal awards__title" data-reveal>
+            <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Noticed</span></span>
+            <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>by the</mark></span></span>
+            <span class="reveal__line" style="--line: 2;"><span class="reveal__text"><mark>community.</mark></span></span>
+        </h2>
         <div class="awards__groups" data-awards-list>
             <div class="awards__group">
                 <div class="awards__org">RESEARCH &amp; HACKATHONS</div>
@@ -3650,10 +3688,6 @@
     <section class="ethos" id="ethos" data-txt="Ethos">
         <div id="testimonials" style="position: absolute; pointer-events: none; opacity: 0; top: 0;" aria-hidden="true"></div>
         <div class="ethos__container">
-            <header class="ethos__header">
-                <span class="section-tag">Ethos</span>
-            </header>
-
             <div class="ethos__body">
                 <blockquote class="ethos__quote" data-quote-scroll>
                     <p class="ethos__text">
@@ -4034,6 +4068,11 @@ Available anywhere, remotely</span>
                 opacity: 0,
                 duration: INITIAL_LOAD_CONFIG.fadeIn,
                 ease: 'power2.out',
+                onStart: () => {
+                    if (typeof window.resetRevealsForHome === 'function') {
+                        window.resetRevealsForHome();
+                    }
+                },
                 onComplete: () => {
                     overlay.classList.remove('is-on');
                     clearPendingTimers();
@@ -4060,8 +4099,10 @@ Available anywhere, remotely</span>
                     );
                     if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
                         window.resetRevealsForHome();
+                    } else if (typeof window.armSectionReveal === 'function') {
+                        window.armSectionReveal(targetElementOrFn);
                     }
-                    if (window.__lenis) window.__lenis.scrollTo(targetElementOrFn);
+                    if (window.__lenis) window.__lenis.scrollTo(targetElementOrFn, { offset: isHeroTarget ? 0 : -80 });
                     else targetElementOrFn.scrollIntoView({ behavior: 'smooth' });
                 }
                 return;
@@ -4093,13 +4134,8 @@ Available anywhere, remotely</span>
                     targetElementOrFn.closest?.('#hero') ||
                     targetElementOrFn === 0
                 );
-                if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
-                    window.resetRevealsForHome();
-                } else if (typeof window.armSectionReveal === 'function') {
-                    window.armSectionReveal(targetElementOrFn);
-                }
                 if (window.__lenis) {
-                    window.__lenis.scrollTo(targetElementOrFn, { immediate: true });
+                    window.__lenis.scrollTo(targetElementOrFn, { immediate: true, offset: isHeroTarget ? 0 : -80 });
                 } else {
                     targetElementOrFn.scrollIntoView({ behavior: 'instant' });
                 }
@@ -4111,6 +4147,21 @@ Available anywhere, remotely</span>
                 opacity: 0,
                 duration: TRANSITION_CONFIG.fadeIn,
                 ease: 'power2.out',
+                onStart: () => {
+                    if (targetElementOrFn && targetElementOrFn.nodeType === Node.ELEMENT_NODE) {
+                        const isHeroTarget = (
+                            targetElementOrFn === document.getElementById('hero') ||
+                            targetElementOrFn.id === 'hero' ||
+                            targetElementOrFn.closest?.('#hero') ||
+                            targetElementOrFn === 0
+                        );
+                        if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
+                            window.resetRevealsForHome();
+                        } else if (typeof window.armSectionReveal === 'function') {
+                            window.armSectionReveal(targetElementOrFn);
+                        }
+                    }
+                },
                 onComplete: () => {
                     overlay.classList.remove('is-on');
                     clearPendingTimers();
@@ -5357,36 +5408,6 @@ Available anywhere, remotely</span>
                 const timeMs = time * 1000;
                 const fastTick = Math.floor(timeMs / 42);
 
-                // Wireframe Contours
-                if (this.contact < 0.75) {
-                    ctx.save();
-                    const cFade = clamp01(1 - this.contact * 1.3);
-                    ctx.globalAlpha = cFade * 0.35;
-                    ctx.strokeStyle = 'rgba(232, 232, 227, 0.25)';
-                    ctx.lineWidth = 1.2;
-
-                    // Left hand contour curves
-                    const lx = originX - halfSeparation;
-                    ctx.beginPath();
-                    ctx.ellipse(lx + hands.w * 0.35, originY + hands.h * 0.72, 85, 36, -0.32, 0, Math.PI * 1.8);
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.ellipse(lx + hands.w * 0.38, originY + hands.h * 0.78, 95, 40, -0.30, 0, Math.PI * 1.7);
-                    ctx.stroke();
-
-                    // Right hand contour curves
-                    const rx = originX + halfSeparation;
-                    ctx.beginPath();
-                    ctx.ellipse(rx + hands.w * 0.65, originY + hands.h * 0.72, 85, 36, 0.32, -Math.PI * 0.8, Math.PI);
-                    ctx.stroke();
-
-                    ctx.beginPath();
-                    ctx.ellipse(rx + hands.w * 0.62, originY + hands.h * 0.78, 95, 40, 0.30, -Math.PI * 0.7, Math.PI);
-                    ctx.stroke();
-
-                    ctx.restore();
-                }
 
                 ctx.font = `700 ${hands.font.toFixed(2)}px ${FONT_MONO}`;
 
@@ -5642,6 +5663,31 @@ Available anywhere, remotely</span>
         const revealElements = Array.from(document.querySelectorAll('.reveal'));
         const hsGridEl = document.querySelector('[data-hs-grid]');
 
+        function computeRevealBars(root = document) {
+            if (!root) return;
+            const targets = [];
+            if (root.classList && root.classList.contains('reveal__text')) {
+                targets.push(root);
+            } else if (root.querySelectorAll) {
+                targets.push(...root.querySelectorAll('.reveal__text'));
+            }
+            targets.forEach(e => {
+                const t = e.getBoundingClientRect();
+                const n = document.createRange();
+                n.selectNodeContents(e);
+                const r = n.getBoundingClientRect();
+                e.style.setProperty('--bar-top', `${Math.min(0, r.top - t.top)}px`);
+                e.style.setProperty('--bar-bottom', `${Math.min(0, t.bottom - r.bottom)}px`);
+            });
+        }
+
+        // Compute initially, on font load, and on viewport resize
+        computeRevealBars();
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => computeRevealBars());
+        }
+        window.addEventListener('resize', () => computeRevealBars(), { passive: true });
+
         function scheduleRevealDone(el) {
             if (el.__revealTimer) clearTimeout(el.__revealTimer);
             const style = getComputedStyle(el);
@@ -5652,6 +5698,15 @@ Available anywhere, remotely</span>
             el.__revealTimer = setTimeout(() => {
                 el.classList.add('reveal--done');
             }, totalSec * 1000 + 50);
+
+            if (!el.__hasAnimEnd) {
+                el.__hasAnimEnd = true;
+                el.addEventListener('animationend', (e) => {
+                    if (e.animationName === 'reveal-bar') {
+                        el.classList.add('reveal--done');
+                    }
+                }, { passive: true });
+            }
         }
 
         function resetSingleReveal(el) {
@@ -5661,12 +5716,14 @@ Available anywhere, remotely</span>
                 el.__revealTimer = null;
             }
             el.classList.remove('is-revealed', 'reveal--done');
+            computeRevealBars(el);
             void el.offsetWidth; // Force CSS animation restart from frame 0
         }
 
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
+                    computeRevealBars(entry.target);
                     entry.target.classList.add('is-revealed');
                     scheduleRevealDone(entry.target);
                     revealObserver.unobserve(entry.target);
@@ -5686,6 +5743,7 @@ Available anywhere, remotely</span>
         }
 
         function armAllReveals() {
+            computeRevealBars();
             revealElements.forEach(el => {
                 resetSingleReveal(el);
                 revealObserver.observe(el);
@@ -5705,6 +5763,7 @@ Available anywhere, remotely</span>
             if (!target) return;
             const section = target.nodeType === Node.ELEMENT_NODE ? (target.closest('section') || target) : null;
             if (!section) return;
+            computeRevealBars(section);
             const reveals = section.querySelectorAll ? Array.from(section.querySelectorAll('.reveal')) : [];
             if (section.classList.contains('reveal')) reveals.push(section);
             reveals.forEach(el => {
