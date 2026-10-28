@@ -74,6 +74,7 @@
             background-color: var(--bg);
             color: var(--fg);
             min-height: 100vh;
+            min-height: 100dvh;
             overflow-x: hidden;
             position: relative;
         }
@@ -714,6 +715,7 @@
             width: 100%;
             height: 100vh;
             height: 100svh;
+            height: 100dvh;
             min-height: 800px;
             display: flex;
             flex-direction: column;
@@ -728,6 +730,7 @@
             }
             .home-hero-pin {
                 height: 100svh;
+                height: 100dvh;
                 min-height: 600px;
             }
         }
@@ -2831,28 +2834,28 @@
             <div class="bottom-nav__panel" id="bottom-nav-panel" data-bottom-nav-panel aria-hidden="true">
                 <ul class="bottom-nav__list">
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#hero" class="bottom-nav__link" aria-current="page"><span data-scramble-target>Home</span></a>
+                        <a href="#hero" class="bottom-nav__link" aria-current="page" aria-label="Home"><span data-scramble-target>Home</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#clients" class="bottom-nav__link"><span data-scramble-target>Stack</span></a>
+                        <a href="#clients" class="bottom-nav__link" aria-label="Stack"><span data-scramble-target>Stack</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#manifesto" class="bottom-nav__link"><span data-scramble-target>Manifesto</span></a>
+                        <a href="#manifesto" class="bottom-nav__link" aria-label="Manifesto"><span data-scramble-target>Manifesto</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#services" class="bottom-nav__link"><span data-scramble-target>Capabilities</span></a>
+                        <a href="#services" class="bottom-nav__link" aria-label="Capabilities"><span data-scramble-target>Capabilities</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#works" class="bottom-nav__link"><span data-scramble-target>Selected Works</span></a>
+                        <a href="#works" class="bottom-nav__link" aria-label="Selected Works"><span data-scramble-target>Selected Works</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#awards" class="bottom-nav__link"><span data-scramble-target>Recognition</span></a>
+                        <a href="#awards" class="bottom-nav__link" aria-label="Recognition"><span data-scramble-target>Recognition</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#ethos" class="bottom-nav__link"><span data-scramble-target>Ethos</span></a>
+                        <a href="#ethos" class="bottom-nav__link" aria-label="Ethos"><span data-scramble-target>Ethos</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#contact" class="bottom-nav__link"><span data-scramble-target>Contact</span></a>
+                        <a href="#contact" class="bottom-nav__link" aria-label="Contact"><span data-scramble-target>Contact</span></a>
                     </li>
                 </ul>
 
@@ -2860,10 +2863,10 @@
 
                 <div class="bottom-nav__secondary" data-bottom-nav-reveal>
                     <div class="bottom-nav__col">
-                        <a href="#works" class="menu-btn"><span data-scramble-target>See the projects</span></a>
+                        <a href="#works" class="menu-btn" aria-label="See the projects"><span data-scramble-target>See the projects</span></a>
                     </div>
                     <div class="bottom-nav__col">
-                        <a href="mailto:arshadrafi566@gmail.com" class="menu-btn"><span data-scramble-target>Contact me</span></a>
+                        <a href="mailto:arshadrafi566@gmail.com" class="menu-btn" aria-label="Contact me"><span data-scramble-target>Contact me</span></a>
                     </div>
                 </div>
             </div>
@@ -2871,6 +2874,7 @@
     </nav>
 
     <!-- 1. HERO PINNED TRACK (Anthracite Studio 220vh Scrub Pin Sequence) -->
+    <main id="main">
     <div class="home-hero-track" id="hero-track">
         <header class="home-hero-pin" id="hero" data-txt="Home">
             <!-- ASCII Hands Interactive Canvas Stage -->
@@ -2889,10 +2893,10 @@
                             Developer and AI researcher in Kerala exploring autonomous machine intelligence, computer vision, and proactive cybersecurity. Building software that bridges neural models with physical reality.
                         </p>
                         <div class="home-hero__actions">
-                            <a class="home-hero__btn-email" href="mailto:arshadrafi566@gmail.com" data-cursor="EMAIL">
+                            <a class="home-hero__btn-email" href="mailto:arshadrafi566@gmail.com" aria-label="Initiate Contact" data-cursor="EMAIL">
                                 <span data-scramble-target>Initiate Contact</span>
                             </a>
-                            <a class="home-hero__link-projects" href="#works" data-cursor="VIEW">
+                            <a class="home-hero__link-projects" href="#works" aria-label="See the projects" data-cursor="VIEW">
                                 <span data-scramble-target>See the projects ↗</span>
                             </a>
                         </div>
@@ -3150,7 +3154,7 @@
             </div>
         </div>
         <div class="pixel-frame manifesto__portrait is-init" data-pixel-reveal>
-            <img class="pixel-frame__img" src="images/profile_new.jpg" alt="Muhammed Arshad" width="1086" height="1448" decoding="async">
+            <img class="pixel-frame__img" src="images/profile_new.jpg" alt="Muhammed Arshad" width="1086" height="1448" loading="lazy" decoding="async">
             <canvas class="pixel-frame__canvas" data-src="images/profile_new.jpg" aria-hidden="true"></canvas>
         </div>
     </section>
@@ -3484,10 +3488,10 @@
             <!-- List View with Central Hover Preview -->
             <div class="fp__list" data-fp-list="" hidden="">
                 <div class="fp__preview" aria-hidden="true">
-                    <img src="./images/gesture-arcade.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/mnemosyne.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/kage.png" alt="" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/neuromesh.svg" alt="" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/gesture-arcade.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/mnemosyne.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/kage.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="./images/neuromesh.svg" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
                 </div>
                 <ol class="fp__rows">
                     <li style="--i:0">
@@ -3663,6 +3667,7 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- 8. SITE FOOTER WITH BINARY/ASCII REVEAL & ARSHAD RAFI BANNER -->
     <footer class="site-footer" id="contact" data-theme="dark" data-txt="Contact">
@@ -5253,6 +5258,7 @@ Available anywhere, remotely</span>
             }
 
             draw(time, force = false) {
+                this.drawCount = (this.drawCount || 0) + 1;
                 const cycle = time % 12;
                 const quantTime = Math.floor(time * (time > 4 ? 15 : 30));
                 const p = this.pointer;
@@ -5524,10 +5530,17 @@ Available anywhere, remotely</span>
                     });
                 }
 
-                // Animation loop with fluid pointer inertia
+                // Animation loop with fluid pointer inertia & battery-efficient viewport pausing
                 const startTime = performance.now();
+                let handsRafId = null;
+                let handsIsVisible = true;
+                let handsTabActive = !document.hidden;
+
                 function tickHands() {
-                    requestAnimationFrame(tickHands);
+                    if (!handsIsVisible || !handsTabActive) {
+                        handsRafId = null;
+                        return;
+                    }
                     const now = (performance.now() - startTime) / 1000;
                     
                     curPointerOn += (targetPointerOn - curPointerOn) * 0.10;
@@ -5539,8 +5552,48 @@ Available anywhere, remotely</span>
                     handsField.pointer.y = curPointerY;
                     
                     handsField.draw(now);
+                    handsRafId = requestAnimationFrame(tickHands);
                 }
-                requestAnimationFrame(tickHands);
+
+                function resumeHands() {
+                    if (!handsRafId && handsIsVisible && handsTabActive) {
+                        handsRafId = requestAnimationFrame(tickHands);
+                    }
+                }
+
+                function pauseHands() {
+                    if (handsRafId) {
+                        cancelAnimationFrame(handsRafId);
+                        handsRafId = null;
+                    }
+                }
+
+                // Pause canvas loop when hero track is scrolled out of viewport
+                if ('IntersectionObserver' in window && heroTrackEl) {
+                    const heroObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            handsIsVisible = entry.isIntersecting;
+                            if (handsIsVisible) {
+                                resumeHands();
+                            } else {
+                                pauseHands();
+                            }
+                        });
+                    }, { threshold: 0.01 });
+                    heroObserver.observe(heroTrackEl);
+                }
+
+                // Pause canvas loop when browser tab is inactive / backgrounded
+                document.addEventListener('visibilitychange', () => {
+                    handsTabActive = !document.hidden;
+                    if (handsTabActive && handsIsVisible) {
+                        resumeHands();
+                    } else {
+                        pauseHands();
+                    }
+                });
+
+                resumeHands();
             };
 
             heroHandsImg.onload = initHands;
@@ -6136,6 +6189,14 @@ Available anywhere, remotely</span>
                 }, { threshold: [0, 0.15, 0.3, 0.5, 0.7] });
 
                 this.io.observe(this.root.querySelector('.binary-reveal__stage') || this.root);
+
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        this.stopTwinkle();
+                    } else if (!this.armed && this.progress >= 1) {
+                        this.startTwinkle();
+                    }
+                });
             }
 
             tick() {
