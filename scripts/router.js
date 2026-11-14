@@ -16,7 +16,7 @@
         return (pathname || '/').replace(/\/index\.html$/, '').replace(/\/$/, '') || '/';
     }
 
-    const SHARED_CSS_HREF = '/styles/shared.css?v=20261115b';
+    const SHARED_CSS_HREF = '/styles/shared.css?v=20261115c';
     const pageCache = new Map();
     const prefetchInFlight = new Map();
     const prefetchedAssets = new Set();

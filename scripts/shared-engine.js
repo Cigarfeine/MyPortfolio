@@ -170,20 +170,9 @@
 
     const canvasCtx = document.createElement('canvas').getContext('2d');
     const glyphWidthCache = new Map();
-    const scrambleCharWidthCache = new Map();
     let lastPointerMoveTime = 0;
     let lastScrollTime = 0;
-
-    function measureScrambleChar(font, isUpper, ch) {
-        if (!canvasCtx) return 0;
-        const glyph = isUpper ? ch.toUpperCase() : ch;
-        const key = `${font}|${glyph}`;
-        if (scrambleCharWidthCache.has(key)) return scrambleCharWidthCache.get(key);
-        canvasCtx.font = font;
-        const w = canvasCtx.measureText(glyph).width;
-        scrambleCharWidthCache.set(key, w);
-        return w;
-    }
+    let lastTouchTime = 0;
 
     function getGlyphWidthLookup(font, chars, uppercase = false) {
         const key = `${font}|${chars}|${uppercase}`;
@@ -202,8 +191,7 @@
             const cacheKey = uppercase ? ch.toUpperCase() : ch;
             if (cache.has(cacheKey)) return cache.get(cacheKey);
             const w = measure(cacheKey);
-            // Match all glyphs within tolerance (prevents monospace from only picking A/B/C)
-            const tol = Math.max(2.2, w * 0.25);
+            const tol = w * 0.08 + 0.3;
             let pool = charMap.filter(e => Math.abs(e.w - w) <= tol && e.c !== cacheKey).map(e => e.c);
             if (!pool.length) {
                 pool = [...charMap]
@@ -223,7 +211,7 @@
 
     const isWordChar = (c) => /[\p{L}\p{N}]/u.test(c);
 
-    function buildScrambleSpans(el, text, font, isUpper) {
+    function buildScrambleSpans(el, text) {
         const container = document.createElement('span');
         container.style.pointerEvents = 'none';
         const spanItems = [];
@@ -239,12 +227,6 @@
             for (const ch of chunk) {
                 const s = document.createElement('span');
                 s.textContent = ch;
-                s.style.display = 'inline-block';
-                s.style.textAlign = 'center';
-                const measuredWidth = font ? measureScrambleChar(font, isUpper, ch) : 0;
-                if (measuredWidth > 2) {
-                    s.style.width = `${measuredWidth.toFixed(2)}px`;
-                }
                 wordSpan.appendChild(s);
                 spanItems.push({
                     el: s,
@@ -258,6 +240,18 @@
         }
         el.textContent = '';
         el.appendChild(container);
+
+        // Batch-read live rendered widths (preserves CSS letter-spacing, kerning, and fallback glyphs)
+        const widths = spanItems.map(item => item.el.getBoundingClientRect().width);
+        // Batch-write locked character cell widths so button geometry never jumps
+        spanItems.forEach((item, idx) => {
+            const w = widths[idx];
+            if (w > 0) {
+                item.el.style.display = 'inline-block';
+                item.el.style.width = `${w}px`;
+                item.el.style.textAlign = 'center';
+            }
+        });
         return spanItems;
     }
 
@@ -285,7 +279,7 @@
         const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
         const isUpper = cs.textTransform === 'uppercase';
         const lookup = getGlyphWidthLookup(font, LOWERCASE_CHARS + UPPERCASE_CHARS, isUpper);
-        const spans = buildScrambleSpans(target, original, font, isUpper);
+        const spans = buildScrambleSpans(target, original);
         const scramblableCount = spans.filter(s => s.scramblable).length;
         const charDelay = scramblableCount > 0 ? Math.min(0.18, duration / Math.max(1, scramblableCount) * 2) : 0;
         const totalTime = charDelay + duration;
@@ -350,9 +344,12 @@
     }
 
     function handleScrambleTrigger(e) {
-        if (e.type === 'mouseenter') {
+        const now = performance.now();
+        if (e.type === 'touchstart') {
+            lastTouchTime = now;
+        } else if (e.type === 'mouseenter') {
             if (window.__isTransitionCovering) return;
-            const now = performance.now();
+            if (now - lastTouchTime < 650) return;
             // Skip hover scrambles caused by content scrolling beneath a stationary cursor
             if (now - lastScrollTime < 220 && now - lastPointerMoveTime > 120) return;
             if (e.relatedTarget === null && now - lastPointerMoveTime > 150) return;
@@ -382,7 +379,6 @@
             if (e.target.matches?.(':focus-visible')) handleScrambleTrigger(e);
         }, true);
         document.addEventListener('touchstart', handleScrambleTrigger, { passive: true });
-        document.addEventListener('pointerdown', handleScrambleTrigger, { passive: true });
     }
 
     // ========================================================

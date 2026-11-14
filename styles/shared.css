@@ -316,8 +316,7 @@
 
         /* Dual scramble colors for button/link hover and touch */
         .dual-scramble-color-1 {
-            color: var(--white);
-            opacity: 0.85;
+            color: var(--scramble-color, var(--grey));
         }
 
         .dual-scramble-color-2 {
@@ -555,7 +554,8 @@
             color: var(--dark);
             border: 1px solid var(--white);
             border-radius: 0;
-            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+            --scramble-color: #686862;
+            transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--ease);
         }
 
         .menu-btn:hover,
@@ -563,6 +563,11 @@
             background-color: transparent;
             color: var(--white);
             border-color: var(--white);
+            --scramble-color: var(--grey);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.985);
         }
 
         /* Touch target expansions for coarse pointer */
@@ -596,13 +601,16 @@
             border-radius: 0;
             cursor: pointer;
             position: relative;
-            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--ease);
         }
         .fp__cta-btn:hover,
         .fp__cta-btn:focus-visible {
             background: var(--fg);
             color: var(--bg);
-            --scramble-color: var(--dark);
+            --scramble-color: #686862;
+        }
+        .fp__cta-btn:active {
+            transform: scale(0.985);
         }
 
         .btn-primary {
@@ -622,13 +630,18 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s var(--ease);
+            transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), box-shadow 0.25s var(--ease), transform 0.2s var(--ease);
         }
-        .btn-primary:hover {
+        .btn-primary:hover,
+        .btn-primary:focus-visible {
             background: var(--white);
             color: var(--bg);
-            transform: translateY(-2px);
+            border-color: var(--white);
+            --scramble-color: #686862;
             box-shadow: 0 8px 24px rgba(232, 232, 227, 0.15);
+        }
+        .btn-primary:active {
+            transform: scale(0.985);
         }
         .btn-link, .home-hero__link {
             display: inline-flex;
@@ -900,13 +913,17 @@
             text-decoration: none;
             border-radius: 2px;
             cursor: pointer;
-            transition: all 0.25s var(--ease);
+            transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--ease);
         }
-        .home-hero__btn-email:hover {
+        .home-hero__btn-email:hover,
+        .home-hero__btn-email:focus-visible {
             background: var(--white);
             color: var(--dark);
             border-color: var(--white);
-            transform: translateY(-1px);
+            --scramble-color: #686862;
+        }
+        .home-hero__btn-email:active {
+            transform: scale(0.985);
         }
         .home-hero__link-projects {
             display: inline-flex;
@@ -922,7 +939,8 @@
             padding-bottom: 4px;
             transition: border-color 0.2s ease, color 0.2s ease;
         }
-        .home-hero__link-projects:hover {
+        .home-hero__link-projects:hover,
+        .home-hero__link-projects:focus-visible {
             border-color: var(--white);
             color: var(--white);
         }
@@ -2029,7 +2047,7 @@
             padding: 16px 28px;
             font-size: 11px;
             text-decoration: none;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s var(--ease), transform 0.2s var(--ease);
             display: inline-block;
         }
 
@@ -2038,6 +2056,11 @@
             background: var(--white);
             color: var(--bg);
             border-color: var(--white);
+            --scramble-color: #686862;
+        }
+
+        .fp__cta-btn:active {
+            transform: scale(0.985);
         }
 
         /* Custom Project Cursor Follower */
@@ -2212,6 +2235,7 @@
         .fp-view__btn[aria-pressed="true"] {
             color: var(--bg);
             font-weight: 600;
+            --scramble-color: #686862;
         }
 
         .fp-view__btn:hover:not([aria-pressed="true"]) {
@@ -2241,6 +2265,7 @@
             background: #E8E8E3 !important;
             color: #080807 !important;
             font-weight: 600 !important;
+            --scramble-color: #686862;
         }
 
         [data-bar-panel]:not([data-bar-panel="projects-view"]) .fp-view__btn:not(.is-active):hover {
@@ -3858,9 +3883,14 @@ main:has(.ap-career) .ap-prose {
 .cta-pill:hover,
 .cta-pill:focus-visible {
     background-color: var(--white);
-    color: var(--black) !important;
+    color: var(--dark) !important;
     border-color: var(--white);
-    transform: translateY(-2px);
+    --scramble-color: #686862;
+}
+
+.cta-pill:active,
+.cta-pill--ghost:active {
+    transform: scale(0.985);
 }
 
 .cta-pill--ghost {
@@ -3872,9 +3902,9 @@ main:has(.ap-career) .ap-prose {
 .cta-pill--ghost:hover,
 .cta-pill--ghost:focus-visible {
     background-color: var(--white);
-    color: var(--black) !important;
+    color: var(--dark) !important;
     border-color: var(--white);
-    transform: translateY(-2px);
+    --scramble-color: #686862;
 }
 
 @media (max-width: 991px) {
