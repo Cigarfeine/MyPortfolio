@@ -41,11 +41,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
     <!-- Favicon & Touch Icons: Exact Monogram 'A' from Navbar -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='108' fill='%23080807'/%3E%3Crect width='504' height='504' x='4' y='4' rx='104' fill='none' stroke='rgba(255,255,255,0.12)' stroke-width='8'/%3E%3Cg transform='translate(106, 86) scale(0.5338)'%3E%3Cpath d='M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z' fill='%23FFFFFF'/%3E%3C/g%3E%3C/svg%3E" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
     <script>
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             document.documentElement.classList.add('is-loading');
@@ -101,7 +101,37 @@
             background-color: var(--bg);
             color: var(--fg);
             font-family: var(--font-body);
-            scroll-behavior: smooth;
+            scroll-behavior: auto;
+            overflow-x: clip;
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: clip;
+        }
+
+        .home-hero__inner,
+        .fp__link,
+        .fp__fig,
+        #hands-canvas {
+            will-change: transform;
         }
 
         body {
@@ -109,8 +139,15 @@
             color: var(--fg);
             min-height: 100vh;
             min-height: 100dvh;
-            overflow-x: hidden;
+            overflow-x: clip;
             position: relative;
+        }
+
+        @media (max-width: 991px) {
+            :root {
+                --container-min: 0px;
+                --container: 100%;
+            }
         }
 
         ::selection {
@@ -180,13 +217,14 @@
             position: fixed;
             top: 0; left: 0;
             width: 24px; height: 24px;
+            opacity: 0;
             pointer-events: none;
             z-index: 10000;
             display: flex;
             align-items: center;
             justify-content: center;
             transform: translate(-50%, -50%);
-            transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 0.2s ease, width 0.3s cubic-bezier(0.22, 1, 0.36, 1), height 0.3s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .reticle-crosshair {
@@ -2093,7 +2131,7 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: translate 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s, visibility 0.5s;
+            transition: translate 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.18s ease, visibility 0.25s;
             position: fixed;
             bottom: 24px;
             left: 50%;
@@ -2105,6 +2143,14 @@
             visibility: visible;
             pointer-events: auto;
             translate: -50% 0;
+        }
+
+        .sub-bar.sub-bar--hidden,
+        .sub-bar.is-visible.sub-bar--hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            translate: -50% 2em;
         }
 
         .sub-bar__inner {
@@ -2125,11 +2171,17 @@
         .sub-bar__panel {
             scrollbar-width: none;
             white-space: nowrap;
+            overflow-x: auto;
+            max-width: 100%;
             opacity: 1;
             align-items: center;
             height: 100%;
             padding: 4px;
             display: flex;
+        }
+
+        .sub-bar__panel:not(.is-active) {
+            display: none !important;
         }
 
         .fp-view {
@@ -2596,6 +2648,7 @@
 
         .site-footer__email {
             width: fit-content;
+            white-space: nowrap;
         }
 
         .site-footer__email:hover {
@@ -2810,7 +2863,7 @@
                 padding: 40px 20px;
             }
             .site-footer__item {
-                font-size: 2.25rem;
+                font-size: clamp(1.75rem, 6.2vw, 2.25rem);
             }
             .site-footer__location {
                 font-size: 1.5rem;
@@ -2842,7 +2895,7 @@
     </style>
 </head>
 
-<body data-cursor="ACTIVE">
+<body>
     <!-- NOISE -->
     <div class="noise"></div>
 
@@ -2872,7 +2925,7 @@
     <nav class="bottom-nav" id="bottom-nav" data-bottom-nav-init data-bottom-nav-open="false">
         <div class="bottom-nav__inner" data-bottom-nav-inner>
             <div class="bottom-nav__bar" data-bottom-nav-bar>
-                <a href="#hero" class="bottom-nav__logo" aria-label="Home" data-cursor="HOME">
+                <a href="/" class="bottom-nav__logo" aria-label="Home" data-cursor="HOME">
                     <svg viewBox="0 0 600 680" fill="none" aria-hidden="true">
                         <path d="M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z" fill="currentColor"></path>
                     </svg>
@@ -2888,28 +2941,19 @@
             <div class="bottom-nav__panel" id="bottom-nav-panel" data-bottom-nav-panel aria-hidden="true">
                 <ul class="bottom-nav__list">
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#hero" class="bottom-nav__link" aria-current="page" aria-label="Home"><span data-scramble-target>Home</span></a>
+                        <a href="/" class="bottom-nav__link" aria-current="page" aria-label="Home"><span data-scramble-target>Home</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#clients" class="bottom-nav__link" aria-label="Stack"><span data-scramble-target>Stack</span></a>
+                        <a href="/services/" class="bottom-nav__link" aria-label="Services"><span data-scramble-target>Services</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#manifesto" class="bottom-nav__link" aria-label="Manifesto"><span data-scramble-target>Manifesto</span></a>
+                        <a href="/about/" class="bottom-nav__link" aria-label="About"><span data-scramble-target>About</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#services" class="bottom-nav__link" aria-label="Capabilities"><span data-scramble-target>Capabilities</span></a>
+                        <a href="/news/" class="bottom-nav__link" aria-label="Research"><span data-scramble-target>Research</span></a>
                     </li>
                     <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#works" class="bottom-nav__link" aria-label="Selected Works"><span data-scramble-target>Selected Works</span></a>
-                    </li>
-                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#awards" class="bottom-nav__link" aria-label="Recognition"><span data-scramble-target>Recognition</span></a>
-                    </li>
-                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#ethos" class="bottom-nav__link" aria-label="Ethos"><span data-scramble-target>Ethos</span></a>
-                    </li>
-                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
-                        <a href="#contact" class="bottom-nav__link" aria-label="Contact"><span data-scramble-target>Contact</span></a>
+                        <a href="/faq/" class="bottom-nav__link" aria-label="FAQ"><span data-scramble-target>FAQ</span></a>
                     </li>
                 </ul>
 
@@ -2917,15 +2961,77 @@
 
                 <div class="bottom-nav__secondary" data-bottom-nav-reveal>
                     <div class="bottom-nav__col">
-                        <a href="#works" class="menu-btn" aria-label="See the projects"><span data-scramble-target>See the projects</span></a>
+                        <a href="/projects/" class="menu-btn" aria-label="See the projects"><span data-scramble-target>See the projects</span></a>
                     </div>
                     <div class="bottom-nav__col">
-                        <a href="mailto:arshadrafi566@gmail.com" class="menu-btn" aria-label="Contact me"><span data-scramble-target>Contact me</span></a>
+                        <a href="/contact/" class="menu-btn" aria-label="Contact me"><span data-scramble-target>Contact me</span></a>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- FLOATING SUB-BAR WITH ALL CONTEXT PANELS -->
+    <div class="sub-bar" data-sub-bar="">
+        <div class="sub-bar__inner" data-sub-bar-inner="">
+            <!-- Panel 1: Projects View (Home) -->
+            <div class="sub-bar__panel is-active" data-bar-panel="projects-view">
+                <div class="fp-view" data-fp-view="" role="group" aria-label="Project display">
+                    <span class="fp-view__pill" aria-hidden="true"></span>
+                    <button type="button" class="fp-view__btn" data-view="grid" aria-pressed="true" aria-label="Show projects as a grid" data-bar-item="" style="--i: 0;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <rect x="1" y="1" width="6" height="6"></rect>
+                            <rect x="9" y="1" width="6" height="6"></rect>
+                            <rect x="1" y="9" width="6" height="6"></rect>
+                            <rect x="9" y="9" width="6" height="6"></rect>
+                        </svg>
+                        <span data-scramble-target="">Grid</span>
+                    </button>
+                    <button type="button" class="fp-view__btn" data-view="list" aria-pressed="false" aria-label="Show projects as a list" data-bar-item="" style="--i: 1;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <rect x="1" y="2" width="14" height="2"></rect>
+                            <rect x="1" y="7" width="14" height="2"></rect>
+                            <rect x="1" y="12" width="14" height="2"></rect>
+                        </svg>
+                        <span data-scramble-target="">List</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel 2: Projects Category Filter (/projects/) -->
+            <div class="sub-bar__panel" data-bar-panel="projects-filter">
+                <div class="fp-view" role="group" aria-label="Project category filter">
+                    <button type="button" class="fp-view__btn is-active" data-filter="all" aria-pressed="true"><span>All 08</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="agents" aria-pressed="false"><span>Autonomous Agents 02</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="vision" aria-pressed="false"><span>Vision &amp; Hardware 02</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="security" aria-pressed="false"><span>Security &amp; Recon 02</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="ai-nlp" aria-pressed="false"><span>AI &amp; Knowledge 02</span></button>
+                </div>
+            </div>
+
+            <!-- Panel 3: Research Topic Filter (/news/) -->
+            <div class="sub-bar__panel" data-bar-panel="news-filter">
+                <div class="fp-view" role="group" aria-label="Research topic filter">
+                    <button type="button" class="fp-view__btn is-active" data-filter="all" aria-pressed="true"><span>All 04</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="agents" aria-pressed="false"><span>Agents 01</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="vision" aria-pressed="false"><span>Vision 01</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="security" aria-pressed="false"><span>Security 01</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="web" aria-pressed="false"><span>Web 01</span></button>
+                </div>
+            </div>
+
+            <!-- Panel 4: FAQ Topic Filter (/faq/) -->
+            <div class="sub-bar__panel" data-bar-panel="faq-filter">
+                <div class="fp-view" role="group" aria-label="FAQ topic filter">
+                    <button type="button" class="fp-view__btn is-active" data-filter="all" aria-pressed="true"><span>All 10</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="collaboration" aria-pressed="false"><span>Collaboration 03</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="ai" aria-pressed="false"><span>AI &amp; Agents 03</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="vision" aria-pressed="false"><span>Vision &amp; IoT 02</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="security" aria-pressed="false"><span>Security 02</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 1. HERO PINNED TRACK (Anthracite Studio 220vh Scrub Pin Sequence) -->
     <main id="main">
@@ -3203,13 +3309,13 @@
         <div class="manifesto__intro">
             <p class="manifesto__desc">As an AI researcher and systems architect, I build end-to-end intelligent systems from neural pipelines to bare-metal deployment. No noise, no intermediaries: direct technical execution and production reliability.</p>
             <div class="manifesto__btns">
-                <a class="fp__cta-btn" href="#contact" data-cursor="CONTACT"><span data-scramble-target>Let’s talk about your project</span></a>
-                <a class="fp__cta-btn" href="#services" data-cursor="STACK"><span data-scramble-target>More about me</span></a>
+                <a class="fp__cta-btn" href="/contact/" data-cursor="CONTACT"><span data-scramble-target>Let’s talk about your project</span></a>
+                <a class="fp__cta-btn" href="/about/" data-cursor="STACK"><span data-scramble-target>More about me</span></a>
             </div>
         </div>
         <div class="pixel-frame manifesto__portrait is-init" data-pixel-reveal>
-            <img class="pixel-frame__img" src="images/profile_new.jpg" alt="Muhammed Arshad" width="1086" height="1448" loading="lazy" decoding="async">
-            <canvas class="pixel-frame__canvas" data-src="images/profile_new.jpg" aria-hidden="true"></canvas>
+            <img class="pixel-frame__img" src="/images/profile_new.jpg" alt="Muhammed Arshad" width="1086" height="1448" loading="lazy" decoding="async">
+            <canvas class="pixel-frame__canvas" data-src="/images/profile_new.jpg" aria-hidden="true"></canvas>
         </div>
     </section>
 
@@ -3225,7 +3331,7 @@
                 </span>
             </h2>
 
-            <a class="fp__cta-btn hs__all" href="#works" data-cursor="VIEW">
+            <a class="fp__cta-btn hs__all" href="/services/" data-cursor="VIEW">
                 <span data-scramble-target>All services</span>
             </a>
         </div>
@@ -3286,9 +3392,9 @@
                 <h3 class="hs__label">Design &amp; content</h3>
                 <p class="hs__pitch">Mockups, identity and copy that serve your goals.</p>
                 <ul class="hs__list">
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">UI/UX Web Design<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Visual Identity<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Web Animations<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">UI/UX Web Design<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Visual Identity<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Web Animations<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
@@ -3318,9 +3424,9 @@
                 <h3 class="hs__label">Web development</h3>
                 <p class="hs__pitch">Full-stack web applications and systems built from scratch, which you manage on your own.</p>
                 <ul class="hs__list">
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Custom Business Platforms<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">High-Throughput APIs<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">System Modernization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Custom Business Platforms<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">High-Throughput APIs<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">System Modernization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
@@ -3359,9 +3465,9 @@
                 <h3 class="hs__label">SEO &amp; GEO</h3>
                 <p class="hs__pitch">Earn lasting rankings and get cited by ChatGPT or Perplexity.</p>
                 <ul class="hs__list">
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Search Optimization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Visibility (GEO)<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Performance Audit<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Search Optimization<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">AI Visibility (GEO)<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Performance Audit<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
 
@@ -3405,9 +3511,9 @@
                 <h3 class="hs__label">Artificial intelligence</h3>
                 <p class="hs__pitch">Automate repetitive tasks, orchestrate agent loops, and train your teams.</p>
                 <ul class="hs__list">
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Automation &amp; Agents<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">Neural Model Tuning<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
-                    <li><a class="hs__link" href="#works" data-cursor="VIEW">AI Strategy &amp; Defense<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">AI Automation &amp; Agents<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">Neural Model Tuning<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
+                    <li><a class="hs__link" href="/services/" data-cursor="VIEW">AI Strategy &amp; Defense<span class="hs__arrow" aria-hidden="true">↗</span></a></li>
                 </ul>
             </div>
         </div>
@@ -3437,9 +3543,9 @@
             <ol class="fp__grid">
                 <!-- Slot 1: SpatialTouch / Gesture Arcade (span 11, aspect 3/2) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="1" style="--row:1">
-                    <a class="fp__link" href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer">
+                    <a class="fp__link" href="/projects/gesture-gaming/">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="./images/gesture-arcade.png" alt="SpatialTouch Gesture Arcade hardware and computer vision display" loading="lazy" decoding="async" width="1080" height="720">
+                            <img src="/images/gesture-arcade.png" alt="SpatialTouch Gesture Arcade hardware and computer vision display" loading="lazy" decoding="async" width="1080" height="720">
                             <figcaption class="fp__tags">
                                 <span class="fp__tag" style="--j:0; --t:3">Spatial Vision</span>
                                 <span class="fp__tag" style="--j:1; --t:3">MediaPipe</span>
@@ -3463,9 +3569,9 @@
 
                 <!-- Slot 2: Mnemosyne (span 9, row 2, negative margin, aspect 16/9 widescreen) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="2" style="--row:2">
-                    <a class="fp__link" href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer">
+                    <a class="fp__link" href="/projects/mnemosyne/">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="./images/mnemosyne.png" alt="Mnemosyne academic synthesis engine interface" loading="lazy" decoding="async" width="1920" height="1080">
+                            <img src="/images/mnemosyne.png" alt="Mnemosyne academic synthesis engine interface" loading="lazy" decoding="async" width="1920" height="1080">
                             <figcaption class="fp__tags">
                                 <span class="fp__tag" style="--j:0; --t:2">AI Architecture</span>
                                 <span class="fp__tag" style="--j:1; --t:2">Knowledge Graph</span>
@@ -3488,9 +3594,9 @@
 
                 <!-- Slot 3: KAGE Agent (span 12, row 3, aspect 16/9 panoramic) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="3" style="--row:3">
-                    <a class="fp__link" href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer">
+                    <a class="fp__link" href="/projects/kage-agent/">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="./images/kage.png" alt="KAGE autonomous dependency vulnerability triage dashboard" loading="lazy" decoding="async" width="1920" height="1080">
+                            <img src="/images/kage.png" alt="KAGE autonomous dependency vulnerability triage dashboard" loading="lazy" decoding="async" width="1920" height="1080">
                             <figcaption class="fp__tags">
                                 <span class="fp__tag" style="--j:0; --t:3">Security Agent</span>
                                 <span class="fp__tag" style="--j:1; --t:3">OSV.dev Engine</span>
@@ -3514,9 +3620,9 @@
 
                 <!-- Slot 4: NeuroMesh (span 8, row 4, aspect 4/5 portrait) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="4" style="--row:4">
-                    <a class="fp__link" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer">
+                    <a class="fp__link" href="/projects/neuromesh/">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="./images/neuromesh.svg" alt="NeuroMesh multi-agent topology network nodes" loading="lazy" decoding="async" width="1080" height="1350">
+                            <img src="/images/neuromesh.svg" alt="NeuroMesh multi-agent topology network nodes" loading="lazy" decoding="async" width="1080" height="1350">
                             <figcaption class="fp__tags">
                                 <span class="fp__tag" style="--j:0; --t:3">Multi-Agent Swarms</span>
                                 <span class="fp__tag" style="--j:1; --t:3">Distributed Systems</span>
@@ -3542,14 +3648,14 @@
             <!-- List View with Central Hover Preview -->
             <div class="fp__list" data-fp-list="" hidden="">
                 <div class="fp__preview" aria-hidden="true">
-                    <img src="./images/gesture-arcade.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/mnemosyne.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/kage.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="./images/neuromesh.svg" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="/images/gesture-arcade.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="/images/mnemosyne.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="/images/kage.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="/images/neuromesh.svg" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
                 </div>
                 <ol class="fp__rows">
                     <li style="--i:0">
-                        <a class="fp__row" href="https://github.com/Cigarfeine/GestureGaming" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                        <a class="fp__row" href="/projects/gesture-gaming/" data-fp-row="">
                             <span class="fp__row-name"><span data-scramble-target="">Gesture Gaming</span></span>
                             <span class="fp__row-meta">Spatial Vision &amp; Hardware</span>
                             <span class="fp__row-ic" aria-hidden="true">
@@ -3560,7 +3666,7 @@
                         </a>
                     </li>
                     <li style="--i:1">
-                        <a class="fp__row" href="https://github.com/Cigarfeine/MNEMOSYNE" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                        <a class="fp__row" href="/projects/mnemosyne/" data-fp-row="">
                             <span class="fp__row-name"><span data-scramble-target="">Mnemosyne</span></span>
                             <span class="fp__row-meta">AI Architecture &amp; NLP</span>
                             <span class="fp__row-ic" aria-hidden="true">
@@ -3571,7 +3677,7 @@
                         </a>
                     </li>
                     <li style="--i:2">
-                        <a class="fp__row" href="https://github.com/Cigarfeine/KAGE-AGENT" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                        <a class="fp__row" href="/projects/kage-agent/" data-fp-row="">
                             <span class="fp__row-name"><span data-scramble-target="">KAGE Agent</span></span>
                             <span class="fp__row-meta">Cybersecurity &amp; Autonomous Agents</span>
                             <span class="fp__row-ic" aria-hidden="true">
@@ -3582,7 +3688,7 @@
                         </a>
                     </li>
                     <li style="--i:3">
-                        <a class="fp__row" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer" data-fp-row="">
+                        <a class="fp__row" href="/projects/neuromesh/" data-fp-row="">
                             <span class="fp__row-name"><span data-scramble-target="">NeuroMesh</span></span>
                             <span class="fp__row-meta">Multi-Agent Swarm Orchestrator</span>
                             <span class="fp__row-ic" aria-hidden="true">
@@ -3598,8 +3704,8 @@
 
         <!-- Bottom CTA -->
         <div class="fp__cta" data-bar-avoid="">
-            <a class="fp__cta-btn" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer">
-                <span data-scramble-target="">See all projects</span>
+            <a class="fp__cta-btn" href="/projects/">
+                <span data-scramble-target="">See all 8 projects</span>
             </a>
         </div>
 
@@ -3616,33 +3722,7 @@
         </div>
     </section>
 
-    <!-- Floating Sub-Bar View Switcher (Anthracite Studio Pill Bar) -->
-    <div class="sub-bar" data-sub-bar="">
-        <div class="sub-bar__inner" data-sub-bar-inner="">
-            <div class="sub-bar__panel is-active" data-bar-panel="projects-view">
-                <div class="fp-view" data-fp-view="" role="group" aria-label="Project display">
-                    <span class="fp-view__pill" aria-hidden="true"></span>
-                    <button type="button" class="fp-view__btn" data-view="grid" aria-pressed="true" aria-label="Show projects as a grid" data-bar-item="" style="--i: 0;">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <rect x="1" y="1" width="6" height="6"></rect>
-                            <rect x="9" y="1" width="6" height="6"></rect>
-                            <rect x="1" y="9" width="6" height="6"></rect>
-                            <rect x="9" y="9" width="6" height="6"></rect>
-                        </svg>
-                        <span data-scramble-target="">Grid</span>
-                    </button>
-                    <button type="button" class="fp-view__btn" data-view="list" aria-pressed="false" aria-label="Show projects as a list" data-bar-item="" style="--i: 1;">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                            <rect x="1" y="2" width="14" height="2"></rect>
-                            <rect x="1" y="7" width="14" height="2"></rect>
-                            <rect x="1" y="12" width="14" height="2"></rect>
-                        </svg>
-                        <span data-scramble-target="">List</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- 6. AWARDS & RECOGNITION -->
     <section class="awards" id="awards" data-txt="Recognition">
@@ -3719,7 +3799,7 @@
 
     <!-- 8. SITE FOOTER WITH BINARY/ASCII REVEAL & ARSHAD RAFI BANNER -->
     <footer class="site-footer" id="contact" data-theme="dark" data-txt="Contact">
-        <div class="binary-reveal" data-binary-reveal="" data-src="./images/footer-sample.webp">
+        <div class="binary-reveal" data-binary-reveal="" data-src="/images/footer-sample.webp">
             <div class="binary-reveal__stage">
                 <canvas></canvas>
             </div>
@@ -3754,20 +3834,20 @@ Available anywhere, remotely</span>
             <nav class="site-footer__expertise" aria-labelledby="footer-expertise">
                 <p class="site-footer__heading" id="footer-expertise">Expertise</p>
                 <ul class="site-footer__tags">
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>AI Swarms &amp; Agents</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Autonomous Systems</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Full-Stack Web</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Spatial Computing</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>NLP &amp; LLM Pipelines</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Cybersecurity Audit</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Edge Embedded IoT</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>React &amp; Next.js</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Distributed Consensus</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>System Architecture</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Accessibility (A11y)</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Performance Profiling</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Reverse Engineering</span></a></li>
-                    <li><a class="site-footer__tag" href="#services"><span data-scramble-target>Computer Vision</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>AI Swarms &amp; Agents</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Autonomous Systems</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Full-Stack Web</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Spatial Computing</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>NLP &amp; LLM Pipelines</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Cybersecurity Audit</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Edge Embedded IoT</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>React &amp; Next.js</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Distributed Consensus</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>System Architecture</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Accessibility (A11y)</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Performance Profiling</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Reverse Engineering</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/"><span data-scramble-target>Computer Vision</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -3775,14 +3855,13 @@ Available anywhere, remotely</span>
         <div class="site-footer__bottom">
             <div class="site-footer__row">
                 <nav class="site-footer__nav" aria-label="Site pages">
-                    <a class="site-footer__link" href="#hero" aria-current="page"><span data-scramble-target>Home</span></a>
-                    <a class="site-footer__link" href="#clients"><span data-scramble-target>Stack</span></a>
-                    <a class="site-footer__link" href="#manifesto"><span data-scramble-target>Manifesto</span></a>
-                    <a class="site-footer__link" href="#services"><span data-scramble-target>Capabilities</span></a>
-                    <a class="site-footer__link" href="#works"><span data-scramble-target>Works</span></a>
-                    <a class="site-footer__link" href="#awards"><span data-scramble-target>Recognition</span></a>
-                    <a class="site-footer__link" href="#ethos"><span data-scramble-target>Ethos</span></a>
-                    <a class="site-footer__link" href="#contact"><span data-scramble-target>Contact</span></a>
+                    <a class="site-footer__link" href="/" aria-current="page"><span data-scramble-target>Home</span></a>
+                    <a class="site-footer__link" href="/services/"><span data-scramble-target>Capabilities</span></a>
+                    <a class="site-footer__link" href="/projects/"><span data-scramble-target>Projects</span></a>
+                    <a class="site-footer__link" href="/about/"><span data-scramble-target>About</span></a>
+                    <a class="site-footer__link" href="/news/"><span data-scramble-target>Research</span></a>
+                    <a class="site-footer__link" href="/faq/"><span data-scramble-target>FAQ</span></a>
+                    <a class="site-footer__link" href="/contact/"><span data-scramble-target>Contact</span></a>
                 </nav>
                 <ul class="site-footer__social">
                     <li><a class="site-footer__social-link" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer"><span data-scramble-target>GitHub ↗</span></a></li>
@@ -3802,9 +3881,8 @@ Available anywhere, remotely</span>
                     </a>
                 </div>
                 <nav class="site-footer__legal" aria-label="System telemetry">
-                    <span class="site-footer__legal-link">HQ: KERALA, INDIA</span>
                     <span class="site-footer__legal-link" id="footer-live-clock">00:00:00 UTC</span>
-                    <button type="button" class="site-footer__legal-link" id="footer-back-to-top" onclick="if(window.triggerPageTransition){window.triggerPageTransition(document.getElementById('hero'));}else{window.scrollTo({top:0,behavior:'smooth'});if(window.resetRevealsForHome)window.resetRevealsForHome();}"><span>BACK TO TOP ↑</span></button>
+                    <button type="button" class="site-footer__legal-link" id="footer-back-to-top"><span>BACK TO TOP ↑</span></button>
                 </nav>
             </div>
         </div>
@@ -3817,2800 +3895,10 @@ Available anywhere, remotely</span>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     
     <!-- ASCII Hands + Ambient Field Engine -->
-    <script src="ascii-hands.js"></script>
+    <script src="/ascii-hands.js"></script>
 
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
-        if (window.CustomEase) {
-            gsap.registerPlugin(CustomEase);
-            CustomEase.create("osmo", "M0,0 C0.625,0.05 0,1 1,1");
-        }
-
-        const isMobile = window.innerWidth <= 991;
-
-        // ========================================================
-        // 1. ANTHRACITE STUDIO PRELOADER & PAGE TRANSITION ENGINE
-        // ========================================================
-        const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz';
-        const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const easeQuadInOut = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
-        const getRandomChar = (char) => {
-            const set = char === char.toLowerCase() ? LOWERCASE_CHARS : UPPERCASE_CHARS;
-            return set[(Math.random() * set.length) | 0];
-        };
-
-        function setCharPhase(item, phase) {
-            if (item.phase !== phase) {
-                item.phase = phase;
-                item.el.className = `sweep-char ${phase}`;
-            }
-        }
-
-        function runSweepAnimation(durationSec, onUpdate, easeFn = (t) => t) {
-            let rafId;
-            let stopped = false;
-            let resolvePromise;
-            const promise = new Promise((resolve) => {
-                resolvePromise = resolve;
-                const startTime = performance.now();
-                const loop = (now) => {
-                    if (stopped) return resolve();
-                    const progress = Math.min(1, (now - startTime) / (durationSec * 1000));
-                    onUpdate(easeFn(progress));
-                    if (progress < 1) {
-                        rafId = requestAnimationFrame(loop);
-                    } else {
-                        resolve();
-                    }
-                };
-                rafId = requestAnimationFrame(loop);
-            });
-            return {
-                promise,
-                stop: () => {
-                    stopped = true;
-                    cancelAnimationFrame(rafId);
-                    resolvePromise?.();
-                }
-            };
-        }
-
-        function initSweepText(el, { band = 70, glyphEvery = 40 } = {}) {
-            const text = el.dataset.sweepText ?? el.textContent.trim();
-            el.dataset.sweepText = text;
-            el.textContent = '';
-            const chars = [...text].map((ch) => {
-                const span = document.createElement('span');
-                span.textContent = ch;
-                el.appendChild(span);
-                return { el: span, text: ch, space: /\s/.test(ch), phase: '' };
-            });
-            const parentLeft = el.getBoundingClientRect().left;
-            chars.forEach((c) => {
-                const rect = c.el.getBoundingClientRect();
-                c.w = rect.width;
-                c.x = rect.left - parentLeft;
-            });
-            chars.forEach((c) => {
-                c.el.style.display = 'inline-block';
-                c.el.style.width = `${c.w}px`;
-                c.el.style.textAlign = 'center';
-                c.el.style.whiteSpace = 'pre';
-            });
-            const state = {
-                el,
-                chars,
-                width: Math.max(1, ...chars.map((c) => c.x + c.w)),
-                band,
-                glyphEvery,
-                anim: null
-            };
-            resetSweepToHidden(state);
-            return state;
-        }
-
-        function resetSweepToHidden(state) {
-            state.anim?.stop();
-            state.chars.forEach((c) => {
-                setCharPhase(c, 'is-hidden');
-                c.el.textContent = c.text;
-            });
-        }
-
-        function animateSweepWrite(state, { duration = 0.42 } = {}) {
-            state.anim?.stop();
-            let lastGlyphStep = -1;
-            state.anim = runSweepAnimation(duration, (t) => {
-                const currentGlyphStep = Math.floor(performance.now() / state.glyphEvery);
-                const bandLeadX = t * (state.width + state.band);
-                for (const char of state.chars) {
-                    if (char.space) {
-                        setCharPhase(char, 'is-final');
-                        continue;
-                    }
-                    if (char.x + char.w <= bandLeadX - state.band) {
-                        setCharPhase(char, 'is-final');
-                        if (char.el.textContent !== char.text) char.el.textContent = char.text;
-                    } else if (bandLeadX > 0 && char.x < bandLeadX) {
-                        setCharPhase(char, 'is-band');
-                        if (currentGlyphStep !== lastGlyphStep) {
-                            char.el.textContent = getRandomChar(char.text);
-                        }
-                    } else {
-                        setCharPhase(char, 'is-hidden');
-                    }
-                }
-                lastGlyphStep = currentGlyphStep;
-                if (t === 1) {
-                    state.chars.forEach((c) => {
-                        setCharPhase(c, 'is-final');
-                        c.el.textContent = c.text;
-                    });
-                }
-            }, easeQuadInOut);
-            return state.anim.promise;
-        }
-
-        function animateSweepErase(state, { duration = 0.32 } = {}) {
-            state.anim?.stop();
-            const total = Math.max(1, state.chars.length - 1);
-            state.chars.forEach((char, idx) => {
-                char.start = ((total - idx) / total) * 0.55 + Math.random() * 0.25;
-                char.end = Math.min(1, char.start + 0.15 + Math.random() * 0.15);
-            });
-            let lastGlyphStep = -1;
-            state.anim = runSweepAnimation(duration, (t) => {
-                const currentGlyphStep = Math.floor(performance.now() / state.glyphEvery);
-                for (const char of state.chars) {
-                    if (t >= char.end) {
-                        setCharPhase(char, 'is-hidden');
-                    } else if (t >= char.start && !char.space) {
-                        setCharPhase(char, 'is-band');
-                        if (currentGlyphStep !== lastGlyphStep) {
-                            char.el.textContent = getRandomChar(char.text);
-                        }
-                    }
-                }
-                lastGlyphStep = currentGlyphStep;
-                if (t === 1) resetSweepToHidden(state);
-            });
-            return state.anim.promise;
-        }
-
-        const TRANSITION_CONFIG = {
-            fadeOut: 0.40,
-            overlap: 0.12,
-            cadence: 0.42,
-            write: 0.38,
-            erase: 0.28,
-            fadeIn: 0.50
-        };
-
-        const INITIAL_LOAD_CONFIG = {
-            speed: 1.25,
-            fadeIn: 0.70,
-            maxWait: 1500
-        };
-
-        let sweepLineInstances = [];
-        let pendingTimers = [];
-        let isNavigating = false;
-
-        function getTransitionOverlay() {
-            return document.querySelector('[data-page-transition]');
-        }
-
-        function prepareSweepLines() {
-            const overlay = getTransitionOverlay();
-            if (overlay && !sweepLineInstances.length) {
-                sweepLineInstances = [...overlay.querySelectorAll('[data-page-transition-line]')].map(el => initSweepText(el));
-            }
-        }
-
-        function clearPendingTimers() {
-            pendingTimers.forEach(t => t.kill());
-            pendingTimers = [];
-        }
-
-        function playSweepSequence(speedFactor = 1) {
-            prepareSweepLines();
-            clearPendingTimers();
-            const cadence = TRANSITION_CONFIG.cadence * speedFactor;
-            const writeTime = TRANSITION_CONFIG.write * speedFactor;
-            const eraseTime = TRANSITION_CONFIG.erase * speedFactor;
-
-            sweepLineInstances.forEach((line, idx) => {
-                pendingTimers.push(
-                    gsap.delayedCall(idx * cadence, () => {
-                        line.el.style.opacity = '1';
-                        animateSweepWrite(line, { duration: writeTime });
-                    })
-                );
-                pendingTimers.push(
-                    gsap.delayedCall((idx + 2) * cadence, () => {
-                        animateSweepErase(line, { duration: eraseTime });
-                    })
-                );
-            });
-            return (sweepLineInstances.length + 1) * cadence + eraseTime;
-        }
-
-        async function runInitialLoader() {
-            const overlay = getTransitionOverlay();
-            if (!overlay) {
-                document.documentElement.classList.remove('is-loading');
-                return;
-            }
-            if (window.__lenis) window.__lenis.stop();
-            document.documentElement.classList.add('is-page-transition');
-            overlay.classList.add('is-on');
-            gsap.set(overlay, { opacity: 1 });
-            document.documentElement.classList.remove('is-loading');
-
-            try {
-                await document.fonts.ready;
-            } catch (e) {}
-
-            prepareSweepLines();
-            const totalSweepSec = playSweepSequence(INITIAL_LOAD_CONFIG.speed);
-
-            const loadPromise = document.readyState === 'complete'
-                ? Promise.resolve()
-                : new Promise(r => window.addEventListener('load', r, { once: true }));
-
-            await Promise.all([
-                new Promise(r => setTimeout(r, totalSweepSec * 1000)),
-                Promise.race([loadPromise, new Promise(r => setTimeout(r, INITIAL_LOAD_CONFIG.maxWait))])
-            ]);
-
-            if (window.__lenis) window.__lenis.start();
-            gsap.to(overlay, {
-                opacity: 0,
-                duration: INITIAL_LOAD_CONFIG.fadeIn,
-                ease: 'power2.out',
-                onStart: () => {
-                    if (typeof window.resetRevealsForHome === 'function') {
-                        window.resetRevealsForHome();
-                    }
-                },
-                onComplete: () => {
-                    overlay.classList.remove('is-on');
-                    clearPendingTimers();
-                    sweepLineInstances.forEach(line => {
-                        resetSweepToHidden(line);
-                        line.el.style.opacity = '';
-                    });
-                    document.documentElement.classList.remove('is-page-transition');
-                }
-            });
-        }
-
-        async function triggerPageTransition(targetElementOrFn) {
-            if (isNavigating) return;
-            const overlay = getTransitionOverlay();
-            if (!overlay || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                if (typeof targetElementOrFn === 'function') targetElementOrFn();
-                else if (targetElementOrFn) {
-                    const isHeroTarget = (
-                        targetElementOrFn === document.getElementById('hero') ||
-                        targetElementOrFn.id === 'hero' ||
-                        targetElementOrFn.closest?.('#hero') ||
-                        targetElementOrFn === 0
-                    );
-                    if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
-                        window.resetRevealsForHome();
-                    } else if (typeof window.armSectionReveal === 'function') {
-                        window.armSectionReveal(targetElementOrFn);
-                    }
-                    if (window.__lenis) window.__lenis.scrollTo(targetElementOrFn, { offset: isHeroTarget ? 0 : -80 });
-                    else targetElementOrFn.scrollIntoView({ behavior: 'smooth' });
-                }
-                return;
-            }
-
-            isNavigating = true;
-
-            // Auto-close bottom nav drawer if open
-            const nav = document.querySelector('[data-bottom-nav-init]');
-            if (nav?.getAttribute('data-bottom-nav-open') === 'true') {
-                nav.querySelector('[data-bottom-nav-toggle]')?.click();
-            }
-
-            prepareSweepLines();
-            document.documentElement.classList.add('is-page-transition');
-            overlay.classList.add('is-on');
-            gsap.killTweensOf(overlay);
-
-            await gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.28, ease: 'power2.in' });
-
-            const durationSec = playSweepSequence(1.0);
-
-            if (typeof targetElementOrFn === 'function') {
-                targetElementOrFn();
-            } else if (targetElementOrFn) {
-                const isHeroTarget = (
-                    targetElementOrFn === document.getElementById('hero') ||
-                    targetElementOrFn.id === 'hero' ||
-                    targetElementOrFn.closest?.('#hero') ||
-                    targetElementOrFn === 0
-                );
-                if (window.__lenis) {
-                    window.__lenis.scrollTo(targetElementOrFn, { immediate: true, offset: isHeroTarget ? 0 : -80 });
-                } else {
-                    targetElementOrFn.scrollIntoView({ behavior: 'instant' });
-                }
-            }
-
-            await new Promise(r => setTimeout(r, Math.max(0, durationSec - TRANSITION_CONFIG.erase) * 1000));
-
-            gsap.to(overlay, {
-                opacity: 0,
-                duration: TRANSITION_CONFIG.fadeIn,
-                ease: 'power2.out',
-                onStart: () => {
-                    if (targetElementOrFn && targetElementOrFn.nodeType === Node.ELEMENT_NODE) {
-                        const isHeroTarget = (
-                            targetElementOrFn === document.getElementById('hero') ||
-                            targetElementOrFn.id === 'hero' ||
-                            targetElementOrFn.closest?.('#hero') ||
-                            targetElementOrFn === 0
-                        );
-                        if (isHeroTarget && typeof window.resetRevealsForHome === 'function') {
-                            window.resetRevealsForHome();
-                        } else if (typeof window.armSectionReveal === 'function') {
-                            window.armSectionReveal(targetElementOrFn);
-                        }
-                    }
-                },
-                onComplete: () => {
-                    overlay.classList.remove('is-on');
-                    clearPendingTimers();
-                    sweepLineInstances.forEach(line => {
-                        resetSweepToHidden(line);
-                        line.el.style.opacity = '';
-                    });
-                    document.documentElement.classList.remove('is-page-transition');
-                    isNavigating = false;
-                }
-            });
-        }
-        window.triggerPageTransition = triggerPageTransition;
-
-        if (document.documentElement.classList.contains('is-loading')) {
-            runInitialLoader();
-        }
-
-        // 2. SMOOTH SCROLL (Anthracite Studio Lenis Engine)
-        let lenis;
-        if (!isMobile) {
-            lenis = new Lenis({
-                lerp: 0.09,
-                wheelMultiplier: 1.0,
-                touchMultiplier: 1.2,
-                smoothWheel: true,
-                respectReducedMotion: true
-            });
-            lenis.on('scroll', ScrollTrigger.update);
-            gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-            gsap.ticker.lagSmoothing(0);
-            window.__lenis = lenis;
-
-        }
-
-        // Smooth anchor links with Anthracite Studio Page Transition
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                const targetId = this.getAttribute('href');
-                if (targetId && targetId !== '#') {
-                    const targetEl = document.querySelector(targetId);
-                    if (targetEl) {
-                        e.preventDefault();
-                        triggerPageTransition(targetEl);
-                    }
-                }
-            });
-        });
-
-        // 3. RETICLE CURSOR TRACKING (Anthracite Studio Precision Crosshair & Corner Viewfinder)
-        const reticle = document.getElementById('cursor-reticle');
-        const cursorLabel = document.getElementById('cursor-label');
-        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-        let vX = mouseX, vY = mouseY;
-
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        }, { passive: true });
-
-        if (!isMobile && reticle) {
-            gsap.ticker.add(() => {
-                vX += (mouseX - vX) * 0.22;
-                vY += (mouseY - vY) * 0.22;
-                gsap.set(reticle, { x: vX, y: vY });
-                if (cursorLabel) gsap.set(cursorLabel, { x: vX + 24, y: vY + 24 });
-            });
-
-            document.querySelectorAll('[data-cursor]').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    document.body.classList.add('hover-active');
-                    if (cursorLabel) cursorLabel.textContent = el.getAttribute('data-cursor') || 'VIEW';
-                });
-                el.addEventListener('mouseleave', () => {
-                    document.body.classList.remove('hover-active');
-                });
-            });
-        }
-
-        // ========================================================
-        // 4. ANTHRACITE STUDIO DUAL-SCRAMBLE ENGINE (ZERO JITTER)
-        // ========================================================
-        const canvasCtx = document.createElement('canvas').getContext('2d');
-        const glyphWidthCache = new Map();
-
-        function getGlyphWidthLookup(font, chars, uppercase = false) {
-            const key = `${font}|${chars}|${uppercase}`;
-            if (glyphWidthCache.has(key)) return glyphWidthCache.get(key);
-            const measure = (t) => {
-                canvasCtx.font = font;
-                return canvasCtx.measureText(uppercase ? t.toUpperCase() : t).width;
-            };
-            const charMap = [...chars].map(c => ({ c, w: measure(c) }));
-            const cache = new Map();
-            const lookup = (ch) => {
-                if (cache.has(ch)) return cache.get(ch);
-                const w = measure(ch);
-                const sorted = [...charMap].sort((a, b) => Math.abs(a.w - w) - Math.abs(b.w - w)).slice(0, 3);
-                const list = sorted.map(e => e.c).filter(c => c !== ch);
-                cache.set(ch, list.length ? list : [ch]);
-                return cache.get(ch);
-            };
-            glyphWidthCache.set(key, lookup);
-            return lookup;
-        }
-
-        const isWordChar = (c) => /[\p{L}\p{N}]/u.test(c);
-
-        function buildScrambleSpans(el, text) {
-            el.textContent = '';
-            const container = document.createElement('span');
-            container.style.pointerEvents = 'none';
-            const spanItems = [];
-
-            for (const chunk of text.split(/(\s+)/)) {
-                if (!chunk) continue;
-                if (/^\s+$/.test(chunk)) {
-                    container.appendChild(document.createTextNode(chunk));
-                    continue;
-                }
-                const wordSpan = document.createElement('span');
-                wordSpan.style.whiteSpace = 'nowrap';
-                for (const ch of chunk) {
-                    const s = document.createElement('span');
-                    s.textContent = ch;
-                    wordSpan.appendChild(s);
-                    spanItems.push({
-                        el: s,
-                        ch,
-                        scramblable: isWordChar(ch),
-                        shown: ch,
-                        cls: ''
-                    });
-                }
-                container.appendChild(wordSpan);
-            }
-            el.appendChild(container);
-
-            const widths = spanItems.map(item => item.el.getBoundingClientRect().width);
-            spanItems.forEach((item, idx) => {
-                item.el.style.display = 'inline-block';
-                item.el.style.width = `${widths[idx]}px`;
-                item.el.style.textAlign = 'center';
-            });
-            return spanItems;
-        }
-
-        function scrambleText(target, duration = 0.45) {
-            if (!target) return;
-            const original = target.dataset.originalText || target.textContent.trim();
-            if (!target.dataset.originalText) target.dataset.originalText = original;
-
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                target.textContent = original;
-                return;
-            }
-
-            cancelAnimationFrame(target.__scrambleRaf);
-            const cs = window.getComputedStyle(target);
-            const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-            const lookup = getGlyphWidthLookup(font, LOWERCASE_CHARS + UPPERCASE_CHARS, cs.textTransform === 'uppercase');
-            const spans = buildScrambleSpans(target, original);
-            const scramblableCount = spans.filter(s => s.scramblable).length;
-            const charDelay = scramblableCount > 0 ? duration / scramblableCount : 0;
-            const totalTime = charDelay + duration;
-            let lastTime = -Infinity;
-            const startTime = performance.now();
-
-            const tick = (now) => {
-                const elapsed = (now - startTime) / 1000;
-                const resolvedIdx = Math.floor(Math.min(1, Math.max(0, (elapsed - charDelay) / duration)) * spans.length);
-                const shouldUpdate = now - lastTime >= 40;
-                if (shouldUpdate) lastTime = now;
-
-                spans.forEach((item, idx) => {
-                    const isResolved = idx < resolvedIdx || !item.scramblable;
-                    const cls = isResolved ? 'dual-scramble-color-2' : 'dual-scramble-color-1';
-                    if (item.cls !== cls) {
-                        item.el.className = cls;
-                        item.cls = cls;
-                    }
-                    let glyph = item.ch;
-                    if (!isResolved) {
-                        if (!shouldUpdate) return;
-                        const choices = lookup(item.ch);
-                        glyph = choices[(Math.random() * choices.length) | 0];
-                    }
-                    if (item.shown !== glyph) {
-                        item.el.textContent = glyph;
-                        item.shown = glyph;
-                    }
-                });
-
-                if (elapsed < totalTime) {
-                    target.__scrambleRaf = requestAnimationFrame(tick);
-                } else {
-                    target.textContent = original;
-                }
-            };
-            target.__scrambleRaf = requestAnimationFrame(tick);
-        }
-        window.scrambleText = scrambleText;
-
-        function findScrambleTarget(parent) {
-            const target = parent.querySelector('[data-scramble-target]');
-            if (target) return target;
-            if (!parent.children.length) return parent.textContent.trim() ? parent : null;
-            const leaves = [...parent.querySelectorAll('*')].filter(el => !el.children.length && el.textContent.trim() && !el.closest('svg'));
-            return leaves.length === 1 ? leaves[0] : null;
-        }
-
-        function handleScrambleTrigger(e) {
-            const btn = e.target.closest?.('a, button, [data-scramble], .menu-btn, .awards__item, .logo-wall__logo, .site-footer__tag, .hs__btn, .home-hero__btn-email, .home-hero__link-projects, .bottom-nav__link');
-            if (!btn || btn.closest('[data-no-scramble]')) return;
-            if (e.type === 'mouseenter' && e.relatedTarget && btn.contains(e.relatedTarget)) return;
-            const target = findScrambleTarget(btn);
-            if (target) {
-                scrambleText(target, 0.45);
-            }
-        }
-
-        // Tactile event listeners on hover, focus, touch, and pointerdown
-        document.addEventListener('mouseenter', handleScrambleTrigger, true);
-        document.addEventListener('focusin', (e) => {
-            if (e.target.matches?.(':focus-visible')) handleScrambleTrigger(e);
-        }, true);
-        document.addEventListener('touchstart', handleScrambleTrigger, { passive: true });
-        document.addEventListener('pointerdown', handleScrambleTrigger, { passive: true });
-
-        // 4b. ANTHRACITE STUDIO SLOT-BASED LOGO / TECH STACK WALL
-        function initClientsWall() {
-            const staggerAmount = 0.35;
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-            document.querySelectorAll('[data-logo-wall-cycle-init]').forEach(wallEl => {
-                const listEl = wallEl.querySelector('[data-logo-wall-list]');
-                if (!listEl) return;
-                const items = Array.from(listEl.querySelectorAll('[data-logo-wall-item]'));
-                const shouldShuffle = wallEl.getAttribute('data-logo-wall-shuffle') !== 'false';
-                const targets = items.map(el => el.querySelector('[data-logo-wall-target]')).filter(Boolean);
-                
-                let visibleItems = [];
-                let visibleCount = 0;
-                let waitingQueue = [];
-                let shuffledIndices = [];
-                let currentIndex = 0;
-                let masterTl = null;
-
-                function isVisible(el) {
-                    return window.getComputedStyle(el).display !== 'none';
-                }
-
-                function shuffle(arr) {
-                    const copy = arr.slice();
-                    for (let i = copy.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [copy[i], copy[j]] = [copy[j], copy[i]];
-                    }
-                    return copy;
-                }
-
-                function resetWall() {
-                    if (masterTl) masterTl.kill();
-                    visibleItems = items.filter(isVisible);
-                    visibleCount = visibleItems.length;
-                    if (visibleCount === 0) return;
-                    shuffledIndices = shuffle(Array.from({ length: visibleCount }, (_, idx) => idx));
-                    currentIndex = 0;
-
-                    // Clear existing mounted targets
-                    items.forEach(el => {
-                        el.querySelectorAll('[data-logo-wall-target]').forEach(t => t.remove());
-                    });
-
-                    // Build fresh target pool clones
-                    const targetClones = targets.map(t => t.cloneNode(true));
-                    let initialTargets, queuedTargets;
-                    if (shouldShuffle) {
-                        const shuf = shuffle(targetClones);
-                        initialTargets = shuf.slice(0, visibleCount);
-                        queuedTargets = shuffle(shuf.slice(visibleCount));
-                    } else {
-                        initialTargets = targetClones.slice(0, visibleCount);
-                        queuedTargets = targetClones.slice(visibleCount);
-                    }
-                    waitingQueue = initialTargets.concat(queuedTargets);
-
-                    // Mount targets into visible slots
-                    for (let i = 0; i < visibleCount; i++) {
-                        const parent = visibleItems[i].querySelector('[data-logo-wall-target-parent]') || visibleItems[i];
-                        if (waitingQueue.length > 0) {
-                            parent.appendChild(waitingQueue.shift());
-                        }
-                    }
-
-                    masterTl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
-                    masterTl.call(cycleSlot);
-                    masterTl.play();
-                }
-
-                function cycleSlot() {
-                    if (items.filter(isVisible).length !== visibleCount) {
-                        resetWall();
-                        return;
-                    }
-                    if (!waitingQueue.length) return;
-
-                    const slotIdx = shuffledIndices[currentIndex % visibleCount];
-                    currentIndex++;
-                    const slotItem = visibleItems[slotIdx];
-                    const parent = slotItem.querySelector('[data-logo-wall-target-parent]') || slotItem;
-                    if (parent.querySelectorAll('[data-logo-wall-target]').length > 1) return;
-
-                    const currentTarget = parent.querySelector('[data-logo-wall-target]');
-                    const nextTarget = waitingQueue.shift();
-                    const pixelData = getOrCreatePixels(parent);
-
-                    gsap.set(nextTarget, { autoAlpha: 0 });
-                    parent.insertBefore(nextTarget, pixelData.el);
-
-                    gsap.timeline()
-                        .to(pixelData.cells, {
-                            autoAlpha: 1,
-                            duration: 0.01,
-                            stagger: { amount: staggerAmount, from: 'random' }
-                        })
-                        .call(() => {
-                            if (currentTarget) {
-                                currentTarget.remove();
-                                waitingQueue.push(currentTarget);
-                            }
-                            gsap.set(nextTarget, { autoAlpha: 1 });
-                        })
-                        .to(pixelData.cells, {
-                            autoAlpha: 0,
-                            duration: 0.01,
-                            stagger: { amount: staggerAmount, from: 'random' }
-                        }, '+=0.08');
-                }
-
-                function getOrCreatePixels(parent) {
-                    const target = parent.querySelector('[data-logo-wall-target]');
-                    const w = target?.offsetWidth || parent.offsetWidth || 150;
-                    const h = target?.offsetHeight || parent.offsetHeight || 50;
-                    const cols = Math.max(1, Math.round(w / 8));
-                    const rows = Math.max(1, Math.round(h / 8));
-                    let existingPixels = parent.querySelector('.logo-wall__pixels');
-                    if (!existingPixels || existingPixels.dataset.size !== `${cols}x${rows}`) {
-                        existingPixels?.remove();
-                        existingPixels = document.createElement('div');
-                        existingPixels.className = 'logo-wall__pixels';
-                        existingPixels.setAttribute('aria-hidden', 'true');
-                        existingPixels.dataset.size = `${cols}x${rows}`;
-                        existingPixels.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-                        existingPixels.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-                        // Tactical grey palette: 12% accent glitch (#E8E8E3), 88% dark base (#080807), zero blue
-                        existingPixels.innerHTML = Array.from({ length: cols * rows }, () => 
-                            Math.random() < 0.12 ? '<i class="is-accent"></i>' : '<i></i>'
-                        ).join('');
-                        parent.appendChild(existingPixels);
-                    }
-                    return { el: existingPixels, cells: existingPixels.children };
-                }
-
-                resetWall();
-
-                let isTriggerActive = false;
-                let isHovered = false;
-                let isFocused = false;
-                const pauseBtn = wallEl.querySelector('[data-logo-wall-pause]');
-
-                function updatePlayState() {
-                    const isUserPaused = pauseBtn?.getAttribute('aria-pressed') === 'true';
-                    if (isTriggerActive && !document.hidden && !isHovered && !isFocused && !isUserPaused) {
-                        masterTl?.play();
-                    } else {
-                        masterTl?.pause();
-                    }
-                }
-
-                const st = ScrollTrigger.create({
-                    trigger: wallEl,
-                    start: 'top bottom',
-                    end: 'bottom top',
-                    onToggle: self => {
-                        isTriggerActive = self.isActive;
-                        updatePlayState();
-                    }
-                });
-                isTriggerActive = st.isActive;
-                updatePlayState();
-
-                wallEl.addEventListener('mouseenter', () => { isHovered = true; updatePlayState(); });
-                wallEl.addEventListener('mouseleave', () => { isHovered = false; updatePlayState(); });
-                wallEl.addEventListener('focusin', () => { isFocused = true; updatePlayState(); });
-                wallEl.addEventListener('focusout', (e) => {
-                    if (!wallEl.contains(e.relatedTarget)) {
-                        isFocused = false;
-                        updatePlayState();
-                    }
-                });
-
-                if (pauseBtn) {
-                    pauseBtn.addEventListener('click', () => {
-                        const nextState = pauseBtn.getAttribute('aria-pressed') !== 'true';
-                        pauseBtn.setAttribute('aria-pressed', String(nextState));
-                        pauseBtn.textContent = nextState ? pauseBtn.dataset.labelPlay : pauseBtn.dataset.labelPause;
-                        updatePlayState();
-                    });
-                    pauseBtn.removeAttribute('hidden');
-                }
-
-                document.addEventListener('visibilitychange', updatePlayState);
-
-                let resizeTimer;
-                window.addEventListener('resize', () => {
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(() => {
-                        if (items.filter(isVisible).length !== visibleCount) {
-                            resetWall();
-                        }
-                    }, 100);
-                });
-            });
-        }
-
-        initClientsWall();
-
-        // 5. ANTHRACITE STUDIO EXACT MORPHING NAVBAR & SCROLL CONTROLLER
-        function initAnthraciteNav() {
-            const nav = document.getElementById('bottom-nav');
-            if (!nav) return;
-
-            const inner = nav.querySelector('[data-bottom-nav-inner]');
-            const bar = nav.querySelector('[data-bottom-nav-bar]');
-            const panel = nav.querySelector('[data-bottom-nav-panel]');
-            const toggle = nav.querySelector('[data-bottom-nav-toggle]');
-            const title = document.getElementById('nav-section-title');
-            if (!inner || !bar || !panel || !toggle) return;
-
-            const revealItems = panel.querySelectorAll('[data-bottom-nav-reveal]');
-            const barTop = toggle.querySelector('.bottom-nav__toggle-bar.is--top');
-            const barBtm = toggle.querySelector('.bottom-nav__toggle-bar.is--btm');
-            const divider = nav.querySelector('[data-bottom-nav-divider]');
-
-            let isOpen = false;
-            let pauseDuration = 0;
-            let dims = { closedW: 0, closedH: 50, openW: 0, openH: 405 };
-            let tl = null;
-
-            const navEase = window.CustomEase ? "osmo" : "power3.inOut";
-
-            function setOpenState(state) {
-                isOpen = state;
-                nav.setAttribute('data-bottom-nav-open', String(state));
-                toggle.setAttribute('aria-expanded', String(state));
-                toggle.setAttribute('aria-label', state ? (toggle.dataset.labelClose || 'Close menu') : (toggle.dataset.labelOpen || 'Open menu'));
-                panel.setAttribute('aria-hidden', String(!state));
-                if (!state) {
-                    inner.scrollTop = 0;
-                }
-            }
-
-            function setInitial() {
-                gsap.set(inner, { height: bar.offsetHeight || 50 });
-                gsap.set(panel, { autoAlpha: 0 });
-            }
-
-            function openNav() {
-                isOpen = true;
-                setOpenState(true);
-
-                // Compute exact open height
-                panel.style.visibility = 'hidden';
-                panel.style.display = 'flex';
-                panel.style.opacity = '1';
-                const openH = (bar.offsetHeight || 50) + panel.scrollHeight;
-                panel.style.visibility = '';
-                panel.style.display = '';
-                panel.style.opacity = '';
-
-                gsap.killTweensOf([inner, barTop, barBtm, revealItems, divider, panel]);
-
-                const tl = gsap.timeline({ defaults: { ease: navEase } });
-                tl.to(inner, {
-                    height: openH,
-                    duration: 0.65,
-                    ease: navEase
-                }, 0)
-                .to(barTop, {
-                    y: 3.5,
-                    rotation: 45,
-                    duration: 0.4,
-                    ease: "back.out(2)"
-                }, 0.05)
-                .to(barBtm, {
-                    y: -3.5,
-                    rotation: -45,
-                    duration: 0.4,
-                    ease: "back.out(2)"
-                }, 0.05)
-                .set(panel, { autoAlpha: 1 }, 0.08)
-                .fromTo(revealItems, {
-                    opacity: 0,
-                    yPercent: 70
-                }, {
-                    opacity: 1,
-                    yPercent: 0,
-                    duration: 0.55,
-                    stagger: 0.03,
-                    ease: "power3.out"
-                }, 0.1);
-
-                if (divider) {
-                    tl.fromTo(divider, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.7, ease: navEase }, 0.06);
-                }
-            }
-
-            function closeNav() {
-                isOpen = false;
-                setOpenState(false);
-
-                gsap.killTweensOf([inner, barTop, barBtm, revealItems, divider, panel]);
-
-                const tl = gsap.timeline({ defaults: { ease: "power3.inOut" } });
-                tl.to(revealItems, {
-                    opacity: 0,
-                    yPercent: 15,
-                    duration: 0.2,
-                    stagger: { each: 0.015, from: "end" },
-                    ease: "power2.in"
-                }, 0)
-                .to(inner, {
-                    height: bar.offsetHeight || 50,
-                    duration: 0.45,
-                    ease: "power3.inOut"
-                }, 0.06)
-                .to([barTop, barBtm], {
-                    y: 0,
-                    rotation: 0,
-                    duration: 0.3,
-                    ease: "power3.in"
-                }, 0.06)
-                .set(panel, { autoAlpha: 0 });
-            }
-
-            function toggleMenu() {
-                if (isOpen) {
-                    closeNav();
-                } else {
-                    openNav();
-                }
-            }
-
-            function closeMenu() {
-                if (isOpen) closeNav();
-            }
-
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleMenu();
-            });
-
-            // Close on link click
-            nav.querySelectorAll('.bottom-nav__link, .menu-btn').forEach(link => {
-                link.addEventListener('click', () => {
-                    const href = link.getAttribute('href');
-                    if (href && href.startsWith('#')) {
-                        closeMenu();
-                    }
-                });
-            });
-
-            // Close on Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && isOpen) {
-                    closeMenu();
-                    toggle.focus();
-                }
-            });
-
-            // Close on click outside
-            document.addEventListener('pointerdown', (e) => {
-                if (isOpen && !nav.contains(e.target)) {
-                    closeMenu();
-                }
-            });
-
-            // Resize handling
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    if (isOpen) {
-                        panel.style.visibility = 'hidden';
-                        panel.style.display = 'flex';
-                        panel.style.opacity = '1';
-                        const openH = (bar.offsetHeight || 50) + panel.scrollHeight;
-                        panel.style.visibility = '';
-                        panel.style.display = '';
-                        panel.style.opacity = '';
-                        gsap.set(inner, { height: openH });
-                    } else {
-                        gsap.set(inner, { height: bar.offsetHeight || 50 });
-                    }
-                }, 150);
-            });
-
-            setInitial();
-
-            // Dynamic Section Title & Active Current Link Observer (Centerline rootMargin: "-50% 0px -50% 0px")
-            const sections = document.querySelectorAll('[data-txt]');
-            if (title && sections.length) {
-                const defaultTitle = title.dataset.defaultText || 'MUHAMMED ARSHAD';
-                const intersectingSections = new Set();
-                const navLinks = nav.querySelectorAll('.bottom-nav__link');
-
-                function updateCurrentSection(sec) {
-                    const txt = sec ? sec.getAttribute('data-txt') : defaultTitle;
-                    if (title.dataset.current !== txt) {
-                        title.dataset.current = txt;
-                        title.dataset.originalText = txt.toUpperCase();
-                        scrambleText(title, 0.38);
-                    }
-
-                    // Update [aria-current="page"] on matching link
-                    if (sec) {
-                        const secId = '#' + sec.id;
-                        navLinks.forEach(nl => {
-                            if (nl.getAttribute('href') === secId) {
-                                nl.setAttribute('aria-current', 'page');
-                            } else {
-                                nl.removeAttribute('aria-current');
-                            }
-                        });
-                    } else {
-                        navLinks.forEach((nl, i) => {
-                            if (i === 0) nl.setAttribute('aria-current', 'page');
-                            else nl.removeAttribute('aria-current');
-                        });
-                    }
-                }
-
-                const centerObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            intersectingSections.add(entry.target);
-                        } else {
-                            intersectingSections.delete(entry.target);
-                        }
-                    });
-
-                    const currentSec = [...intersectingSections].pop();
-                    updateCurrentSection(currentSec);
-                }, {
-                    rootMargin: '-50% 0px -50% 0px',
-                    threshold: 0
-                });
-
-                sections.forEach(s => centerObserver.observe(s));
-            }
-        }
-
-        initAnthraciteNav();
-
-        // 6. MANIFESTO WORD-BY-WORD SCROLL HIGHLIGHT (Anthracite Studio Class)
-        class ManifestoScroller {
-            constructor(root) {
-                this.root = root;
-                this.text = root.querySelector('.manifesto__text') || root;
-                this.words = [...root.querySelectorAll('.manifesto__word')];
-                this.last = -1;
-
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                    this.words.forEach(word => word.classList.add('is-on'));
-                    return;
-                }
-
-                this.io = new IntersectionObserver(([entry]) => {
-                    entry.isIntersecting ? this.start() : this.stop();
-                });
-                this.io.observe(root);
-                this.update();
-            }
-
-            start() {
-                if (this.running) return;
-                this.running = true;
-                const loop = () => {
-                    this.update();
-                    if (this.running) {
-                        this.raf = requestAnimationFrame(loop);
-                    }
-                };
-                loop();
-            }
-
-            stop() {
-                this.running = false;
-                if (this.raf) cancelAnimationFrame(this.raf);
-            }
-
-            update() {
-                const rect = this.text.getBoundingClientRect();
-                const vh = window.innerHeight;
-                const progress = Math.min(1, Math.max(0, (vh * 0.85 - rect.top) / (rect.height + vh * 0.35)));
-                const activeCount = Math.round(progress * this.words.length);
-
-                if (activeCount !== this.last) {
-                    this.last = activeCount;
-                    this.words.forEach((word, idx) => word.classList.toggle('is-on', idx < activeCount));
-                }
-            }
-
-            destroy() {
-                this.stop();
-                this.io?.disconnect();
-            }
-        }
-
-        const manifestoEl = document.querySelector('.manifesto');
-        if (manifestoEl) {
-            new ManifestoScroller(manifestoEl);
-        }
-
-        // 7. PIXEL FRAME PORTRAIT REVEAL (Anthracite Studio Pixel Reveal Engine)
-        const INITIAL_PIXEL_SIZE = 48;
-        const DURATION_MS = 1400;
-        const pixelEaseOutCubic = t => 1 - Math.pow(1 - t, 3);
-
-        class PixelReveal {
-            constructor(root) {
-                this.root = root;
-                this.canvas = root.querySelector('canvas');
-                this.el = root.querySelector('img');
-                this.ctx = this.canvas?.getContext('2d');
-                this.small = document.createElement('canvas');
-                this.sctx = this.small.getContext('2d');
-
-                if (!this.canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                    root.classList.add('is-sharp');
-                    return;
-                }
-
-                root.classList.add('is-init');
-                this.img = new Image();
-                this.img.src = this.canvas.dataset.src || this.el?.src || '';
-                this.ready = this.img.decode()
-                    .then(() => this.draw(INITIAL_PIXEL_SIZE))
-                    .catch(() => root.classList.add('is-sharp'));
-
-                this.io = new IntersectionObserver(([entry]) => {
-                    if (entry.isIntersecting) {
-                        this.io.disconnect();
-                        this.ready.then(() => this.play());
-                    }
-                }, { threshold: 0.35 });
-
-                this.io.observe(root);
-                this.ro = new ResizeObserver(() => {
-                    if (!this.playing) this.ready.then(() => this.draw(INITIAL_PIXEL_SIZE));
-                });
-                this.ro.observe(root);
-            }
-
-            draw(pixelSize) {
-                const { img } = this;
-                const rect = this.root.getBoundingClientRect();
-                const dpr = Math.min(2, window.devicePixelRatio || 1);
-                const width = rect.width;
-                const height = rect.height;
-                if (!width || !height || !img.naturalWidth) return;
-
-                this.canvas.width = Math.round(width * dpr);
-                this.canvas.height = Math.round(height * dpr);
-
-                const sw = Math.max(1, Math.ceil(width / pixelSize));
-                const sh = Math.max(1, Math.ceil(height / pixelSize));
-                this.small.width = sw;
-                this.small.height = sh;
-
-                const imgAspect = img.naturalWidth / img.naturalHeight;
-                const frameAspect = width / height;
-                let sx = 0, sy = 0, swidth = img.naturalWidth, sheight = img.naturalHeight;
-                const [posX, posY] = (this.el && getComputedStyle(this.el).objectPosition || '50% 35%')
-                    .split(' ')
-                    .map(v => v.endsWith('%') ? parseFloat(v) / 100 : 0.5);
-
-                if (imgAspect > frameAspect) {
-                    swidth = sheight * frameAspect;
-                    sx = (img.naturalWidth - swidth) * posX;
-                } else {
-                    sheight = swidth / frameAspect;
-                    sy = (img.naturalHeight - sheight) * posY;
-                }
-
-                this.sctx.imageSmoothingEnabled = true;
-                this.sctx.drawImage(img, sx, sy, swidth, sheight, 0, 0, sw, sh);
-
-                this.ctx.imageSmoothingEnabled = false;
-                this.ctx.drawImage(this.small, 0, 0, sw, sh, 0, 0, sw * pixelSize * dpr, sh * pixelSize * dpr);
-            }
-
-            play() {
-                this.playing = true;
-                const startTime = performance.now();
-                let lastSize = -1;
-
-                const frame = now => {
-                    const progress = Math.min(1, (now - startTime) / DURATION_MS);
-                    const pixelSize = Math.max(1, Math.round(Math.exp(Math.log(INITIAL_PIXEL_SIZE) * (1 - pixelEaseOutCubic(progress)))));
-
-                    if (pixelSize !== lastSize) {
-                        lastSize = pixelSize;
-                        if (pixelSize > 1) this.draw(pixelSize);
-                    }
-
-                    if (progress < 1 && pixelSize > 1) {
-                        this.raf = requestAnimationFrame(frame);
-                    } else {
-                        this.root.classList.add('is-sharp');
-                    }
-                };
-                this.raf = requestAnimationFrame(frame);
-            }
-
-            destroy() {
-                if (this.raf) cancelAnimationFrame(this.raf);
-                this.io?.disconnect();
-                this.ro?.disconnect();
-            }
-        }
-
-        document.querySelectorAll('[data-pixel-reveal]').forEach(el => new PixelReveal(el));
-
-        // 8. PROJECTS VIEW SWITCHER & FLOATING PREVIEW
-        const viewButtons = document.querySelectorAll('.view-btn');
-        const fpSection = document.getElementById('works');
-        const floatingPreview = document.getElementById('fp-floating-preview');
-        const floatingImg = document.getElementById('fp-floating-preview-img');
-
-        viewButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                viewButtons.forEach(b => b.classList.remove('is-active'));
-                btn.classList.add('is-active');
-                if (btn.dataset.view === 'list') {
-                    fpSection.classList.add('fp--list');
-                } else {
-                    fpSection.classList.remove('fp--list');
-                }
-            });
-        });
-
-        // List row hover preview
-        document.querySelectorAll('.fp__row').forEach(row => {
-            row.addEventListener('mouseenter', () => {
-                const src = row.getAttribute('data-preview');
-                if (src && floatingImg) {
-                    floatingImg.src = src;
-                    floatingPreview.classList.add('is-active');
-                }
-            });
-            row.addEventListener('mousemove', (e) => {
-                gsap.to(floatingPreview, {
-                    x: e.clientX + 20,
-                    y: e.clientY + 20,
-                    duration: 0.2,
-                    ease: "power2.out"
-                });
-            });
-            row.addEventListener('mouseleave', () => {
-                floatingPreview.classList.remove('is-active');
-            });
-        });
-
-        // 9. ANTHRACITE STUDIO ASCII HANDS FIELD ENGINE & HERO SCROLL PIN
-        const FONT_MONO = "'JetBrains Mono', ui-monospace, monospace";
-        const MATRIX_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-        const clamp01 = (v) => Math.max(0, Math.min(1, v));
-        const remap = (v, min, max) => clamp01((v - min) / (max - min));
-        const easeOutCubic = (v) => 1 - Math.pow(1 - v, 3);
-        const lerpInt = (a, b, t) => Math.round(a + (b - a) * t);
-
-        function createPRNG(seed) {
-            return () => {
-                seed |= 0;
-                seed = (seed + 0x6D2B79F5) | 0;
-                let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-                t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-            };
-        }
-
-        const DEFAULT_EMBLEM_SVG = {
-            d: "M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z",
-            vw: 600,
-            vh: 680
-        };
-
-        class HandsField {
-            constructor(canvas, image, options = {}) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.img = image;
-                this.bg = '#080807';
-                this.gap = options.gap !== undefined ? options.gap : 0.30;
-                this.handsYRatio = options.handsY !== undefined ? options.handsY : 0.79;
-                
-                this.open = 0;
-                this.rise = 0;
-                this.contact = 0;
-                this.wave = 0;
-                this.pointer = { x: 0.5, y: 0.5, on: 0 };
-                this.last = -1;
-                this.drawnPose = '';
-                
-                this.emblemSrc = options.emblemSrc || DEFAULT_EMBLEM_SVG;
-                this.crop = this.computeCrop();
-                this.resize();
-            }
-
-            computeCrop() {
-                const img = this.img;
-                const targetH = Math.round(img.height * 400 / img.width);
-                const offCanvas = document.createElement('canvas');
-                offCanvas.width = 400;
-                offCanvas.height = targetH;
-                const offCtx = offCanvas.getContext('2d');
-                offCtx.drawImage(img, 0, 0, 400, targetH);
-                const data = offCtx.getImageData(0, 0, 400, targetH).data;
-
-                let minY = targetH, maxY = -1;
-                for (let y = 0; y < targetH; y++) {
-                    for (let x = 0; x < 400; x++) {
-                        const idx = (y * 400 + x) * 4;
-                        if (data[idx + 3] > 20) {
-                            minY = Math.min(minY, y);
-                            maxY = Math.max(maxY, y);
-                        }
-                    }
-                }
-                const scale = img.height / targetH;
-                const pad = (maxY - minY + 1) * 0.08;
-                const sy = Math.max(0, (minY - pad) * scale);
-                const sh = Math.min(img.height, (maxY + 1 + pad) * scale) - sy;
-                return { sy, sh };
-            }
-
-            lum(data, idx) {
-                return 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-            }
-
-            resize() {
-                const parent = this.canvas.parentElement;
-                if (!parent) return;
-                const rect = parent.getBoundingClientRect();
-                const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                const w = Math.round(rect.width);
-                const h = Math.round(rect.height);
-                if (w === 0 || h === 0) return;
-
-                this.canvas.width = w * dpr;
-                this.canvas.height = h * dpr;
-                this.ctx.scale(dpr, dpr);
-                this.width = w;
-                this.height = h;
-                this.portrait = h > w;
-
-                this.buildHands();
-                this.buildField();
-                this.buildEmblem();
-                this.last = -1;
-            }
-
-            buildHands() {
-                const { img, crop, width, height, portrait } = this;
-                const rng = createPRNG(7);
-                const targetW = portrait ? width * 1.7 : width * 1.25;
-                const cols = portrait ? 260 : 270;
-                const stepX = targetW / cols;
-                const fontSize = stepX / 1.25 / 0.6;
-                const stepY = fontSize * 1.3;
-                const rows = Math.round(crop.sh / img.width * cols * 0.6 * 1.25 / 1.3);
-
-                const offCanvas = document.createElement('canvas');
-                offCanvas.width = cols;
-                offCanvas.height = rows;
-                const offCtx = offCanvas.getContext('2d');
-                offCtx.drawImage(img, 0, crop.sy, img.width, crop.sh, 0, 0, cols, rows);
-                const data = offCtx.getImageData(0, 0, cols, rows).data;
-
-                const cells = [];
-                for (let y = 0; y < rows; y++) {
-                    for (let x = 0; x < cols; x++) {
-                        const idx = (y * cols + x) * 4;
-                        if (data[idx + 3] < 20) continue;
-                        const lum = this.lum(data, idx);
-                        cells.push({ x, y, lum });
-                    }
-                }
-
-                const sortedLums = cells.map(c => c.lum).sort((a, b) => a - b);
-                const lumMin = sortedLums[Math.floor(sortedLums.length * 0.04)] ?? 10;
-                const lumMax = sortedLums[Math.floor(sortedLums.length * 0.96)] ?? 220;
-                const lumRange = Math.max(1, lumMax - lumMin);
-
-                let tipL = null, tipR = null;
-                for (const c of cells) {
-                    if (c.x < cols / 2) {
-                        if (!tipL || c.x > tipL.x) tipL = c;
-                    } else {
-                        if (!tipR || c.x < tipR.x) tipR = c;
-                    }
-                }
-
-                const getCoord = (pt) => pt ? { cx: pt.x * stepX + stepX / 2, cy: pt.y * stepY + stepY / 2 } : { cx: targetW / 2, cy: rows * stepY / 2 };
-
-                // Tactical greyish palette stops: obsidian -> deep graphite -> tactical mid-grey -> chalk -> bone highlight
-                const sampleColor = (norm) => {
-                    const stops = [
-                        [0.0, 8, 8, 7],         // dark obsidian #080807
-                        [0.22, 45, 45, 48],     // deep tactical graphite
-                        [0.48, 120, 120, 116],  // tactical mid-grey
-                        [0.75, 195, 195, 190],  // tactical chalk
-                        [1.0, 245, 245, 240]    // bone / stark white highlight
-                    ];
-                    for (let i = 1; i < stops.length; i++) {
-                        if (norm <= stops[i][0]) {
-                            const prev = stops[i - 1], curr = stops[i];
-                            const t = (norm - prev[0]) / (curr[0] - prev[0]);
-                            return [
-                                lerpInt(prev[1], curr[1], t),
-                                lerpInt(prev[2], curr[2], t),
-                                lerpInt(prev[3], curr[3], t)
-                            ];
-                        }
-                    }
-                    return [245, 245, 240];
-                };
-
-                this.hands = {
-                    font: fontSize,
-                    lt: [255, 255, 255],
-                    midCol: 'rgb(140, 140, 136)',
-                    w: targetW,
-                    h: rows * stepY,
-                    stepX: stepX,
-                    tipL: getCoord(tipL),
-                    tipR: getCoord(tipR),
-                    cells: cells.map(c => {
-                        const norm = clamp01((c.lum - lumMin) / lumRange);
-                        const rgb = sampleColor(norm);
-                        return {
-                            cx: c.x * stepX + stepX / 2,
-                            cy: c.y * stepY + stepY / 2,
-                            c: rgb,
-                            col: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
-                            ch: MATRIX_CHARS[Math.floor(rng() * 36)],
-                            thr: 0.16 * rng() + 0.84 * Math.abs(c.x / cols - 0.5) * 2,
-                            seed: Math.floor(rng() * 1000),
-                            live: rng() < 0.09,
-                            tw: 170 + rng() * 340
-                        };
-                    })
-                };
-            }
-
-            buildField() {
-                const { width, height, portrait } = this;
-                const rng = createPRNG(11);
-                const step = portrait ? width / 32 : width / 64;
-                const cols = Math.ceil(width / step);
-                const rows = Math.ceil(height / (step * 1.4));
-                const cells = [];
-
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        if (rng() > 0.55) continue;
-                        cells.push({
-                            x: c * step + step / 2,
-                            y: r * step * 1.4 + step * 0.7,
-                            seed: Math.floor(rng() * 1000),
-                            a: 0.04 + rng() * 0.08,
-                            rate: 1 + Math.floor(rng() * 3),
-                            ph: rng()
-                        });
-                    }
-                }
-                this.field = { cells, font: Math.round(step * 0.42) };
-            }
-
-            setEmblem(d, vw, vh) {
-                this.emblemSrc = { d, vw, vh };
-                if (this.width && this.height) {
-                    this.buildEmblem();
-                }
-                this.last = -1;
-            }
-
-            buildEmblem() {
-                const src = this.emblemSrc;
-                if (!src) {
-                    this.emblem = null;
-                    return;
-                }
-                const { width, height, portrait } = this;
-                const rng = createPRNG(23);
-                const emblemH = Math.min(height * 0.46, width * (portrait ? 0.6 : 0.4) * src.vh / src.vw);
-                const emblemW = emblemH * src.vw / src.vh;
-                const cols = portrait ? 30 : 44;
-                const stepX = emblemW / cols;
-                const fontSize = stepX / 0.75;
-                const stepY = fontSize * 1.3;
-                const rows = Math.max(1, Math.round(emblemH / stepY));
-
-                const offCanvas = document.createElement('canvas');
-                offCanvas.width = cols;
-                offCanvas.height = rows;
-                const offCtx = offCanvas.getContext('2d');
-                offCtx.fillStyle = '#FFFFFF';
-                offCtx.scale(cols / src.vw, rows / src.vh);
-                offCtx.fill(new Path2D(src.d));
-
-                const data = offCtx.getImageData(0, 0, cols, rows).data;
-                const primary = [140, 140, 136];
-                const lightChalk = [lerpInt(primary[0], 255, 0.55), lerpInt(primary[1], 255, 0.55), lerpInt(primary[2], 255, 0.55)];
-                const cells = [];
-                for (let r = 0; r < rows; r++) {
-                    for (let c = 0; c < cols; c++) {
-                        if (data[(r * cols + c) * 4 + 3] < 128) continue;
-                        const rndVal = rng();
-                        const colArr = [
-                            lerpInt(primary[0], lightChalk[0], rndVal),
-                            lerpInt(primary[1], lightChalk[1], rndVal),
-                            lerpInt(primary[2], lightChalk[2], rndVal)
-                        ];
-                        cells.push({
-                            dx: (c + 0.5) * stepX - emblemW / 2,
-                            dy: (r + 0.5) * (emblemH / rows) - emblemH / 2,
-                            col: `rgb(${colArr.join(',')})`,
-                            ch: MATRIX_CHARS[Math.floor(rng() * 36)],
-                            seed: Math.floor(rng() * 1000),
-                            live: rng() < 0.12,
-                            tw: 170 + Math.floor(rng() * 340),
-                            jitter: rng() * 0.03
-                        });
-                    }
-                }
-                this.emblem = { cells, font: fontSize, lt: lightChalk };
-            }
-
-            get handsY() {
-                const baseRatio = this.handsYRatio ?? (this.portrait ? 0.82 : 0.79);
-                return this.height * (baseRatio + (0.48 - baseRatio) * this.rise);
-            }
-
-            get gapPx() {
-                return this.portrait ? 0 : this.width * this.gap;
-            }
-
-            get halfPx() {
-                const baseGap = this.gapPx * (1 - this.contact);
-                return (baseGap + this.open * this.width) / 2;
-            }
-
-            get touch() {
-                const { width, height, hands } = this;
-                const offsetX = (width - hands.w) / 2;
-                const offsetY = this.handsY - hands.h / 2;
-                return {
-                    x: (offsetX + (hands.tipL.cx + hands.tipR.cx) / 2) / width,
-                    y: (offsetY + (hands.tipL.cy + hands.tipR.cy) / 2) / height
-                };
-            }
-
-            get exitWave() {
-                return this.hands.w / 2 / this.width + 0.05;
-            }
-
-            draw(time, force = false) {
-                this.drawCount = (this.drawCount || 0) + 1;
-                const cycle = time % 12;
-                const quantTime = Math.floor(time * (time > 4 ? 15 : 30));
-                const p = this.pointer;
-                const poseKey = [this.open, this.rise, this.contact, this.wave, p.on.toFixed(3), p.x.toFixed(3), p.y.toFixed(3)].join();
-
-                if (!force && quantTime === this.last && poseKey === this.drawnPose) return false;
-                this.last = quantTime;
-                this.drawnPose = poseKey;
-
-                const ctx = this.ctx;
-                const w = this.width;
-                const h = this.height;
-
-                ctx.fillStyle = this.bg;
-                ctx.fillRect(0, 0, w, h);
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-
-                const touch = this.touch;
-                const touchX = touch.x * w;
-                const touchY = touch.y * h;
-                const waveRadius = this.wave * w;
-                const waveThickness = w * (this.portrait ? 0.06 : 0.035);
-                const waveIntensity = (x, y) => this.wave > 0 ? 1 - Math.abs(Math.hypot(x - touchX, y - touchY) - waveRadius) / waveThickness : 0;
-                const waveAttenuation = 1 - 0.5 * clamp01(this.wave);
-
-                // Glowing spherical focal lens under pointer
-                const pointerX = p.x * w;
-                const pointerY = p.y * h;
-                const lensRadius = w * (this.portrait ? 0.16 : 0.095);
-                const lensIntensity = (x, y) => p.on > 0 ? p.on * clamp01(1 - Math.hypot(x - pointerX, y - pointerY) / lensRadius) : 0;
-
-                // 1. Background Matrix Ambient Field (Tactical Graphite/Chalk #E8E8E3)
-                ctx.font = `700 ${this.field.font}px ${FONT_MONO}`;
-                const fieldCycle = Math.floor(time * 24);
-                for (const cell of this.field.cells) {
-                    const cellRate = Math.floor(cycle * cell.rate);
-                    const wInt = waveIntensity(cell.x, cell.y);
-                    if (wInt > 0) {
-                        ctx.fillStyle = `rgba(255, 255, 255, ${(wInt * 0.9 * waveAttenuation).toFixed(3)})`;
-                        ctx.fillText(MATRIX_CHARS[(cell.seed + fieldCycle) % 36], cell.x, cell.y);
-                        continue;
-                    }
-                    const lInt = lensIntensity(cell.x, cell.y);
-                    if (lInt > 0) {
-                        ctx.fillStyle = `rgba(255, 255, 255, ${(0.15 + 0.65 * lInt).toFixed(3)})`;
-                        ctx.fillText(MATRIX_CHARS[(cell.seed + fieldCycle) % 36], cell.x, cell.y);
-                        continue;
-                    }
-                    const pulse = cell.a * (0.55 + 0.45 * Math.sin((cycle / 12 + cell.ph) * Math.PI * 2));
-                    ctx.fillStyle = `rgba(232, 232, 227, ${(pulse * 0.15).toFixed(3)})`;
-                    ctx.fillText(MATRIX_CHARS[(cell.seed + cellRate * 7) % 36], cell.x, cell.y);
-                }
-
-                // 2. ASCII Alphanumeric Hands Field & Wireframe Contours
-                const hands = this.hands;
-                const introProgress = easeOutCubic(remap(time, 0.2, 3.6)) * 1.35;
-                const originX = (w - hands.w) / 2;
-                const originY = this.handsY - hands.h / 2;
-                const halfSeparation = this.halfPx;
-                const F_BAND = 0.16;
-                const timeMs = time * 1000;
-                const fastTick = Math.floor(timeMs / 42);
-
-
-                ctx.font = `700 ${hands.font.toFixed(2)}px ${FONT_MONO}`;
-
-                for (const cell of hands.cells) {
-                    const relThr = introProgress - cell.thr;
-                    if (relThr < -0.16) continue;
-
-                    const posX = originX + cell.cx + (cell.cx < hands.w / 2 ? -halfSeparation : halfSeparation);
-                    const posY = originY + cell.cy;
-                    if (posX < -20 || posX > w + 20) continue;
-
-                    if (relThr < F_BAND) {
-                        const norm = (relThr + F_BAND) / (2 * F_BAND);
-                        ctx.globalAlpha = 0.4 + 0.6 * norm;
-                        ctx.fillStyle = norm > 0.72 ? cell.col : hands.midCol;
-                        ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick + (cell.cx | 0) * 2) % 36], posX, posY);
-                        continue;
-                    }
-
-                    ctx.globalAlpha = 1;
-                    const liveDiff = relThr - F_BAND;
-
-                    if ((this.wave > 0 && waveIntensity(posX, posY) > 0) || lensIntensity(posX, posY) > 0.25) {
-                        ctx.fillStyle = '#FFFFFF';
-                        ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
-                        continue;
-                    }
-
-                    if (liveDiff < 0.13) {
-                        const boost = (1 - liveDiff / 0.13) * 0.5;
-                        ctx.fillStyle = `rgb(${lerpInt(cell.c[0], 255, boost)},${lerpInt(cell.c[1], 255, boost)},${lerpInt(cell.c[2], 255, boost)})`;
-                    } else {
-                        ctx.fillStyle = cell.col;
-                    }
-                    ctx.fillText(cell.live ? MATRIX_CHARS[(cell.seed + Math.floor(timeMs / cell.tw)) % 36] : cell.ch, posX, posY);
-                }
-
-                ctx.globalAlpha = 1;
-
-                // 4. Central Shockwave Monogram Emblem Reveal
-                if (this.emblem && this.wave > 0) {
-                    const emblem = this.emblem;
-                    ctx.font = `700 ${emblem.font.toFixed(2)}px ${FONT_MONO}`;
-                    for (const cell of emblem.cells) {
-                        const diff = this.wave - (Math.hypot(cell.dx, cell.dy) / w + cell.jitter);
-                        if (diff < 0) continue;
-
-                        let posX = touchX + cell.dx;
-                        let posY = touchY + cell.dy;
-
-                        if (diff < 0.04) {
-                            ctx.fillStyle = diff < 0.015 ? '#FFFFFF' : `rgb(${emblem.lt.join(',')})`;
-                            ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
-                            continue;
-                        }
-
-                        const lInt = lensIntensity(posX, posY);
-                        if (lInt > 0) {
-                            const dist = Math.hypot(posX - pointerX, posY - pointerY) || 1;
-                            const shift = lInt * emblem.font * 0.38;
-                            posX += (posX - pointerX) / dist * shift;
-                            posY += (posY - pointerY) / dist * shift;
-                            ctx.fillStyle = lInt > 0.55 ? '#FFFFFF' : `rgb(${emblem.lt.join(',')})`;
-                            ctx.fillText(MATRIX_CHARS[(cell.seed + fastTick) % 36], posX, posY);
-                            continue;
-                        }
-
-                        ctx.fillStyle = cell.col;
-                        ctx.fillText(cell.live ? MATRIX_CHARS[(cell.seed + Math.floor(timeMs / cell.tw)) % 36] : cell.ch, posX, posY);
-                    }
-                }
-
-                // 5. Contact Flash Radial Bloom Spark at touch coordinates
-                const contactFlash = remap(this.contact, 0.9, 1.0) * (1 - remap(this.wave, 0, 0.3));
-                if (contactFlash > 0) {
-                    const flashRadius = w * (0.05 + this.wave * 0.6);
-                    const grad = ctx.createRadialGradient(touchX, touchY, 0, touchX, touchY, flashRadius);
-                    grad.addColorStop(0, `rgba(255, 255, 255, ${(0.95 * contactFlash).toFixed(3)})`);
-                    grad.addColorStop(0.25, `rgba(232, 232, 227, ${(0.65 * contactFlash).toFixed(3)})`);
-                    grad.addColorStop(1, 'rgba(232, 232, 227, 0)');
-                    ctx.globalCompositeOperation = 'lighter';
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(touchX - flashRadius, touchY - flashRadius, flashRadius * 2, flashRadius * 2);
-                    ctx.globalCompositeOperation = 'source-over';
-                }
-
-                return true;
-            }
-        }
-
-        // Initialize HandsField & Scrub Trigger on #hero-track
-        const handsCanvas = document.getElementById('hands-canvas');
-        const heroStage = document.getElementById('hero-stage');
-        let handsField = null;
-
-        if (handsCanvas && heroStage) {
-            const heroHandsImg = new Image();
-            const initHands = () => {
-                if (handsField) return;
-                handsField = new HandsField(handsCanvas, heroHandsImg, { gap: 0.30, handsY: 0.79 });
-                window.__handsField = handsField;
-                window.addEventListener('resize', () => handsField.resize());
-
-                // Exact Anthracite Studio dynamic vector emblem extraction from navbar
-                const syncNavbarMonogramToEmblem = () => {
-                    const navLogoSvg = document.querySelector('.bottom-nav__logo svg');
-                    if (navLogoSvg && handsField) {
-                        const vb = navLogoSvg.getAttribute('viewBox');
-                        if (vb) {
-                            const [,,vw,vh] = vb.split(/\s+/).map(Number);
-                            const d = [...navLogoSvg.querySelectorAll('path')].map(p => p.getAttribute('d')).join(' ');
-                            if (d && vw && vh) {
-                                handsField.setEmblem(d, vw, vh);
-                            }
-                        }
-                    }
-                };
-                syncNavbarMonogramToEmblem();
-                
-                let targetPointerX = 0.5, targetPointerY = 0.5;
-                let targetPointerOn = 0;
-                let curPointerX = 0.5, curPointerY = 0.5;
-                let curPointerOn = 0;
-
-                heroStage.addEventListener('pointerenter', () => { targetPointerOn = 1; });
-                heroStage.addEventListener('pointerleave', () => { targetPointerOn = 0; });
-                heroStage.addEventListener('pointermove', (e) => {
-                    const rect = handsCanvas.getBoundingClientRect();
-                    targetPointerX = (e.clientX - rect.left) / rect.width;
-                    targetPointerY = (e.clientY - rect.top) / rect.height;
-                });
-
-                // ScrollTrigger scrub pin on #hero-track with smooth inertia
-                const heroTrackEl = document.getElementById('hero-track');
-                const heroInnerEl = document.querySelector('.home-hero__inner');
-
-                if (heroTrackEl) {
-                    ScrollTrigger.create({
-                        trigger: heroTrackEl,
-                        start: 'top top',
-                        end: 'bottom bottom',
-                        scrub: 1.0,
-                        onUpdate: (self) => {
-                            const p = self.progress;
-                            const easeInOutCubic = v => v < 0.5 ? 4 * v * v * v : 1 - Math.pow(-2 * v + 2, 3) / 2;
-
-                            // 1. Text fade out & translate (0.00 -> 0.20):
-                            const pText = clamp01(p / 0.20);
-                            if (heroInnerEl) {
-                                heroInnerEl.style.opacity = String(1 - pText);
-                                heroInnerEl.style.transform = `translateY(${-60 * pText}px)`;
-                                heroInnerEl.style.visibility = pText >= 1 ? 'hidden' : 'visible';
-                            }
-                            // 2. Hands rise (0.05 -> 0.40):
-                            const riseP = clamp01((p - 0.05) / 0.35);
-                            handsField.rise = easeInOutCubic(riseP);
-                            
-                            // 3. Contact (0.28 -> 0.50):
-                            const contactP = clamp01((p - 0.28) / 0.22);
-                            handsField.contact = easeInOutCubic(contactP);
-                            
-                            // 4. Wave shockwave (0.52 -> 0.97):
-                            const touch = handsField.touch || { x: 0.5, y: 0.48 };
-                            const w = handsField.width || window.innerWidth;
-                            const h = handsField.height || window.innerHeight;
-                            const u = h / (w || 1);
-                            const d = Math.max(...[[0, 0], [1, 0], [0, 1], [1, 1]].map(([x, y]) => Math.hypot(x - touch.x, (y - touch.y) * u)));
-                            const f = Math.max(d, handsField.exitWave || 1) + 0.05;
-                            const waveP = clamp01((p - 0.52) / 0.45);
-                            handsField.wave = f * Math.pow(waveP, 1.25);
-                            
-                            // 5. Open / separation at exit (0.52 -> 1.0):
-                            handsField.open = 2 * handsField.wave;
-                        }
-                    });
-                }
-
-                // Animation loop with fluid pointer inertia & battery-efficient viewport pausing
-                const startTime = performance.now();
-                let handsRafId = null;
-                let handsIsVisible = true;
-                let handsTabActive = !document.hidden;
-
-                function tickHands() {
-                    if (!handsIsVisible || !handsTabActive) {
-                        handsRafId = null;
-                        return;
-                    }
-                    const now = (performance.now() - startTime) / 1000;
-                    
-                    curPointerOn += (targetPointerOn - curPointerOn) * 0.10;
-                    curPointerX += (targetPointerX - curPointerX) * 0.12;
-                    curPointerY += (targetPointerY - curPointerY) * 0.12;
-                    
-                    handsField.pointer.on = curPointerOn;
-                    handsField.pointer.x = curPointerX;
-                    handsField.pointer.y = curPointerY;
-                    
-                    handsField.draw(now);
-                    handsRafId = requestAnimationFrame(tickHands);
-                }
-
-                function resumeHands() {
-                    if (!handsRafId && handsIsVisible && handsTabActive) {
-                        handsRafId = requestAnimationFrame(tickHands);
-                    }
-                }
-
-                function pauseHands() {
-                    if (handsRafId) {
-                        cancelAnimationFrame(handsRafId);
-                        handsRafId = null;
-                    }
-                }
-
-                // Pause canvas loop when hero track is scrolled out of viewport
-                if ('IntersectionObserver' in window && heroTrackEl) {
-                    const heroObserver = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            handsIsVisible = entry.isIntersecting;
-                            if (handsIsVisible) {
-                                resumeHands();
-                            } else {
-                                pauseHands();
-                            }
-                        });
-                    }, { threshold: 0.01 });
-                    heroObserver.observe(heroTrackEl);
-                }
-
-                // Pause canvas loop when browser tab is inactive / backgrounded
-                document.addEventListener('visibilitychange', () => {
-                    handsTabActive = !document.hidden;
-                    if (handsTabActive && handsIsVisible) {
-                        resumeHands();
-                    } else {
-                        pauseHands();
-                    }
-                });
-
-                resumeHands();
-            };
-
-            heroHandsImg.onload = initHands;
-            heroHandsImg.src = 'assets/god-hands.webp';
-            if (heroHandsImg.complete) initHands();
-            if (heroHandsImg.decode) {
-                heroHandsImg.decode().then(initHands).catch(() => {});
-            }
-        }
-
-        // Title Wipe Bar Reveal & Replay System (Anthracite Studio Reveal Architecture)
-        const revealElements = Array.from(document.querySelectorAll('.reveal'));
-        const hsGridEl = document.querySelector('[data-hs-grid]');
-
-        function computeRevealBars(root = document) {
-            if (!root) return;
-            const targets = [];
-            if (root.classList && root.classList.contains('reveal__text')) {
-                targets.push(root);
-            } else if (root.querySelectorAll) {
-                targets.push(...root.querySelectorAll('.reveal__text'));
-            }
-            targets.forEach(e => {
-                const t = e.getBoundingClientRect();
-                const n = document.createRange();
-                n.selectNodeContents(e);
-                const r = n.getBoundingClientRect();
-                e.style.setProperty('--bar-top', `${Math.min(0, r.top - t.top)}px`);
-                e.style.setProperty('--bar-bottom', `${Math.min(0, t.bottom - r.bottom)}px`);
-            });
-        }
-
-        // Compute initially, on font load, and on viewport resize
-        computeRevealBars();
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(() => computeRevealBars());
-        }
-        window.addEventListener('resize', () => computeRevealBars(), { passive: true });
-
-        function scheduleRevealDone(el) {
-            if (el.__revealTimer) clearTimeout(el.__revealTimer);
-            const style = getComputedStyle(el);
-            const delay = parseFloat(style.getPropertyValue('--reveal-delay')) || 0;
-            const duration = parseFloat(style.getPropertyValue('--reveal-duration')) || 1.2;
-            const lineCount = el.querySelectorAll('.reveal__line').length || 1;
-            const totalSec = delay + duration + 0.08 * (lineCount - 1);
-            el.__revealTimer = setTimeout(() => {
-                el.classList.add('reveal--done');
-            }, totalSec * 1000 + 50);
-
-            if (!el.__hasAnimEnd) {
-                el.__hasAnimEnd = true;
-                el.addEventListener('animationend', (e) => {
-                    if (e.animationName === 'reveal-bar') {
-                        el.classList.add('reveal--done');
-                    }
-                }, { passive: true });
-            }
-        }
-
-        function resetSingleReveal(el) {
-            if (!el) return;
-            if (el.__revealTimer) {
-                clearTimeout(el.__revealTimer);
-                el.__revealTimer = null;
-            }
-            el.classList.remove('is-revealed', 'reveal--done');
-            computeRevealBars(el);
-            void el.offsetWidth; // Force CSS animation restart from frame 0
-        }
-
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    computeRevealBars(entry.target);
-                    entry.target.classList.add('is-revealed');
-                    scheduleRevealDone(entry.target);
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-        // Capabilities Grid Reveal
-        let hsObserver = null;
-        if (hsGridEl) {
-            hsObserver = new IntersectionObserver(([entry]) => {
-                if (entry && entry.isIntersecting) {
-                    hsGridEl.classList.add('is-in');
-                    hsObserver.unobserve(hsGridEl);
-                }
-            }, { threshold: 0.15 });
-        }
-
-        function armAllReveals() {
-            computeRevealBars();
-            revealElements.forEach(el => {
-                resetSingleReveal(el);
-                revealObserver.observe(el);
-            });
-            if (hsGridEl && hsObserver) {
-                hsGridEl.classList.remove('is-in');
-                hsObserver.observe(hsGridEl);
-            }
-            const awardsEl = document.querySelector('[data-awards-list]');
-            if (awardsEl && window.__awardsObserver) {
-                awardsEl.classList.remove('is-in');
-                window.__awardsObserver.observe(awardsEl);
-            }
-        }
-
-        function armSectionReveal(target) {
-            if (!target) return;
-            const section = target.nodeType === Node.ELEMENT_NODE ? (target.closest('section') || target) : null;
-            if (!section) return;
-            computeRevealBars(section);
-            const reveals = section.querySelectorAll ? Array.from(section.querySelectorAll('.reveal')) : [];
-            if (section.classList.contains('reveal')) reveals.push(section);
-            reveals.forEach(el => {
-                resetSingleReveal(el);
-                revealObserver.observe(el);
-            });
-            if (section.id === 'services' && hsGridEl && hsObserver) {
-                hsGridEl.classList.remove('is-in');
-                hsObserver.observe(hsGridEl);
-            }
-            const awardsEl = document.querySelector('[data-awards-list]');
-            if (section.id === 'awards' && awardsEl && window.__awardsObserver) {
-                awardsEl.classList.remove('is-in');
-                window.__awardsObserver.observe(awardsEl);
-            }
-        }
-
-        window.resetRevealsForHome = armAllReveals;
-        window.armSectionReveal = armSectionReveal;
-
-        // Initialize observers
-        revealElements.forEach(el => revealObserver.observe(el));
-        if (hsGridEl && hsObserver) hsObserver.observe(hsGridEl);
-
-        // Reset and re-arm reveals on all Home links & logo clicks
-        document.querySelectorAll('a[href="#hero"], .bottom-nav__logo, #footer-back-to-top').forEach(link => {
-            link.addEventListener('click', () => {
-                armAllReveals();
-            });
-        });
-
-        // Re-arm reveals when user manually scrolls back to the top of the page
-        let hasArmedAtTop = true;
-        const onScrollCheckTop = () => {
-            const y = window.scrollY || window.pageYOffset || 0;
-            if (y <= 120) {
-                if (!hasArmedAtTop) {
-                    hasArmedAtTop = true;
-                    armAllReveals();
-                }
-            } else if (y > 400) {
-                hasArmedAtTop = false;
-            }
-        };
-        window.addEventListener('scroll', onScrollCheckTop, { passive: true });
-        if (window.__lenis) {
-            window.__lenis.on('scroll', onScrollCheckTop);
-        }
-
-        // 5. FEATURED PROJECTS: EXACT ANTHRACITE STUDIO MOTION ENGINE
-        (() => {
-            const dampLerp = (current, target, factor, dt) => current + (target - current) * (1 - Math.exp(-factor * 60 * dt));
-            const clamp01 = (v) => Math.min(1, Math.max(0, v));
-            const isPointInside = (pt, r) => pt && pt.x >= r.left && pt.x <= r.right && pt.y >= r.top && pt.y <= r.bottom;
-
-            class CardsMotion {
-                constructor(root) {
-                    this.root = root;
-                    this.cursor = root.querySelector('[data-fp-cursor]');
-                    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                    this.cards = [...root.querySelectorAll('[data-fp-card]')].map(card => ({
-                        card,
-                        link: card.querySelector('.fp__link'),
-                        fig: card.querySelector('[data-fp-fig]'),
-                        title: card.querySelector('[data-scramble-target]'),
-                        y: 0,
-                        revealed: false,
-                        hover: false,
-                        timer: 0
-                    }));
-
-                    if (this.reduced) {
-                        this.cards.forEach(c => this.reveal(c));
-                        return;
-                    }
-
-                    this.pointer = null;
-                    this.cx = 0;
-                    this.cy = 0;
-                    this.cursorOn = false;
-                    this.amp = { desktop: 0.22, mobile: 0.1 };
-                    this.cardLerp = 0.1;
-                    this.cursorLerp = 0.18;
-                    this.running = false;
-                    this.last = performance.now();
-
-                    window.addEventListener('pointermove', (e) => {
-                        if (e.pointerType !== 'touch') {
-                            this.pointer = { x: e.clientX, y: e.clientY };
-                        }
-                    }, { passive: true });
-
-                    document.documentElement.addEventListener('mouseleave', () => {
-                        this.pointer = null;
-                    });
-
-                    this.io = new IntersectionObserver(([entry]) => {
-                        if (entry.isIntersecting) {
-                            this.start();
-                        } else {
-                            this.stop();
-                        }
-                    }, { rootMargin: '30% 0px' });
-                    this.io.observe(root);
-                }
-
-                setHover(c, hover) {
-                    if (c.hover !== hover) {
-                        c.hover = hover;
-                        if (hover) {
-                            clearTimeout(c.timer);
-                            c.card.classList.remove('is-reset');
-                            c.card.classList.add('is-hover');
-                            if (c.title && window.scrambleText) {
-                                window.scrambleText(c.title);
-                            }
-                        } else {
-                            c.card.classList.remove('is-hover');
-                            c.timer = setTimeout(() => c.card.classList.add('is-reset'), 200);
-                        }
-                    }
-                }
-
-                setCursor(on) {
-                    if (this.cursorOn !== on) {
-                        this.cursorOn = on;
-                        if (this.cursor) {
-                            this.cursor.classList.toggle('is-on', on);
-                        }
-                        if (on && this.pointer) {
-                            this.cx = this.pointer.x;
-                            this.cy = this.pointer.y;
-                        }
-                    }
-                }
-
-                reveal(c) {
-                    c.revealed = true;
-                    if (c.fig) {
-                        c.fig.classList.add('is-in');
-                    }
-                }
-
-                start() {
-                    if (!this.running) {
-                        this.running = true;
-                        this.last = performance.now();
-                        this.raf = requestAnimationFrame((t) => this.frame(t));
-                    }
-                }
-
-                stop() {
-                    this.running = false;
-                    cancelAnimationFrame(this.raf);
-                    this.setCursor(false);
-                }
-
-                frame(time) {
-                    if (!this.running) return;
-                    const dt = Math.min(0.1, (time - this.last) / 1000);
-                    this.last = time;
-
-                    const vh = window.innerHeight;
-                    const isDesktop = window.matchMedia('(min-width: 810px)').matches;
-                    const amp = isDesktop ? this.amp.desktop : this.amp.mobile;
-                    let cursorHit = false;
-
-                    for (const c of this.cards) {
-                        if (c.card.hidden) continue;
-
-                        const cardRect = c.card.getBoundingClientRect();
-                        const targetY = (clamp01((vh - cardRect.top) / (vh + cardRect.height)) - 0.5) * c.link.offsetHeight * amp;
-                        c.y = dampLerp(c.y, targetY, this.cardLerp, dt);
-                        if (Math.abs(targetY - c.y) < 0.05) c.y = targetY;
-
-                        c.link.style.transform = `translate3d(0, ${c.y.toFixed(2)}px, 0)`;
-
-                        const linkRect = c.link.getBoundingClientRect();
-                        const figH = c.fig.offsetHeight || linkRect.width;
-                        const p = clamp01((vh - linkRect.top) / (vh + figH));
-                        c.fig.style.setProperty('--p', p.toFixed(4));
-
-                        if (!c.revealed && (linkRect.top + 0.2 * figH < vh || linkRect.top < 0)) {
-                            this.reveal(c);
-                        }
-
-                        const insideCard = isPointInside(this.pointer, linkRect);
-                        this.setHover(c, insideCard);
-
-                        if (insideCard && isPointInside(this.pointer, c.fig.getBoundingClientRect())) {
-                            cursorHit = true;
-                        }
-                    }
-
-                    if (this.cursor) {
-                        this.setCursor(cursorHit);
-                        if (this.cursorOn && this.pointer) {
-                            this.cx = dampLerp(this.cx, this.pointer.x, this.cursorLerp, dt);
-                            this.cy = dampLerp(this.cy, this.pointer.y, this.cursorLerp, dt);
-                            this.cursor.style.transform = `translate3d(${this.cx.toFixed(1)}px, ${this.cy.toFixed(1)}px, 0)`;
-                        }
-                    }
-
-                    this.raf = requestAnimationFrame((t) => this.frame(t));
-                }
-            }
-
-            class FeaturedProjects {
-                constructor(root) {
-                    this.root = root;
-                    this.views = root.querySelector('[data-fp-views]');
-                    this.grid = root.querySelector('.fp__grid');
-                    this.list = root.querySelector('[data-fp-list]');
-                    this.toggle = document.querySelector('[data-fp-view]');
-                    if (!this.views || !this.grid || !this.list || !this.toggle) return;
-
-                    this.buttons = [...this.toggle.querySelectorAll('[data-view]')];
-                    this.rows = [...this.list.querySelectorAll('[data-fp-row]')];
-                    this.previews = [...this.list.querySelectorAll('[data-fp-preview]')];
-                    this.reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                    this.view = 'grid';
-                    this.busy = false;
-
-                    const saved = localStorage.getItem('fp-view');
-                    if (saved === 'list') {
-                        this.apply('list');
-                    }
-
-                    this.buttons.forEach(btn => {
-                        btn.addEventListener('click', () => this.set(btn.dataset.view));
-                    });
-
-                    this.rows.forEach((row, idx) => {
-                        row.addEventListener('pointerenter', (e) => {
-                            if (e.pointerType !== 'touch') this.hover(idx);
-                        });
-                        row.addEventListener('focus', () => this.hover(idx));
-                        row.addEventListener('blur', () => this.hover(-1));
-                    });
-
-                    this.list.addEventListener('pointerleave', () => this.hover(-1));
-                }
-
-                hover(idx) {
-                    this.list.classList.toggle('is-hovering', idx >= 0);
-                    this.rows.forEach((r, i) => {
-                        const active = i === idx;
-                        r.classList.toggle('is-active', active);
-                        if (active) {
-                            const title = r.querySelector('[data-scramble-target]');
-                            if (title && window.scrambleText) window.scrambleText(title);
-                        }
-                    });
-                    this.previews.forEach((p, i) => {
-                        p.classList.toggle('is-on', i === idx);
-                    });
-                }
-
-                apply(view) {
-                    this.view = view;
-                    const isList = view === 'list';
-                    this.grid.hidden = isList;
-                    this.list.hidden = !isList;
-                    this.root.classList.toggle('fp--list', isList);
-                    this.toggle.dataset.current = view;
-                    this.buttons.forEach(b => {
-                        b.setAttribute('aria-pressed', String(b.dataset.view === view));
-                    });
-                    this.hover(-1);
-                }
-
-                set(view) {
-                    if (view === this.view || this.busy) return;
-                    try { localStorage.setItem('fp-view', view); } catch (e) {}
-
-                    if (this.reduced) {
-                        this.apply(view);
-                        return;
-                    }
-
-                    this.busy = true;
-                    this.toggle.dataset.current = view;
-                    this.views.classList.add('is-switching');
-
-                    setTimeout(() => {
-                        this.apply(view);
-                        if (view === 'list') {
-                            this.list.classList.remove('is-in');
-                            void this.list.offsetWidth;
-                            this.list.classList.add('is-in');
-                        }
-                        this.views.classList.remove('is-switching');
-                        this.busy = false;
-                        window.dispatchEvent(new Event('resize'));
-                    }, 280);
-                }
-            }
-
-            // Floating Sub-Bar Visibility Controller
-            const subBar = document.querySelector('[data-sub-bar]');
-            const fpSection = document.getElementById('works');
-            if (subBar && fpSection) {
-                const subBarObserver = new IntersectionObserver(([entry]) => {
-                    subBar.classList.toggle('is-visible', entry.isIntersecting);
-                }, { threshold: 0.08 });
-                subBarObserver.observe(fpSection);
-            }
-
-            // Initialize both systems
-            const fpEl = document.querySelector('[data-featured-projects]');
-            if (fpEl) {
-                window.__cardsMotion = new CardsMotion(fpEl);
-                window.__featuredProjects = new FeaturedProjects(fpEl);
-            }
-        })();
-
-        // Awards Staggered Items Reveal
-        const awardsGroupEl = document.querySelector('[data-awards-list]');
-        if (awardsGroupEl) {
-            const awardsObserver = new IntersectionObserver(([entry]) => {
-                if (entry && entry.isIntersecting) {
-                    awardsGroupEl.classList.add('is-in');
-                    awardsObserver.unobserve(awardsGroupEl);
-                }
-            }, { threshold: 0.15 });
-            awardsObserver.observe(awardsGroupEl);
-            window.__awardsObserver = awardsObserver;
-        }
-
-        // 9. ETHOS QUOTE SCROLL REVEAL & INTERACTIVE DECODE ENGINE
-        class EthosEngine {
-            constructor(root) {
-                this.root = root;
-                this.text = root.querySelector('.ethos__text');
-                this.mark = root.querySelector('.ethos__mark');
-                this.words = [...root.querySelectorAll('.ethos__word')];
-                this.highlightWord = root.querySelector('.ethos__word.is--highlight');
-                this.decodeBtn = root.querySelector('[data-decode-btn]');
-                this.lastIndex = -1;
-                this.isDecoding = false;
-                this.cipherChars = '0123456789ABCDEF!<>-_\\/[]{}—=+*^?#_$%&';
-
-                this.initScrollScrubber();
-                this.initInteractions();
-            }
-
-            initScrollScrubber() {
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                    this.words.forEach(w => w.classList.add('is-on'));
-                    if (this.mark) this.mark.classList.add('is-revealed');
-                    return;
-                }
-
-                this.io = new IntersectionObserver(([entry]) => {
-                    entry.isIntersecting ? this.start() : this.stop();
-                }, { threshold: [0, 0.2, 0.5, 0.8] });
-
-                this.io.observe(this.root);
-                this.update();
-            }
-
-            start() {
-                if (this.running) return;
-                this.running = true;
-                const loop = () => {
-                    this.update();
-                    if (this.running) {
-                        this.raf = requestAnimationFrame(loop);
-                    }
-                };
-                loop();
-            }
-
-            stop() {
-                this.running = false;
-                if (this.raf) cancelAnimationFrame(this.raf);
-            }
-
-            update() {
-                if (!this.text) return;
-                const rect = this.text.getBoundingClientRect();
-                const vh = window.innerHeight;
-                // Fluid scroll scrub window
-                const progress = Math.min(1, Math.max(0, (vh * 0.82 - rect.top) / (rect.height + vh * 0.3)));
-                const activeCount = Math.round(progress * this.words.length);
-
-                if (activeCount !== this.lastIndex) {
-                    this.lastIndex = activeCount;
-                    this.words.forEach((word, idx) => {
-                        word.classList.toggle('is-on', idx < activeCount);
-                    });
-
-                    // Trigger highlight background draw when reaching reverse-engineer
-                    if (this.mark && this.highlightWord) {
-                        const highlightIdx = this.words.indexOf(this.highlightWord);
-                        const isRevealed = highlightIdx >= 0 && activeCount > highlightIdx;
-                        this.mark.classList.toggle('is-revealed', isRevealed);
-                    }
-                }
-            }
-
-            initInteractions() {
-                // Trigger decode wave on button click
-                if (this.decodeBtn) {
-                    this.decodeBtn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.triggerDecodeWave();
-                    });
-                }
-
-                // Trigger decode on clicking the quote directly
-                if (this.text) {
-                    this.text.addEventListener('click', () => {
-                        this.triggerDecodeWave();
-                    });
-                }
-
-                // Scramble on hover / touchstart on highlight mark
-                if (this.mark) {
-                    const runHoverScramble = () => {
-                        if (!this.isDecoding && this.highlightWord) {
-                            this.scrambleWord(this.highlightWord, 'reverse-engineer', 450);
-                        }
-                    };
-                    this.mark.addEventListener('mouseenter', runHoverScramble);
-                    this.mark.addEventListener('touchstart', runHoverScramble, { passive: true });
-                }
-            }
-
-            scrambleWord(wordEl, targetText, durationMs = 500) {
-                if (wordEl._scrambleTimer) clearInterval(wordEl._scrambleTimer);
-                wordEl.classList.add('is-decoding');
-                const startTime = performance.now();
-                const len = targetText.length;
-
-                wordEl._scrambleTimer = setInterval(() => {
-                    const elapsed = performance.now() - startTime;
-                    const progress = Math.min(1, elapsed / durationMs);
-                    const lockedChars = Math.floor(progress * len);
-
-                    let display = '';
-                    for (let i = 0; i < len; i++) {
-                        if (targetText[i] === '-' || targetText[i] === ' ') {
-                            display += targetText[i];
-                        } else if (i < lockedChars) {
-                            display += targetText[i];
-                        } else {
-                            display += this.cipherChars[Math.floor(Math.random() * this.cipherChars.length)];
-                        }
-                    }
-                    wordEl.textContent = display;
-
-                    if (progress >= 1) {
-                        clearInterval(wordEl._scrambleTimer);
-                        wordEl._scrambleTimer = null;
-                        wordEl.textContent = targetText;
-                        wordEl.classList.remove('is-decoding');
-                    }
-                }, 32);
-            }
-
-            triggerDecodeWave() {
-                if (this.isDecoding) return;
-                this.isDecoding = true;
-
-                // Stagger scramble across all words in sequence
-                this.words.forEach((wordEl, idx) => {
-                    const original = wordEl.dataset.originalText || wordEl.textContent.trim();
-                    wordEl.dataset.originalText = original;
-
-                    setTimeout(() => {
-                        this.scrambleWord(wordEl, original, 380);
-                    }, idx * 60);
-                });
-
-                // Flash the highlight mark
-                if (this.mark && typeof gsap !== 'undefined') {
-                    gsap.fromTo(this.mark, 
-                        { boxShadow: '0 0 30px rgba(255, 255, 255, 0.8)' },
-                        { boxShadow: '0 0 0px rgba(255, 255, 255, 0)', duration: 0.9, ease: 'power2.out' }
-                    );
-                }
-
-                setTimeout(() => {
-                    this.isDecoding = false;
-                }, this.words.length * 60 + 450);
-            }
-        }
-
-        const ethosEl = document.querySelector('.ethos');
-        if (ethosEl) {
-            new EthosEngine(ethosEl);
-        }
-
-        // 10. ANTHRACITE STUDIO BINARY REVEAL ENGINE
-        class BinaryReveal {
-            constructor(root, options = {}) {
-                this.root = root;
-                this.canvas = root.querySelector('.binary-reveal__stage canvas') || root.querySelector('canvas');
-                this.o = Object.assign({
-                    src: './images/footer-sample.webp',
-                    cellPx: 5,
-                    contrast: 1.3,
-                    cutoff: 250,
-                    tracking: 1.25,
-                    lineHeight: 1.3,
-                    duration: 4600,
-                    charset: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
-                    primary: '#E8E8E3',
-                    bg: '#080807',
-                    font: "'JetBrains Mono', 'Space Grotesk', ui-monospace, monospace",
-                    logoDelay: 500,
-                    trim: true,
-                    padY: 0.08
-                }, options);
-
-                this.progress = 0;
-                this.armed = true;
-
-                const img = new Image();
-                const imgLoaded = new Promise(res => { img.onload = res; img.onerror = res; });
-                img.src = this.o.src;
-
-                const fontLoaded = document.fonts ? document.fonts.load('700 16px ' + this.o.font).catch(() => {}) : Promise.resolve();
-
-                Promise.all([imgLoaded, fontLoaded]).then(() => {
-                    if (this.destroyed) return;
-                    this.img = img;
-                    this.crop = this.o.trim ? this.computeCrop(img) : { sx: 0, sy: 0, sw: img.width || 1200, sh: img.height || 600 };
-                    this.build();
-                    this.draw();
-                    this.observe();
-                });
-
-                let resizeTimer;
-                this.onResize = () => {
-                    clearTimeout(resizeTimer);
-                    resizeTimer = setTimeout(() => {
-                        this.build();
-                        this.draw();
-                    }, 150);
-                };
-                window.addEventListener('resize', this.onResize);
-            }
-
-            destroy() {
-                this.destroyed = true;
-                cancelAnimationFrame(this.raf);
-                this.stopTwinkle();
-                clearTimeout(this.fT);
-                this.io?.disconnect();
-                window.removeEventListener('resize', this.onResize);
-            }
-
-            hexToRgb(hex) {
-                let c = hex.replace('#', '');
-                if (c.length === 3) c = c.split('').map(x => x + x).join('');
-                const n = parseInt(c, 16);
-                return [n >> 16 & 255, n >> 8 & 255, n & 255];
-            }
-
-            mix(a, b, t) {
-                return Math.round(a + (b - a) * t);
-            }
-
-            rampAt(ramp, val) {
-                if (val <= ramp[0][0]) return [ramp[0][1], ramp[0][2], ramp[0][3]];
-                for (let i = 1; i < ramp.length; i++) {
-                    const r = ramp[i];
-                    if (val <= r[0]) {
-                        const prev = ramp[i - 1];
-                        const t = (val - prev[0]) / (r[0] - prev[0]);
-                        return [
-                            Math.round(prev[1] + (r[1] - prev[1]) * t),
-                            Math.round(prev[2] + (r[2] - prev[2]) * t),
-                            Math.round(prev[3] + (r[3] - prev[3]) * t)
-                        ];
-                    }
-                }
-                const last = ramp[ramp.length - 1];
-                return [last[1], last[2], last[3]];
-            }
-
-            observe() {
-                this.io = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        const ratio = entry.intersectionRatio;
-                        if (!entry.isIntersecting || ratio <= 0.15) {
-                            if (!this.armed) {
-                                this.armed = true;
-                                cancelAnimationFrame(this.raf);
-                                this.stopTwinkle();
-                                this.progress = 0;
-                                this.draw();
-                                this.resetFooter();
-                            }
-                            return;
-                        }
-                        if (this.armed && ratio >= 0.5) {
-                            this.armed = false;
-                            this.stopTwinkle();
-                            this.start = performance.now();
-                            this.tick();
-                            this.revealFooter();
-                        } else if (this.armed) {
-                            this.progress = 0;
-                            this.draw();
-                        }
-                    });
-                }, { threshold: [0, 0.15, 0.3, 0.5, 0.7] });
-
-                this.io.observe(this.root.querySelector('.binary-reveal__stage') || this.root);
-
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden) {
-                        this.stopTwinkle();
-                    } else if (!this.armed && this.progress >= 1) {
-                        this.startTwinkle();
-                    }
-                });
-            }
-
-            tick() {
-                const elapsed = performance.now() - this.start;
-                const t = Math.min(1, elapsed / this.o.duration);
-                this.progress = 1 - Math.pow(1 - t, 3);
-                this.draw();
-                if (t < 1) {
-                    this.raf = requestAnimationFrame(() => this.tick());
-                } else {
-                    this.progress = 1;
-                    this.draw();
-                    this.startTwinkle();
-                }
-            }
-
-            startTwinkle() {
-                if (this.tw) return;
-                let last = 0;
-                const loop = (now) => {
-                    if (now - last > 66) {
-                        last = now;
-                        this.draw();
-                    }
-                    this.tw = requestAnimationFrame(loop);
-                };
-                this.tw = requestAnimationFrame(loop);
-            }
-
-            stopTwinkle() {
-                if (this.tw) {
-                    cancelAnimationFrame(this.tw);
-                    this.tw = null;
-                }
-            }
-
-            resetFooter() {
-                clearTimeout(this.fT);
-                this.root.classList.remove('is-revealed');
-            }
-
-            revealFooter() {
-                this.resetFooter();
-                void this.root.offsetWidth;
-                this.fT = setTimeout(() => {
-                    this.root.classList.add('is-revealed');
-                }, this.o.logoDelay);
-            }
-
-            computeCrop(img) {
-                if (!img.width || !img.height) return { sx: 0, sy: 0, sw: 1200, sh: 600 };
-                const n = Math.min(400, img.width);
-                const r = Math.max(1, Math.round(img.height * n / img.width));
-                const canvas = document.createElement('canvas');
-                canvas.width = n;
-                canvas.height = r;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, n, r);
-                const data = ctx.getImageData(0, 0, n, r).data;
-                let top = r, bottom = -1;
-                for (let y = 0; y < r; y++) {
-                    for (let x = 0; x < n; x++) {
-                        const idx = (y * n + x) * 4;
-                        if (data[idx + 3] < 16) continue;
-                        let lum = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-                        lum = Math.max(0, Math.min(255, (lum - 128) * this.o.contrast + 128));
-                        if (lum <= this.o.cutoff) {
-                            if (y < top) top = y;
-                            if (y > bottom) bottom = y;
-                        }
-                    }
-                }
-                if (bottom < 0) return { sx: 0, sy: 0, sw: img.width, sh: img.height };
-                const scale = img.height / r;
-                const pad = (bottom - top + 1) * this.o.padY;
-                const sy = Math.max(0, (top - pad) * scale);
-                const sh = Math.min(img.height, (bottom + 1 + pad) * scale) - sy;
-                return { sx: 0, sy, sw: img.width, sh };
-            }
-
-            build() {
-                const canvas = this.canvas;
-                if (!canvas || !this.img) return;
-                const crop = this.crop;
-                const width = canvas.clientWidth || this.root.clientWidth || 1200;
-                const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                const cols = Math.max(40, Math.min(300, Math.round(width / this.o.cellPx)));
-                const aspect = crop.sh / (crop.sw || 1);
-                const cellW = (width * dpr) / cols;
-                const spacingX = cellW * this.o.tracking;
-                const fontSize = cellW / 0.6;
-                const lineHeight = fontSize * this.o.lineHeight;
-                const rows = Math.max(1, Math.round(aspect * cols * 0.6 * this.o.tracking / this.o.lineHeight));
-
-                canvas.width = Math.round(cols * spacingX);
-                canvas.height = Math.round(rows * lineHeight);
-                canvas.style.height = (width * canvas.height / canvas.width) + 'px';
-
-                const offCanvas = document.createElement('canvas');
-                offCanvas.width = cols;
-                offCanvas.height = rows;
-                const offCtx = offCanvas.getContext('2d');
-                offCtx.drawImage(this.img, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, cols, rows);
-                const imgData = offCtx.getImageData(0, 0, cols, rows).data;
-
-                const primaryRgb = this.hexToRgb(this.o.primary);
-                const bgRgb = this.hexToRgb(this.o.bg);
-                const dimRgb = [this.mix(0, primaryRgb[0], 0.35), this.mix(0, primaryRgb[1], 0.35), this.mix(0, primaryRgb[2], 0.35)];
-                const flashRgb = [this.mix(primaryRgb[0], 255, 0.45), this.mix(primaryRgb[1], 255, 0.45), this.mix(primaryRgb[2], 255, 0.45)];
-                const ramp = [
-                    [0, bgRgb[0], bgRgb[1], bgRgb[2]],
-                    [0.3, dimRgb[0], dimRgb[1], dimRgb[2]],
-                    [0.58, primaryRgb[0], primaryRgb[1], primaryRgb[2]],
-                    [1, flashRgb[0], flashRgb[1], flashRgb[2]]
-                ];
-                this.fl = flashRgb;
-                const mid = this.rampAt(ramp, 0.62);
-                this.midCol = `rgb(${mid.join(',')})`;
-
-                const charset = this.o.charset.length ? this.o.charset : '01';
-                const cells = [];
-                for (let y = 0; y < rows; y++) {
-                    for (let x = 0; x < cols; x++) {
-                        const idx = (y * cols + x) * 4;
-                        if (imgData[idx + 3] < 16) continue;
-                        let lum = 0.299 * imgData[idx] + 0.587 * imgData[idx + 1] + 0.114 * imgData[idx + 2];
-                        lum = Math.max(0, Math.min(255, (lum - 128) * this.o.contrast + 128));
-                        if (lum <= this.o.cutoff) {
-                            cells.push({ x, y, lum });
-                        }
-                    }
-                }
-
-                const sorted = cells.map(c => c.lum).sort((a, b) => a - b);
-                const low = sorted.length ? sorted[Math.floor(sorted.length * 0.04)] : 0;
-                const high = sorted.length ? sorted[Math.floor(sorted.length * 0.96)] : 255;
-                const range = Math.max(1, high - low);
-
-                this.cells = cells.map(c => {
-                    const norm = Math.max(0, Math.min(1, (c.lum - low) / range));
-                    const rgb = this.rampAt(ramp, norm);
-                    const centerDist = Math.abs(c.x / cols - 0.5) * 2;
-                    return {
-                        cx: c.x * spacingX + spacingX / 2,
-                        cy: c.y * lineHeight + lineHeight / 2,
-                        cr: rgb[0],
-                        cg: rgb[1],
-                        cb: rgb[2],
-                        col: `rgb(${rgb.join(',')})`,
-                        ch: charset[Math.floor(Math.random() * charset.length)],
-                        thr: 0.16 * Math.random() + 0.84 * centerDist,
-                        seed: Math.floor(Math.random() * 1000),
-                        live: Math.random() < 0.08,
-                        tw: 170 + Math.random() * 340
-                    };
-                });
-
-                this.fontSize = fontSize;
-                this.cw = width;
-                this.charset = charset;
-                this.root.style.background = this.o.bg;
-            }
-
-            draw() {
-                const canvas = this.canvas;
-                if (!canvas || !this.cells) return;
-                if (canvas.clientWidth && Math.abs(canvas.clientWidth - this.cw) > 4) {
-                    this.build();
-                }
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = '700 ' + this.fontSize.toFixed(2) + 'px ' + this.o.font;
-
-                const chars = this.charset;
-                const now = performance.now();
-                const prog = Math.min(1.35, this.progress * 1.32);
-                const animIndex = Math.floor(now / 42);
-                const span = 0.16;
-
-                for (const cell of this.cells) {
-                    const diff = prog - cell.thr;
-                    if (diff < -span) continue;
-                    if (diff < span) {
-                        const alpha = (diff + span) / (2 * span);
-                        ctx.globalAlpha = 0.4 + 0.6 * alpha;
-                        ctx.fillStyle = alpha > 0.72 ? cell.col : this.midCol;
-                        ctx.fillText(chars[(cell.seed + animIndex + (cell.cx | 0) * 2) % chars.length], cell.cx, cell.cy);
-                        continue;
-                    }
-                    ctx.globalAlpha = 1;
-                    const flashDiff = diff - span;
-                    if (flashDiff < 0.13) {
-                        const factor = (1 - flashDiff / 0.13) * 0.5;
-                        const fl = this.fl;
-                        ctx.fillStyle = `rgb(${this.mix(cell.cr, fl[0], factor)},${this.mix(cell.cg, fl[1], factor)},${this.mix(cell.cb, fl[2], factor)})`;
-                    } else {
-                        ctx.fillStyle = cell.col;
-                    }
-                    ctx.fillText(cell.live ? chars[(cell.seed + Math.floor(now / cell.tw)) % chars.length] : cell.ch, cell.cx, cell.cy);
-                }
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        // Initialize Binary Reveal
-        const binaryRevealEl = document.querySelector('[data-binary-reveal]');
-        if (binaryRevealEl) {
-            new BinaryReveal(binaryRevealEl, {
-                src: binaryRevealEl.dataset.src || './images/footer-sample.webp',
-                primary: '#E8E8E3',
-                bg: '#080807'
-            });
-        }
-
-        // Live Telemetry UTC Clock
-        function updateFooterClock() {
-            const clock = document.getElementById('footer-live-clock');
-            if (clock) {
-                const now = new Date();
-                clock.textContent = now.toUTCString().replace('GMT', 'UTC');
-            }
-        }
-        setInterval(updateFooterClock, 1000);
-        updateFooterClock();
-    </script>
+    <script src="/scripts/shared-engine.js?v=20261114h"></script>
+    <script src="/scripts/router.js?v=20261114h"></script>
 </body>
 
 </html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" class="js-reveal">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capabilities &amp; AI Systems Architecture | Arshad Rafi</title>
+    <meta name="description" content="16 specialized engineering capabilities across autonomous agents, spatial computer vision, systems security, and high-performance reactive web platforms." />
+    <meta name="theme-color" content="#080807" />
+    <link rel="canonical" href="https://arshadrafi.dev/services/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arshadrafi.dev/services/" />
+    <meta property="og:site_name" content="Arshad Rafi" />
+    <meta property="og:title" content="Capabilities &amp; AI Systems Architecture | Arshad Rafi" />
+    <meta property="og:description" content="16 specialized engineering capabilities across autonomous agents, spatial vision, systems security, and reactive web platforms." />
+    <meta property="og:image" content="https://arshadrafi.dev/images/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Capabilities &amp; AI Systems Architecture | Arshad Rafi" />
+    <meta name="twitter:description" content="16 specialized engineering capabilities across autonomous agents, spatial vision, systems security, and reactive web platforms." />
+    <meta name="twitter:image" content="https://arshadrafi.dev/images/og-image.jpg" />
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles/shared.css?v=20261114h" />
+
+    <script>
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('is-loading');
+        }
+    </script>
+</head>
+
+<body>
+    <div class="noise" aria-hidden="true"></div>
+
+    <!-- RETICLE CURSOR -->
+    <div id="cursor-reticle">
+        <div class="reticle-crosshair">
+            <div class="reticle-line-h"></div>
+            <div class="reticle-line-v"></div>
+            <div class="reticle-dot"></div>
+        </div>
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+    </div>
+    <div id="cursor-label">EXPLORE</div>
+
+    <!-- PAGE TRANSITION OVERLAY -->
+    <div class="page-transition" data-page-transition="" aria-hidden="true">
+        <div class="page-transition__lines">
+            <p class="page-transition__line" data-page-transition-line="" style="--o: -24px;" data-sweep-text="ARSHAD RAFI">ARSHAD RAFI</p>
+            <p class="page-transition__line" data-page-transition-line="" style="--o: 16px;" data-sweep-text="AI RESEARCH &amp; SYSTEMS ARCHITECTURE">AI RESEARCH &amp; SYSTEMS ARCHITECTURE</p>
+        </div>
+    </div>
+
+    <!-- FLOATING BOTTOM NAV BAR -->
+    <nav class="bottom-nav" id="bottom-nav" data-bottom-nav-init data-bottom-nav-open="false">
+        <div class="bottom-nav__inner" data-bottom-nav-inner>
+            <div class="bottom-nav__bar" data-bottom-nav-bar>
+                <a href="/" class="bottom-nav__logo" aria-label="Home" data-cursor="HOME">
+                    <svg viewBox="0 0 600 680" fill="none" aria-hidden="true">
+                        <path d="M210.842 239.173H140.342V478.346H210.841V398.621H280.682V558.07H210.842V637.794H70.501V159.449H210.842V239.173ZM491.523 478.346H562.023V637.794H421.683V239.173H491.523V478.346ZM70.5 558.07H0V318.897H70.5V558.07ZM421.682 398.621H351.183V478.346H280.683V318.897H351.182V159.449H421.682V398.621ZM280.682 159.448H140.342V0H280.682V159.448ZM421.682 159.448H280.683V0H421.682V159.448Z" fill="currentColor"></path>
+                    </svg>
+                </a>
+                <span class="bottom-nav__title" id="nav-section-title" data-default-text="CAPABILITIES" data-current="CAPABILITIES">CAPABILITIES</span>
+                <button class="bottom-nav__toggle" id="bottom-nav-toggle" data-bottom-nav-toggle aria-expanded="false" aria-label="Open menu" data-label-open="Open menu" data-label-close="Close menu" data-cursor="MENU">
+                    <span class="bottom-nav__toggle-bar is--top"></span>
+                    <span class="bottom-nav__toggle-bar is--btm"></span>
+                </button>
+            </div>
+
+            <div class="bottom-nav__panel" id="bottom-nav-panel" data-bottom-nav-panel aria-hidden="true">
+                <ul class="bottom-nav__list">
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="/" class="bottom-nav__link" aria-label="Home"><span data-scramble-target>Home</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="/services/" class="bottom-nav__link" aria-current="page" aria-label="Services"><span data-scramble-target>Services</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="/about/" class="bottom-nav__link" aria-label="About"><span data-scramble-target>About</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="/news/" class="bottom-nav__link" aria-label="Research"><span data-scramble-target>Research</span></a>
+                    </li>
+                    <li class="bottom-nav__list-item" data-bottom-nav-reveal>
+                        <a href="/faq/" class="bottom-nav__link" aria-label="FAQ"><span data-scramble-target>FAQ</span></a>
+                    </li>
+                </ul>
+
+                <div class="bottom-nav__divider" data-bottom-nav-divider></div>
+
+                <div class="bottom-nav__secondary" data-bottom-nav-reveal>
+                    <div class="bottom-nav__col">
+                        <a href="/projects/" class="menu-btn" aria-label="See the projects"><span data-scramble-target>See the projects</span></a>
+                    </div>
+                    <div class="bottom-nav__col">
+                        <a href="/contact/" class="menu-btn" aria-label="Contact me"><span data-scramble-target>Contact me</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FLOATING SUB-BAR -->
+    <div class="sub-bar" data-sub-bar="" style="display: none;">
+        <div class="sub-bar__inner" data-sub-bar-inner="">
+            <div class="sub-bar__panel" data-bar-panel="projects-view"></div>
+        </div>
+    </div>
+
+    <!-- MAIN ROUTE CONTENT -->
+    <main id="main">
+        <!-- 1. PAGE HERO -->
+        <section class="page-hero" data-txt="Services">
+            <div class="page-hero__stage"></div>
+            <div class="page-hero__veil"></div>
+            <div class="page-hero__content">
+                <h1 class="page-hero__h1 title title--hero reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Research, architect,</span></span>
+                    <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>deploy, scale.</mark></span></span>
+                </h1>
+                <p class="page-hero__text">
+                    16 specialized engineering capabilities across four technical pillars: autonomous multi-agent intelligence, spatial computer vision, offensive/defensive security engineering, and high-performance reactive web platforms.
+                </p>
+                <div class="home-hero__actions">
+                    <a class="home-hero__btn-email" href="/contact/" data-cursor="CONTACT">
+                        <span data-scramble-target>Initiate Collaboration</span>
+                    </a>
+                    <a class="home-hero__link-projects" href="/projects/" data-cursor="VIEW">
+                        <span data-scramble-target>View Project Case Studies ↗</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. FOUR STICKY CAPABILITY GROUPS (Anthracite Studio 12-Col Grid) -->
+        <div class="faq__groups">
+            <!-- Group 1: Autonomous AI & Agents -->
+            <section class="faq__group" id="ai-agents" data-txt="Autonomous AI & Agents">
+                <h2 class="faq__group-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Autonomous</span></span>
+                    <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>AI &amp; Agents.</mark></span></span>
+                </h2>
+                <ol class="faq__list">
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/neuromesh/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Multi-Agent Swarm Orchestration</span></h3>
+                                <p class="faq-row__a">Decentralized consensus framework for distributed LLM agent task allocation, failover mitigation, and dynamic execution graphs.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/kage-agent/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Autonomous Tool-Use &amp; Planning Loops</span></h3>
+                                <p class="faq-row__a">Goal-directed agentic reasoning loops with persistent memory state machines, self-reflection, and sandboxed execution environments.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/mnemosyne/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>RAG &amp; Knowledge Graph Synthesis</span></h3>
+                                <p class="faq-row__a">Deterministic multi-hop vector retrieval architectures paired with semantic graph databases for zero-hallucination domain context.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Neural Model Fine-Tuning &amp; Quantization</span></h3>
+                                <p class="faq-row__a">Domain-specific LoRA/QLoRA adaptation, weight quantization (GGUF/AWQ), and ultra-low latency inference serving on vLLM engines.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/kage-agent/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Zero-Shot Vulnerability Triaging</span></h3>
+                                <p class="faq-row__a">Proactive dependency and code-audit agents classifying CVEs and analyzing software supply chain risks via OSV.dev APIs.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Group 2: Computer Vision & Hardware -->
+            <section class="faq__group" id="vision-iot" data-txt="Vision & Hardware">
+                <h2 class="faq__group-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Computer Vision</span></span>
+                    <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>&amp; Hardware.</mark></span></span>
+                </h2>
+                <ol class="faq__list">
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/gesture-gaming/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Real-Time Spatial Hand &amp; Gesture Tracking</span></h3>
+                                <p class="faq-row__a">Ultra-low latency landmark tracking using MediaPipe and OpenCV for touchless physical interfaces and camera-based interaction.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/gesture-gaming/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Ultrasonic Sensor Arrays &amp; Telemetry</span></h3>
+                                <p class="faq-row__a">ESP32 serial telemetry networks interfacing physical transducer sensors with client applications via raw byte protocols.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Interactive WebGL Shaders &amp; Canvas</span></h3>
+                                <p class="faq-row__a">High-frame-rate Three.js and custom 2D Canvas engines with real-time luminance-sampled ASCII matrices.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Embedded Edge Telemetry Pipelines</span></h3>
+                                <p class="faq-row__a">Low-overhead sensor telemetry pipelines streaming high-frequency hardware diagnostics over full-duplex WebSockets.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Group 3: Systems Security & Red Teaming -->
+            <section class="faq__group" id="security" data-txt="Systems Security">
+                <h2 class="faq__group-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Systems Security</span></span>
+                    <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>&amp; Red Teaming.</mark></span></span>
+                </h2>
+                <ol class="faq__list">
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/projects/kage-agent/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Autonomous Vulnerability Triaging</span></h3>
+                                <p class="faq-row__a">Automated dependency CVE auditing, static vulnerability verification, and severity attribution.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Red-Team Attack Surface Reconnaissance</span></h3>
+                                <p class="faq-row__a">External digital footprint analysis, OSINT automation, and automated attack-chain verification before adversaries strike.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Static &amp; Dynamic Binary Analysis</span></h3>
+                                <p class="faq-row__a">Decompilation, reverse engineering of native binaries, and vulnerability triage across ARM and x86 architectures.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Zero-Trust API &amp; Container Hardening</span></h3>
+                                <p class="faq-row__a">Production container hardening, least-privilege IAM policies, and secret zeroization protocols.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+
+            <!-- Group 4: Full-Stack Engineering -->
+            <section class="faq__group" id="fullstack" data-txt="Full-Stack Engineering">
+                <h2 class="faq__group-title reveal" data-reveal>
+                    <span class="reveal__line" style="--line: 0;"><span class="reveal__text">Full-Stack</span></span>
+                    <span class="reveal__line" style="--line: 1;"><span class="reveal__text"><mark>Engineering.</mark></span></span>
+                </h2>
+                <ol class="faq__list">
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/contact/" data-cursor="CONTACT">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>High-Throughput Async APIs</span></h3>
+                                <p class="faq-row__a">Production-grade asynchronous endpoints engineered in FastAPI and Go with sub-10ms response latencies under heavy load.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Reactive Web Architectures</span></h3>
+                                <p class="faq-row__a">Modern, resilient web platforms built with Next.js, Astro, and vanilla performant Web APIs without dependency bloat.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                    <li class="faq-row">
+                        <a class="faq-row__link" href="/news/" data-cursor="VIEW">
+                            <div class="faq-row__txt">
+                                <h3 class="faq-row__q"><span data-scramble-target>Core Web Vitals &amp; Performance Profiling</span></h3>
+                                <p class="faq-row__a">Deep runtime profiling, frame-rate budget enforcement, memory leak elimination, and sub-1s LCP delivery.</p>
+                            </div>
+                            <span class="faq-row__ic" aria-hidden="true">↗</span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+        </div>
+    </main>
+
+    <!-- SITE FOOTER -->
+    <footer class="site-footer" id="contact" data-theme="dark" data-txt="Contact">
+        <div class="binary-reveal" data-binary-reveal="" data-src="/images/footer-sample.webp">
+            <div class="binary-reveal__stage">
+                <canvas></canvas>
+            </div>
+            <div class="binary-reveal__logo">
+                <svg viewBox="0 0 1455 111" role="img" aria-label="ARSHAD RAFI">
+                    <defs>
+                        <mask id="rafiCutout">
+                            <rect x="615" y="0" width="840" height="111" fill="#fff" />
+                            <text x="650" y="102" font-family="'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="120" letter-spacing="0.04em" fill="#000" transform="scale(1, 1.05)" transform-origin="650 102">RAFI</text>
+                            <rect x="933" y="88" width="14" height="14" fill="#000" />
+                        </mask>
+                    </defs>
+                    <g class="txt">
+                        <path d="M547.495 97.2441H535.702V110.706H512.006V83.7832H547.495V97.2441ZM595 110.706H571.304V83.7832H595V110.706ZM512.005 97.2441H500.102V83.7832H512.005V97.2441ZM512.005 83.7822H500.102V56.8594H512.005V83.7822ZM523.798 83.7822H512.006V43.3984H523.798V83.7822ZM559.398 83.7822H535.702V70.3213H547.495V56.8594H559.398V83.7822ZM583.096 83.7822H571.304V43.3984H583.096V83.7822ZM571.303 70.3213H559.399V43.3984H571.303V70.3213ZM559.398 29.9365H535.702V43.3975H512.006V29.9365H523.798V3.01367H559.398V29.9365ZM571.303 43.3975H559.399V3.01367H571.303V43.3975Z" transform="translate(0, 14.5) scale(0.845) translate(-500.102, -3.014)" fill="#ffffff"></path>
+                        <text x="89" y="102" font-family="'Space Grotesk', -apple-system, sans-serif" font-weight="900" font-size="120" letter-spacing="0.035em" transform="scale(1, 1.05)" transform-origin="89 102">RSHAD</text>
+                    </g>
+                    <rect class="blk" x="615" y="0" width="840" height="111" mask="url(#rafiCutout)" />
+                    <rect class="bar" x="0" y="0" width="1455" height="111" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="site-footer__top" data-txt="Contact">
+            <div class="site-footer__info">
+                <a class="site-footer__item site-footer__email" href="mailto:arshadrafi566@gmail.com">
+                    <span data-scramble-target>arshadrafi566@gmail.com</span>
+                </a>
+                <span class="site-footer__item site-footer__location">Based in Kerala, India<br />Available anywhere, remotely</span>
+            </div>
+            <nav class="site-footer__expertise" aria-labelledby="footer-expertise">
+                <p class="site-footer__heading" id="footer-expertise">Expertise</p>
+                <ul class="site-footer__tags">
+                    <li><a class="site-footer__tag" href="/services/#ai-agents"><span data-scramble-target>AI Swarms &amp; Agents</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#ai-agents"><span data-scramble-target>Autonomous Systems</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#fullstack"><span data-scramble-target>Full-Stack Web</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#vision-iot"><span data-scramble-target>Spatial Computing</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#ai-agents"><span data-scramble-target>NLP &amp; LLM Pipelines</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#security"><span data-scramble-target>Cybersecurity Audit</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#vision-iot"><span data-scramble-target>Edge Embedded IoT</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#fullstack"><span data-scramble-target>React &amp; Next.js</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#ai-agents"><span data-scramble-target>Distributed Consensus</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#fullstack"><span data-scramble-target>System Architecture</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#security"><span data-scramble-target>Reverse Engineering</span></a></li>
+                    <li><a class="site-footer__tag" href="/services/#vision-iot"><span data-scramble-target>Computer Vision</span></a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="site-footer__bottom">
+            <div class="site-footer__row">
+                <nav class="site-footer__nav" aria-label="Site pages">
+                    <a class="site-footer__link" href="/"><span data-scramble-target>Home</span></a>
+                    <a class="site-footer__link" href="/services/" aria-current="page"><span data-scramble-target>Capabilities</span></a>
+                    <a class="site-footer__link" href="/projects/"><span data-scramble-target>Projects</span></a>
+                    <a class="site-footer__link" href="/about/"><span data-scramble-target>About</span></a>
+                    <a class="site-footer__link" href="/news/"><span data-scramble-target>Research</span></a>
+                    <a class="site-footer__link" href="/faq/"><span data-scramble-target>FAQ</span></a>
+                    <a class="site-footer__link" href="/contact/"><span data-scramble-target>Contact</span></a>
+                </nav>
+                <ul class="site-footer__social">
+                    <li><a class="site-footer__social-link" href="https://github.com/Cigarfeine" target="_blank" rel="noopener noreferrer"><span data-scramble-target>GitHub ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://www.linkedin.com/in/arshad-rafi-204458351" target="_blank" rel="noopener noreferrer"><span data-scramble-target>LinkedIn ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://www.instagram.com/ar.shaed" target="_blank" rel="noopener noreferrer"><span data-scramble-target>Instagram ↗</span></a></li>
+                    <li><a class="site-footer__social-link" href="https://wa.me/917736889417" target="_blank" rel="noopener noreferrer"><span data-scramble-target>WhatsApp ↗</span></a></li>
+                </ul>
+            </div>
+            <div class="site-footer__row site-footer__row--meta">
+                <div class="site-footer__credit">
+                    <p class="site-footer__copyright">© 2026 ARSHAD RAFI. ALL RIGHTS RESERVED.</p>
+                    <a class="site-footer__signature" href="#main" aria-label="engineered with precision and rigor by Arshad Rafi">
+                        <span>ENGINEERED WITH RIGOR &amp; TACTICAL PRECISION BY</span>
+                        <svg viewBox="0 0 312 354" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:12px;height:auto;fill:currentColor;">
+                            <path fill="currentColor" d="M311.947 353.98H242.32C241.26 343.017 234.255 226.447 213.657 226.401C194.488 226.401 172.784 290.442 160.665 306.475C110.483 372.708 0.396374 374.855 0.949341 269.384C1.36407 184.834 65.2778 57.027 118.685 0.97998H226.652L311.947 353.98ZM141.449 83.3832C112.649 89.7324 66.3377 198.081 64.218 239.054C62.8356 266.232 81.1296 271.897 106.566 265.273C135.136 257.828 132.648 212.195 165.227 199.131C187.438 190.224 218.588 191.869 202.736 143.358C199.649 133.857 189.465 81.4647 167.715 81.4647C160.711 81.4647 150.02 81.4647 141.449 83.3832Z"></path>
+                        </svg>
+                    </a>
+                </div>
+                <nav class="site-footer__legal" aria-label="System telemetry">
+                    <span class="site-footer__legal-link" id="footer-live-clock">00:00:00 UTC</span>
+                    <button type="button" class="site-footer__legal-link" id="footer-back-to-top"><span>BACK TO TOP ↑</span></button>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/CustomEase.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="/scripts/shared-engine.js?v=20261114h"></script>
+    <script src="/scripts/router.js?v=20261114h"></script>
+</body>
+
+</html>
