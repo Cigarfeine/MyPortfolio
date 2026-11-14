@@ -170,6 +170,20 @@
 
     const canvasCtx = document.createElement('canvas').getContext('2d');
     const glyphWidthCache = new Map();
+    const scrambleCharWidthCache = new Map();
+    let lastPointerMoveTime = 0;
+    let lastScrollTime = 0;
+
+    function measureScrambleChar(font, isUpper, ch) {
+        if (!canvasCtx) return 0;
+        const glyph = isUpper ? ch.toUpperCase() : ch;
+        const key = `${font}|${glyph}`;
+        if (scrambleCharWidthCache.has(key)) return scrambleCharWidthCache.get(key);
+        canvasCtx.font = font;
+        const w = canvasCtx.measureText(glyph).width;
+        scrambleCharWidthCache.set(key, w);
+        return w;
+    }
 
     function getGlyphWidthLookup(font, chars, uppercase = false) {
         const key = `${font}|${chars}|${uppercase}`;
@@ -209,8 +223,7 @@
 
     const isWordChar = (c) => /[\p{L}\p{N}]/u.test(c);
 
-    function buildScrambleSpans(el, text) {
-        el.textContent = '';
+    function buildScrambleSpans(el, text, font, isUpper) {
         const container = document.createElement('span');
         container.style.pointerEvents = 'none';
         const spanItems = [];
@@ -226,6 +239,12 @@
             for (const ch of chunk) {
                 const s = document.createElement('span');
                 s.textContent = ch;
+                s.style.display = 'inline-block';
+                s.style.textAlign = 'center';
+                const measuredWidth = font ? measureScrambleChar(font, isUpper, ch) : 0;
+                if (measuredWidth > 2) {
+                    s.style.width = `${measuredWidth.toFixed(2)}px`;
+                }
                 wordSpan.appendChild(s);
                 spanItems.push({
                     el: s,
@@ -237,17 +256,8 @@
             }
             container.appendChild(wordSpan);
         }
+        el.textContent = '';
         el.appendChild(container);
-
-        const widths = spanItems.map(item => item.el.getBoundingClientRect().width);
-        spanItems.forEach((item, idx) => {
-            item.el.style.display = 'inline-block';
-            // Only lock pixel width if element is actually rendered (> 2px), avoids 0px collapse in hidden/cloning states
-            if (widths[idx] > 2) {
-                item.el.style.width = `${widths[idx]}px`;
-            }
-            item.el.style.textAlign = 'center';
-        });
         return spanItems;
     }
 
@@ -275,7 +285,7 @@
         const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
         const isUpper = cs.textTransform === 'uppercase';
         const lookup = getGlyphWidthLookup(font, LOWERCASE_CHARS + UPPERCASE_CHARS, isUpper);
-        const spans = buildScrambleSpans(target, original);
+        const spans = buildScrambleSpans(target, original, font, isUpper);
         const scramblableCount = spans.filter(s => s.scramblable).length;
         const charDelay = scramblableCount > 0 ? Math.min(0.18, duration / Math.max(1, scramblableCount) * 2) : 0;
         const totalTime = charDelay + duration;
@@ -340,6 +350,13 @@
     }
 
     function handleScrambleTrigger(e) {
+        if (e.type === 'mouseenter') {
+            if (window.__isTransitionCovering) return;
+            const now = performance.now();
+            // Skip hover scrambles caused by content scrolling beneath a stationary cursor
+            if (now - lastScrollTime < 220 && now - lastPointerMoveTime > 120) return;
+            if (e.relatedTarget === null && now - lastPointerMoveTime > 150) return;
+        }
         const btn = e.target.closest?.('a, button, [data-scramble], .menu-btn, .awards__item, .logo-wall__logo, .site-footer__tag, .hs__btn, .home-hero__btn-email, .home-hero__link-projects, .bottom-nav__link, .faq-row__link, .cta-pill');
         if (!btn || btn.closest('[data-no-scramble]')) return;
         if (e.type === 'mouseenter' && e.relatedTarget && btn.contains(e.relatedTarget)) return;
@@ -351,6 +368,15 @@
 
     if (!window.__scrambleListenersBound) {
         window.__scrambleListenersBound = true;
+        window.addEventListener('pointermove', (e) => {
+            if (e.pointerType !== 'touch') lastPointerMoveTime = performance.now();
+        }, { passive: true });
+        const markScrollActivity = () => {
+            lastScrollTime = performance.now();
+        };
+        window.addEventListener('scroll', markScrollActivity, { passive: true });
+        window.addEventListener('wheel', markScrollActivity, { passive: true });
+        window.addEventListener('touchmove', markScrollActivity, { passive: true });
         document.addEventListener('mouseenter', handleScrambleTrigger, true);
         document.addEventListener('focusin', (e) => {
             if (e.target.matches?.(':focus-visible')) handleScrambleTrigger(e);
@@ -562,7 +588,13 @@
     }
     window.resetHeroToRestState = resetHeroToRestState;
 
+    let lastForceScrollZeroAt = 0;
     function forceScrollTopZero() {
+        const now = performance.now();
+        if (now - lastForceScrollZeroAt < 16 && (window.scrollY || 0) === 0 && (document.documentElement.scrollTop || 0) === 0) {
+            return;
+        }
+        lastForceScrollZeroAt = now;
         const htmlEl = document.documentElement;
         const prevBehavior = htmlEl.style.scrollBehavior;
         htmlEl.style.scrollBehavior = 'auto';
@@ -810,28 +842,42 @@
         } else if (root.querySelectorAll) {
             targets.push(...root.querySelectorAll('.reveal__text'));
         }
-        targets.forEach(e => {
+        if (!targets.length) return;
+
+        // Pass 1: batch all layout and computed-style reads before any style writes
+        const measurements = targets.map(e => {
             const t = e.getBoundingClientRect();
+            const mark = t.height > 0 ? e.querySelector('mark') : null;
+            if (!mark) return { e, t, mark: null, m: null, cs: null };
+            return {
+                e,
+                t,
+                mark,
+                m: mark.getBoundingClientRect(),
+                cs: window.getComputedStyle(mark)
+            };
+        });
+
+        const parseEmOrPx = (val, fallbackEm, fs) => {
+            const raw = (val || '').trim();
+            if (!raw) return fallbackEm * fs;
+            if (raw.endsWith('em')) return parseFloat(raw) * fs;
+            if (raw.endsWith('px')) return parseFloat(raw);
+            const num = parseFloat(raw);
+            return Number.isFinite(num) ? num * fs : fallbackEm * fs;
+        };
+
+        // Pass 2: apply CSS custom property writes without interleaved DOM reads
+        measurements.forEach(({ e, t, mark, m, cs }) => {
             if (t.height <= 0) {
                 e.style.setProperty('--bar-top', '0px');
                 e.style.setProperty('--bar-bottom', '0px');
                 return;
             }
-            const mark = e.querySelector('mark');
-            if (mark) {
-                const m = mark.getBoundingClientRect();
-                const cs = window.getComputedStyle(mark);
+            if (mark && m && cs) {
                 const fs = parseFloat(cs.fontSize) || t.height;
-                const parseEmOrPx = (val, fallbackEm) => {
-                    const raw = (val || '').trim();
-                    if (!raw) return fallbackEm * fs;
-                    if (raw.endsWith('em')) return parseFloat(raw) * fs;
-                    if (raw.endsWith('px')) return parseFloat(raw);
-                    const num = parseFloat(raw);
-                    return Number.isFinite(num) ? num * fs : fallbackEm * fs;
-                };
-                const topOffset = parseEmOrPx(cs.getPropertyValue('--mark-top'), 0.12);
-                const barHeight = parseEmOrPx(cs.getPropertyValue('--mark-height'), 0.96);
+                const topOffset = parseEmOrPx(cs.getPropertyValue('--mark-top'), 0.12, fs);
+                const barHeight = parseEmOrPx(cs.getPropertyValue('--mark-height'), 0.96, fs);
                 const markBgTop = m.top + topOffset;
                 const markBgBottom = markBgTop + barHeight;
                 e.style.setProperty('--bar-top', `${(markBgTop - t.top).toFixed(2)}px`);
@@ -872,15 +918,17 @@
         scheduleRevealDone(el);
     }
 
-    function resetSingleReveal(el) {
+    function resetSingleReveal(el, skipReflow = false) {
         if (!el) return;
         if (el.__revealTimer) {
             clearTimeout(el.__revealTimer);
             el.__revealTimer = null;
         }
         el.classList.remove('is-revealed', 'reveal--done');
-        computeRevealBars(el);
-        void el.offsetWidth;
+        if (!skipReflow) {
+            computeRevealBars(el);
+            void el.offsetWidth;
+        }
     }
 
     let revealObserver = null;
@@ -903,13 +951,15 @@
         if (document.documentElement.classList.contains('is-loading') || window.__isTransitionCovering) return;
         const vh = window.innerHeight || document.documentElement.clientHeight;
         const obs = getRevealObserver();
-        document.querySelectorAll('.reveal:not(.is-revealed)').forEach(el => {
+        const candidates = Array.from(document.querySelectorAll('.reveal:not(.is-revealed)'));
+        const toReveal = candidates.filter(el => {
             const rect = el.getBoundingClientRect();
             const inHero = Boolean(el.closest('.page-hero, .home-hero-pin, .contact__hero'));
-            if (inHero || (rect.top < vh * 0.96 && rect.bottom > -20)) {
-                triggerRevealElement(el);
-                obs.unobserve(el);
-            }
+            return inHero || (rect.top < vh * 0.96 && rect.bottom > -20);
+        });
+        toReveal.forEach(el => {
+            triggerRevealElement(el);
+            obs.unobserve(el);
         });
     }
 
@@ -928,20 +978,19 @@
         cleanupExtraObservers();
 
         const reveals = Array.from(document.querySelectorAll('.reveal'));
-        computeRevealBars();
-
         reveals.forEach(el => {
             if (!el.classList.contains('reveal--done')) {
-                resetSingleReveal(el);
+                resetSingleReveal(el, true);
             }
+        });
+        computeRevealBars();
+        reveals.forEach(el => {
             if (!el.classList.contains('reveal--done')) {
                 obs.observe(el);
             }
         });
 
         requestAnimationFrame(revealVisibleNow);
-        setTimeout(revealVisibleNow, 150);
-        setTimeout(revealVisibleNow, 450);
 
         const hsGridEl = document.querySelector('[data-hs-grid]');
         if (hsGridEl) {
@@ -984,8 +1033,7 @@
     window.initScrollReveals = initScrollReveals;
 
     function resetRevealsForHome() {
-        computeRevealBars();
-        document.querySelectorAll('.reveal').forEach(el => resetSingleReveal(el));
+        document.querySelectorAll('.reveal').forEach(el => resetSingleReveal(el, true));
         const hsGridEl = document.querySelector('[data-hs-grid]');
         if (hsGridEl) hsGridEl.classList.remove('is-in');
         const awardsGroupEl = document.querySelector('[data-awards-list]');
@@ -998,14 +1046,14 @@
         if (!target) return;
         const section = target.nodeType === Node.ELEMENT_NODE ? (target.closest('section') || target) : null;
         if (!section) return;
-        computeRevealBars(section);
         const obs = getRevealObserver();
         const reveals = section.querySelectorAll ? Array.from(section.querySelectorAll('.reveal')) : [];
         if (section.classList?.contains('reveal')) reveals.push(section);
         reveals.forEach(el => {
-            resetSingleReveal(el);
+            resetSingleReveal(el, true);
             obs.observe(el);
         });
+        computeRevealBars(section);
         setTimeout(revealVisibleNow, 80);
     }
     window.armSectionReveal = armSectionReveal;
@@ -1381,6 +1429,8 @@
             this.text = root.querySelector('.manifesto__text') || root;
             this.words = [...root.querySelectorAll('.manifesto__word')];
             this.last = -1;
+            this.raf = null;
+            this.onScroll = () => this.scheduleUpdate();
 
             if (prefersReducedMotion) {
                 this.words.forEach(word => word.classList.add('is-on'));
@@ -1394,19 +1444,30 @@
             this.update();
         }
 
+        scheduleUpdate() {
+            if (this.raf || !this.running) return;
+            this.raf = requestAnimationFrame(() => {
+                this.raf = null;
+                if (this.running) this.update();
+            });
+        }
+
         start() {
             if (this.running) return;
             this.running = true;
-            const loop = () => {
-                this.update();
-                if (this.running) this.raf = requestAnimationFrame(loop);
-            };
-            loop();
+            window.addEventListener('scroll', this.onScroll, { passive: true });
+            window.addEventListener('resize', this.onScroll, { passive: true });
+            this.scheduleUpdate();
         }
 
         stop() {
             this.running = false;
-            if (this.raf) cancelAnimationFrame(this.raf);
+            window.removeEventListener('scroll', this.onScroll);
+            window.removeEventListener('resize', this.onScroll);
+            if (this.raf) {
+                cancelAnimationFrame(this.raf);
+                this.raf = null;
+            }
         }
 
         update() {
@@ -1416,8 +1477,16 @@
             const activeCount = Math.round(progress * this.words.length);
 
             if (activeCount !== this.last) {
+                if (this.last < 0) {
+                    this.words.forEach((word, idx) => word.classList.toggle('is-on', idx < activeCount));
+                } else {
+                    const start = Math.min(this.last, activeCount);
+                    const end = Math.max(this.last, activeCount);
+                    for (let idx = start; idx < end; idx++) {
+                        this.words[idx]?.classList.toggle('is-on', idx < activeCount);
+                    }
+                }
                 this.last = activeCount;
-                this.words.forEach((word, idx) => word.classList.toggle('is-on', idx < activeCount));
             }
         }
 
@@ -1440,6 +1509,8 @@
             this.lastIndex = -1;
             this.isDecoding = false;
             this.cipherChars = '0123456789ABCDEF!<>-_\\/[]{}—=+*^?#_$%&';
+            this.raf = null;
+            this.onScroll = () => this.scheduleUpdate();
 
             this.initScrollScrubber();
             this.initInteractions();
@@ -1460,19 +1531,30 @@
             this.update();
         }
 
+        scheduleUpdate() {
+            if (this.raf || !this.running) return;
+            this.raf = requestAnimationFrame(() => {
+                this.raf = null;
+                if (this.running) this.update();
+            });
+        }
+
         start() {
             if (this.running) return;
             this.running = true;
-            const loop = () => {
-                this.update();
-                if (this.running) this.raf = requestAnimationFrame(loop);
-            };
-            loop();
+            window.addEventListener('scroll', this.onScroll, { passive: true });
+            window.addEventListener('resize', this.onScroll, { passive: true });
+            this.scheduleUpdate();
         }
 
         stop() {
             this.running = false;
-            if (this.raf) cancelAnimationFrame(this.raf);
+            window.removeEventListener('scroll', this.onScroll);
+            window.removeEventListener('resize', this.onScroll);
+            if (this.raf) {
+                cancelAnimationFrame(this.raf);
+                this.raf = null;
+            }
         }
 
         update() {
@@ -1483,10 +1565,18 @@
             const activeCount = Math.round(progress * this.words.length);
 
             if (activeCount !== this.lastIndex) {
+                if (this.lastIndex < 0) {
+                    this.words.forEach((word, idx) => {
+                        word.classList.toggle('is-on', idx < activeCount);
+                    });
+                } else {
+                    const start = Math.min(this.lastIndex, activeCount);
+                    const end = Math.max(this.lastIndex, activeCount);
+                    for (let idx = start; idx < end; idx++) {
+                        this.words[idx]?.classList.toggle('is-on', idx < activeCount);
+                    }
+                }
                 this.lastIndex = activeCount;
-                this.words.forEach((word, idx) => {
-                    word.classList.toggle('is-on', idx < activeCount);
-                });
 
                 if (this.mark && this.highlightWord) {
                     const highlightIdx = this.words.indexOf(this.highlightWord);
@@ -1955,6 +2045,10 @@
         let rafId = null;
         let isVisible = true;
         let tabVisible = !document.hidden;
+        let hasDrawnInitial = false;
+        let lastDrawAt = 0;
+        let lastPointerAt = 0;
+        let lastScrollY = window.scrollY || 0;
         let targetPtr = { x: 0.55, y: 0.45, active: 0 };
         let curPtr = { x: 0.55, y: 0.45, active: 0 };
         const startTime = performance.now();
@@ -1975,6 +2069,7 @@
         const onResize = () => resize();
         const onMove = (e) => {
             if (!isVisible) return;
+            lastPointerAt = performance.now();
             targetPtr.x = clamp01((e.clientX - stageLeft) / (w || 1));
             targetPtr.y = clamp01((e.clientY + (window.scrollY || 0) - stageDocTop) / (h || 1));
             targetPtr.active = 1;
@@ -2200,27 +2295,40 @@
             }
         }
 
-        function loop() {
+        function loop(now = performance.now()) {
             if (!isVisible || !tabVisible || !document.body.contains(canvas)) {
                 rafId = null;
                 return;
             }
-            const t = (performance.now() - startTime) / 1000;
-            curPtr.x += (targetPtr.x - curPtr.x) * 0.08;
-            curPtr.y += (targetPtr.y - curPtr.y) * 0.08;
-            curPtr.active += (targetPtr.active - curPtr.active) * 0.08;
+            if (window.__isTransitionCovering && hasDrawnInitial) {
+                rafId = requestAnimationFrame(loop);
+                return;
+            }
 
             const scrollY = window.scrollY || 0;
-            const scrollP = clamp01(scrollY / Math.max(1, h));
+            const isInteracting = (now - lastPointerAt < 450) || Math.abs(scrollY - lastScrollY) > 0.5;
+            if (!hasDrawnInitial || isInteracting || (now - lastDrawAt >= 32)) {
+                hasDrawnInitial = true;
+                lastDrawAt = now;
+                lastScrollY = scrollY;
 
-            ctx.clearRect(0, 0, w, h);
+                const t = (now - startTime) / 1000;
+                curPtr.x += (targetPtr.x - curPtr.x) * 0.08;
+                curPtr.y += (targetPtr.y - curPtr.y) * 0.08;
+                curPtr.active += (targetPtr.active - curPtr.active) * 0.08;
 
-            if (mode === 'services') drawServicesStage(t, scrollP);
-            else if (mode === 'projects' || mode === 'case') drawProjectsStage(t, scrollP, mode === 'case');
-            else if (mode === 'about') drawAboutStage(t, scrollP);
-            else drawAsciiWaveStage(t, scrollP);
+                const scrollP = clamp01(scrollY / Math.max(1, h));
 
-            drawCornerMarks();
+                ctx.clearRect(0, 0, w, h);
+
+                if (mode === 'services') drawServicesStage(t, scrollP);
+                else if (mode === 'projects' || mode === 'case') drawProjectsStage(t, scrollP, mode === 'case');
+                else if (mode === 'about') drawAboutStage(t, scrollP);
+                else drawAsciiWaveStage(t, scrollP);
+
+                drawCornerMarks();
+            }
+
             rafId = requestAnimationFrame(loop);
         }
 
@@ -2370,10 +2478,11 @@
         // 1. Portrait & Case Study Media Parallax
         document.querySelectorAll('.about__fig').forEach(fig => {
             const tween = gsap.fromTo(fig,
-                { y: 28 },
+                { y: 28, force3D: true },
                 {
                     y: -28,
                     ease: 'none',
+                    force3D: true,
                     scrollTrigger: {
                         trigger: fig.closest('.about') || fig,
                         start: 'top bottom',
@@ -2387,11 +2496,12 @@
 
         document.querySelectorAll('.pr-media--wide img, .pr-pair img').forEach(img => {
             const tween = gsap.fromTo(img,
-                { scale: 1.08, yPercent: -4 },
+                { scale: 1.08, yPercent: -4, force3D: true },
                 {
                     scale: 1.08,
                     yPercent: 4,
                     ease: 'none',
+                    force3D: true,
                     scrollTrigger: {
                         trigger: img.parentElement,
                         start: 'top bottom',
@@ -2415,10 +2525,11 @@
             '.news-card'
         ];
 
-        batchSelectors.forEach(sel => {
+        // Pass 1: batch all layout reads across all selectors before any GSAP writes
+        const vh = window.innerHeight || 900;
+        const batches = batchSelectors.map(sel => {
             const nodes = Array.from(document.querySelectorAll(sel));
-            if (!nodes.length) return;
-            const vh = window.innerHeight || 900;
+            if (!nodes.length) return null;
             const immediate = [];
             const deferred = [];
 
@@ -2428,15 +2539,20 @@
                 else deferred.push(n);
             });
 
+            return { immediate, deferred };
+        }).filter(Boolean);
+
+        // Pass 2: apply all GSAP initial states and ScrollTrigger batches
+        batches.forEach(({ immediate, deferred }) => {
             if (immediate.length) {
                 gsap.fromTo(immediate,
-                    { opacity: 0, y: 18 },
-                    { opacity: 1, y: 0, duration: 0.55, stagger: 0.06, ease: 'power2.out', clearProps: 'transform,opacity' }
+                    { opacity: 0, y: 18, force3D: true },
+                    { opacity: 1, y: 0, duration: 0.55, stagger: 0.06, ease: 'power2.out', force3D: true, clearProps: 'transform,opacity' }
                 );
             }
 
             if (deferred.length) {
-                gsap.set(deferred, { opacity: 0, y: 24 });
+                gsap.set(deferred, { opacity: 0, y: 24, force3D: true });
                 const triggers = ScrollTrigger.batch(deferred, {
                     onEnter: (batch) => {
                         gsap.to(batch, {
@@ -2446,6 +2562,7 @@
                             stagger: 0.07,
                             ease: 'power3.out',
                             overwrite: 'auto',
+                            force3D: true,
                             clearProps: 'transform,opacity'
                         });
                     },
@@ -2478,6 +2595,8 @@
     // ========================================================
     // 13. BINARY REVEAL FOOTER ENGINE
     // ========================================================
+    const binaryCropCache = new Map();
+
     class BinaryReveal {
         constructor(root, options = {}) {
             if (root.__binaryReveal) {
@@ -2506,6 +2625,9 @@
 
             this.progress = 0;
             this.armed = true;
+            this.built = false;
+            this.drawnAtZero = false;
+            this.lastTickDraw = 0;
 
             const img = new Image();
             const imgLoaded = new Promise(res => { img.onload = res; img.onerror = res; });
@@ -2516,21 +2638,61 @@
             Promise.all([imgLoaded, fontLoaded]).then(() => {
                 if (this.destroyed) return;
                 this.img = img;
-                this.crop = this.o.trim ? this.computeCrop(img) : { sx: 0, sy: 0, sw: img.width || 1200, sh: img.height || 600 };
-                this.build();
-                this.draw();
+                const cropKey = this.o.trim
+                    ? `${this.o.src}|${this.o.contrast}|${this.o.cutoff}|${this.o.padY}`
+                    : `raw|${this.o.src}`;
+                if (binaryCropCache.has(cropKey)) {
+                    this.crop = binaryCropCache.get(cropKey);
+                } else {
+                    this.crop = this.o.trim ? this.computeCrop(img) : { sx: 0, sy: 0, sw: img.width || 1200, sh: img.height || 600 };
+                    binaryCropCache.set(cropKey, this.crop);
+                }
+
+                // Observe visibility immediately so fast scrolling never misses footer reveal
                 this.observe();
+
+                // Defer heavy canvas cell grid construction until footer is within 600px of viewport
+                if ('IntersectionObserver' in window) {
+                    const preTarget = this.root.querySelector('.binary-reveal__stage') || this.root;
+                    this.prebuildIo = new IntersectionObserver((entries) => {
+                        if (entries.some(e => e.isIntersecting)) {
+                            this.prebuildIo?.disconnect();
+                            this.prebuildIo = null;
+                            this.ensureBuilt();
+                            if (!this.drawnAtZero) {
+                                this.draw();
+                            }
+                        }
+                    }, { rootMargin: '600px 0px' });
+                    this.prebuildIo.observe(preTarget);
+                } else {
+                    this.ensureBuilt();
+                    this.draw();
+                }
             });
 
             let resizeTimer;
             this.onResize = () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    this.build();
-                    this.draw();
+                    if (this.destroyed || !this.img) return;
+                    if (this.built) {
+                        this.built = false;
+                        this.drawnAtZero = false;
+                        if (!this.armed) {
+                            this.ensureBuilt();
+                            this.draw();
+                        }
+                    }
                 }, 150);
             };
             window.addEventListener('resize', this.onResize, { passive: true });
+        }
+
+        ensureBuilt() {
+            if (this.built || !this.img || !this.crop) return;
+            this.build();
+            this.built = true;
         }
 
         destroy() {
@@ -2538,6 +2700,8 @@
             cancelAnimationFrame(this.raf);
             this.stopTwinkle();
             clearTimeout(this.fT);
+            clearTimeout(this.initCheckTimer);
+            this.prebuildIo?.disconnect();
             this.io?.disconnect();
             window.removeEventListener('resize', this.onResize);
             if (this.visHandler) document.removeEventListener('visibilitychange', this.visHandler);
@@ -2583,31 +2747,42 @@
                             cancelAnimationFrame(this.raf);
                             this.stopTwinkle();
                             this.progress = 0;
-                            this.draw();
+                            this.drawnAtZero = false;
+                            if (this.built) this.draw();
                             this.resetFooter();
                         }
                         return;
                     }
                     if (this.armed && ratio >= 0.45) {
+                        this.ensureBuilt();
                         this.armed = false;
                         this.stopTwinkle();
+                        this.lastTickDraw = 0;
+                        this.drawnAtZero = false;
                         this.start = performance.now();
                         this.tick();
                         this.revealFooter();
                     } else if (this.armed) {
+                        this.ensureBuilt();
                         this.progress = 0;
-                        this.draw();
+                        if (!this.drawnAtZero) {
+                            this.draw();
+                        }
                     }
                 });
             }, { threshold: [0, 0.15, 0.3, 0.45, 0.7] });
 
             this.io.observe(target);
 
-            setTimeout(() => {
+            this.initCheckTimer = setTimeout(() => {
+                if (this.destroyed) return;
                 const r = target.getBoundingClientRect();
                 if (r.top < window.innerHeight && r.bottom > 0 && this.armed) {
+                    this.ensureBuilt();
                     this.armed = false;
                     this.stopTwinkle();
+                    this.lastTickDraw = 0;
+                    this.drawnAtZero = false;
                     this.start = performance.now();
                     this.tick();
                     this.revealFooter();
@@ -2624,18 +2799,24 @@
             document.addEventListener('visibilitychange', this.visHandler);
         }
 
-        tick() {
-            const elapsed = performance.now() - this.start;
+        tick(now = performance.now()) {
+            if (this.destroyed) return;
+            const elapsed = now - this.start;
             const t = Math.min(1, elapsed / this.o.duration);
-            this.progress = 1 - Math.pow(1 - t, 3);
-            this.draw();
-            if (t < 1) {
-                this.raf = requestAnimationFrame(() => this.tick());
-            } else {
+            if (t >= 1) {
                 this.progress = 1;
+                this.drawnAtZero = false;
                 this.draw();
                 this.startTwinkle();
+                return;
             }
+            if (this.lastTickDraw === 0 || now - this.lastTickDraw >= 30) {
+                this.lastTickDraw = now;
+                this.progress = 1 - Math.pow(1 - t, 3);
+                this.drawnAtZero = false;
+                this.draw();
+            }
+            this.raf = requestAnimationFrame((ts) => this.tick(ts));
         }
 
         startTwinkle() {
@@ -2665,7 +2846,6 @@
 
         revealFooter() {
             this.resetFooter();
-            void this.root.offsetWidth;
             this.fT = setTimeout(() => {
                 this.root.classList.add('is-revealed');
             }, this.o.logoDelay);
@@ -2787,10 +2967,15 @@
 
         draw() {
             const canvas = this.canvas;
-            if (!canvas || !this.cells) return;
+            if (!canvas || !this.img) return;
+            this.ensureBuilt();
+            if (!this.cells) return;
             if (canvas.clientWidth && Math.abs(canvas.clientWidth - this.cw) > 4) {
                 this.build();
+                this.built = true;
+                this.drawnAtZero = false;
             }
+            if (this.progress === 0 && this.drawnAtZero) return;
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.textAlign = 'center';
@@ -2825,14 +3010,19 @@
                 ctx.fillText(cell.live ? chars[(cell.seed + Math.floor(now / cell.tw)) % chars.length] : cell.ch, cell.cx, cell.cy);
             }
             ctx.globalAlpha = 1;
+            this.drawnAtZero = (this.progress === 0);
         }
     }
     window.BinaryReveal = BinaryReveal;
 
     function initBinaryReveals() {
         document.querySelectorAll('[data-binary-reveal]').forEach(el => {
+            const expectedSrc = el.dataset.src || '/images/footer-sample.webp';
+            if (el.__binaryReveal && !el.__binaryReveal.destroyed && el.__binaryReveal.o.src === expectedSrc) {
+                return;
+            }
             new BinaryReveal(el, {
-                src: el.dataset.src || '/images/footer-sample.webp',
+                src: expectedSrc,
                 primary: '#E8E8E3',
                 bg: '#080807'
             });
@@ -3726,8 +3916,9 @@
 
                 const isCovering = document.documentElement.classList.contains('is-loading') || Boolean(window.__isTransitionCovering);
                 if (isCovering) {
-                    handsField.t0 = null;
-                    handsField.draw(0);
+                    if (handsField.t0 !== null) {
+                        handsField.resetIntro();
+                    }
                     handsRafId = requestAnimationFrame(tickHands);
                     return;
                 }

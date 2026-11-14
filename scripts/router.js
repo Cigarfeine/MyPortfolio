@@ -16,6 +16,122 @@
         return (pathname || '/').replace(/\/index\.html$/, '').replace(/\/$/, '') || '/';
     }
 
+    const SHARED_CSS_HREF = '/styles/shared.css?v=20261115b';
+    const pageCache = new Map();
+    const prefetchInFlight = new Map();
+    const prefetchedAssets = new Set();
+
+    function fetchPageHtml(targetUrl) {
+        const urlObj = typeof targetUrl === 'string' ? new URL(targetUrl, window.location.origin) : targetUrl;
+        const cacheKey = normalizeRoutePath(urlObj.pathname);
+        if (pageCache.has(cacheKey)) {
+            return Promise.resolve(pageCache.get(cacheKey));
+        }
+        if (prefetchInFlight.has(cacheKey)) {
+            return prefetchInFlight.get(cacheKey);
+        }
+        const req = fetch(urlObj.href, { cache: 'default' })
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.text();
+            })
+            .then(html => {
+                pageCache.set(cacheKey, html);
+                prefetchInFlight.delete(cacheKey);
+                return html;
+            })
+            .catch(err => {
+                prefetchInFlight.delete(cacheKey);
+                throw err;
+            });
+        prefetchInFlight.set(cacheKey, req);
+        return req;
+    }
+
+    function warmSharedStylesheet(href = SHARED_CSS_HREF) {
+        if (prefetchedAssets.has(href)) return;
+        prefetchedAssets.add(href);
+        if (document.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]')) return;
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'style';
+        link.href = href;
+        link.setAttribute('data-shared-css-preload', '');
+        document.head.appendChild(link);
+    }
+
+    function getHomeInlineStyle() {
+        const cached = document.querySelector('head > style[data-home-style]');
+        if (cached) return cached;
+        const styles = document.querySelectorAll('head > style');
+        for (const s of styles) {
+            if (s.textContent && s.textContent.length > 10000) {
+                s.setAttribute('data-home-style', 'true');
+                return s;
+            }
+        }
+        return null;
+    }
+
+    function syncStylesheetsBeforeSwap(newDoc, targetCleanPath) {
+        const isHomeTarget = targetCleanPath === '' || targetCleanPath === '/';
+        const homeStyle = getHomeInlineStyle();
+        const sharedCssLink = document.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]');
+
+        if (isHomeTarget) {
+            if (homeStyle) {
+                homeStyle.disabled = false;
+                if (sharedCssLink) sharedCssLink.disabled = true;
+            } else if (sharedCssLink) {
+                sharedCssLink.disabled = false;
+            }
+            return Promise.resolve();
+        }
+
+        const newSharedCss = newDoc.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]');
+        const sharedHref = (newSharedCss && newSharedCss.getAttribute('href')) || SHARED_CSS_HREF;
+        if (sharedCssLink) {
+            sharedCssLink.disabled = false;
+            if (homeStyle) homeStyle.disabled = true;
+            return Promise.resolve();
+        }
+
+        return new Promise((resolve) => {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = sharedHref;
+            link.setAttribute('data-shared-css', '');
+            const finish = () => {
+                if (homeStyle) homeStyle.disabled = true;
+                resolve();
+            };
+            link.onload = finish;
+            link.onerror = finish;
+            setTimeout(finish, 1500);
+            document.head.appendChild(link);
+        });
+    }
+
+    function scheduleIdlePrefetch() {
+        const runPrefetch = () => {
+            const currentPath = normalizeRoutePath(window.location.pathname);
+            if (currentPath === '/') {
+                warmSharedStylesheet(SHARED_CSS_HREF);
+            }
+            ['/about/', '/services/', '/projects/'].forEach((route, idx) => {
+                if (normalizeRoutePath(route) === currentPath) return;
+                setTimeout(() => {
+                    fetchPageHtml(route).catch(() => {});
+                }, idx * 180);
+            });
+        };
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(runPrefetch, { timeout: 2200 });
+        } else {
+            setTimeout(runPrefetch, 900);
+        }
+    }
+
     function topScrollImmediate() {
         if (typeof window.forceScrollTopZero === 'function') {
             window.forceScrollTopZero();
@@ -116,29 +232,23 @@
             subBar.classList.toggle('sub-bar--hidden', Boolean(isIntersecting));
         };
 
-        const checkFooterRect = () => {
-            const rect = footer.getBoundingClientRect();
-            const isOverlapping = rect.top < window.innerHeight + 60 && rect.bottom > 0;
-            syncFooterOverlap(isOverlapping);
-        };
-
         if ('IntersectionObserver' in window) {
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        syncFooterOverlap(true);
-                    } else {
-                        checkFooterRect();
-                    }
+                    syncFooterOverlap(entry.isIntersecting);
                 });
             }, { threshold: 0, rootMargin: '0px 0px 80px 0px' });
             obs.observe(footer);
             window.__footerSubBarObserver = obs;
+        } else {
+            const checkFooterRect = () => {
+                const rect = footer.getBoundingClientRect();
+                syncFooterOverlap(rect.top < window.innerHeight + 60 && rect.bottom > 0);
+            };
+            window.__footerSubBarScrollHandler = checkFooterRect;
+            window.addEventListener('scroll', checkFooterRect, { passive: true });
+            checkFooterRect();
         }
-
-        window.__footerSubBarScrollHandler = checkFooterRect;
-        window.addEventListener('scroll', checkFooterRect, { passive: true });
-        checkFooterRect();
     }
 
     // --- Update Navbar & Footer active states ---
@@ -175,28 +285,23 @@
         const hash = targetHash || '';
         const isTopTarget = !hash || hash === '#hero' || hash === '#main';
 
-        if (isTopTarget) {
-            topScrollImmediate();
-        }
-
-        // 2. Sub-Bar
+        // 1. Sub-Bar (also refreshes footer overlap observer)
         updateSubBarForRoute(cleanPath);
 
-        // 3. Shared Engines Lifecycle (Lenis, Reticle, Reveals, Navbar, ScrollTriggers, BinaryReveal)
+        // 2. Shared Engines Lifecycle (Lenis, Reticle, Reveals, Navbar, ScrollTriggers, BinaryReveal)
         if (typeof window.reinitializeAllPageEngines === 'function') {
             window.reinitializeAllPageEngines(cleanPath);
         } else if (typeof window.initScrollReveals === 'function') {
             window.initScrollReveals();
         }
 
-        // 4. If home, arm home reveals
+        // 3. Ensure home reveals arm cleanly if any stale reveal--done state remained
         const normalizedCleanPath = normalizeRoutePath(cleanPath);
-        if (normalizedCleanPath === '/' && typeof window.resetRevealsForHome === 'function') {
+        if (normalizedCleanPath === '/' && document.querySelector('.reveal--done') && typeof window.resetRevealsForHome === 'function') {
             window.resetRevealsForHome();
         }
 
-        // 5. Subpage Specific Initializations
-        initFooterSubBarObserver();
+        // 4. Subpage Specific Initializations
         initProjectsFilter();
         initNewsFilter();
         initNewsInteractions();
@@ -204,7 +309,7 @@
         initNextProjectPortals();
         initLighthouseCounters();
 
-        // 6. Enforce exact scroll position after layout & ScrollTrigger refresh
+        // 5. Enforce exact scroll position after layout & ScrollTrigger refresh
         if (!isTopTarget) {
             const target = document.querySelector(hash);
             if (target) {
@@ -219,10 +324,9 @@
             }
         }
 
-        topScrollImmediate();
-        requestAnimationFrame(() => {
+        if ((window.scrollY || 0) > 0 || (document.documentElement.scrollTop || 0) > 0) {
             topScrollImmediate();
-        });
+        }
     }
 
     // --- Interactive Engineering Dispatch Drawer on /news/ ---
@@ -720,11 +824,8 @@
         }
 
         try {
-            // Parallel fetch target page
-            const fetchPromise = fetch(targetUrl.href, { cache: 'no-store' }).then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.text();
-            });
+            // Parallel fetch target page (reusing in-memory / HTTP cache)
+            const fetchPromise = fetchPageHtml(targetUrl);
 
             const [htmlText] = await Promise.all([
                 fetchPromise,
@@ -750,6 +851,9 @@
             }
             topScrollImmediate();
 
+            // 0.5 Sync target stylesheet BEFORE swapping DOM so layout & reveals measure final CSS once
+            await syncStylesheetsBeforeSwap(newDoc, targetCleanPath);
+
             // Update document URL before DOM swap so relative asset URLs resolve against the target route
             if (pushState) {
                 history.pushState({ path: targetUrl.pathname }, newDoc.title, targetUrl.href);
@@ -763,13 +867,37 @@
                 currentMain.className = newMain.className;
             }
 
-            // 2. Swap or toggle <footer>
+            // 2. Swap or preserve <footer> (keep live BinaryReveal instance across swaps)
             const currentFooter = document.querySelector('.site-footer');
             const newFooter = newDoc.querySelector('.site-footer');
             if (currentFooter && newFooter) {
-                currentFooter.innerHTML = newFooter.innerHTML;
-                currentFooter.className = newFooter.className;
-                currentFooter.style.display = '';
+                const currentBrEl = currentFooter.matches?.('[data-binary-reveal]')
+                    ? currentFooter
+                    : currentFooter.querySelector('[data-binary-reveal]');
+                const newBrEl = newFooter.matches?.('[data-binary-reveal]')
+                    ? newFooter
+                    : newFooter.querySelector('[data-binary-reveal]');
+                const currentSrc = currentBrEl?.dataset?.src || currentFooter.dataset.src || '/images/footer-sample.webp';
+                const nextSrc = newBrEl?.dataset?.src || newFooter.dataset.src || '/images/footer-sample.webp';
+                const br = currentBrEl?.__binaryReveal;
+                if (br && !br.destroyed && currentSrc === nextSrc) {
+                    currentFooter.className = newFooter.className;
+                    currentFooter.classList.remove('is-revealed');
+                    currentBrEl.classList.remove('is-revealed');
+                    currentFooter.style.display = '';
+                    if (!br.armed) {
+                        br.armed = true;
+                        cancelAnimationFrame(br.raf);
+                        br.stopTwinkle?.();
+                        br.progress = 0;
+                        br.drawnAtZero = false;
+                        br.resetFooter?.();
+                    }
+                } else {
+                    currentFooter.innerHTML = newFooter.innerHTML;
+                    currentFooter.className = newFooter.className;
+                    currentFooter.style.display = '';
+                }
             } else if (currentFooter && !newFooter) {
                 currentFooter.style.display = 'none';
             } else if (!currentFooter && newFooter) {
@@ -781,30 +909,6 @@
             const newSubBarInner = newDoc.querySelector('[data-sub-bar-inner]');
             if (currentSubBarInner && newSubBarInner) {
                 currentSubBarInner.innerHTML = newSubBarInner.innerHTML;
-            }
-
-            // 2.8 Sync shared subpage stylesheet across Pjax navigation between / and subpages
-            const isHomeTarget = targetCleanPath === '' || targetCleanPath === '/';
-            let sharedCssLink = document.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]');
-            if (isHomeTarget) {
-                if (sharedCssLink) sharedCssLink.disabled = true;
-            } else {
-                const newSharedCss = newDoc.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]');
-                const sharedHref = (newSharedCss && newSharedCss.getAttribute('href')) || '/styles/shared.css?v=20261115a';
-                if (sharedCssLink) {
-                    sharedCssLink.disabled = false;
-                } else {
-                    await new Promise((resolve) => {
-                        const link = document.createElement('link');
-                        link.rel = 'stylesheet';
-                        link.href = sharedHref;
-                        link.setAttribute('data-shared-css', '');
-                        link.onload = resolve;
-                        link.onerror = resolve;
-                        setTimeout(resolve, 1500);
-                        document.head.appendChild(link);
-                    });
-                }
             }
 
             // 3. Update <title> and metadata
@@ -826,9 +930,8 @@
             // 7. Re-initialize page engines
             reinitializePageEngines(targetUrl.pathname, targetUrl.hash);
 
-            if (!targetUrl.hash || targetUrl.hash === '#hero' || targetUrl.hash === '#main') {
-                topScrollImmediate();
-            }
+            // 8. Let browser settle layout, paint, and compositor layers while overlay still covers
+            await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 
         } catch (err) {
             window.__isTransitionCovering = false;
@@ -846,7 +949,6 @@
                 onStart: () => {
                     window.__isTransitionCovering = false;
                     requestAnimationFrame(() => {
-                        if (typeof window.computeRevealBars === 'function') window.computeRevealBars();
                         if (typeof window.revealVisibleNow === 'function') window.revealVisibleNow();
                     });
                     if (window.__handsField && typeof window.__handsField.startIntro === 'function') {
@@ -886,6 +988,27 @@
         updateSubBarForRoute,
         updateActiveNavigation
     };
+
+    function prefetchLinkTarget(targetEl) {
+        const link = targetEl?.closest?.('a');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank' || link.hasAttribute('download')) return;
+        let url;
+        try {
+            url = new URL(href, window.location.origin);
+        } catch (err) {
+            return;
+        }
+        if (url.origin !== window.location.origin) return;
+        const cleanTarget = normalizeRoutePath(url.pathname);
+        if (cleanTarget === normalizeRoutePath(window.location.pathname)) return;
+        if (cleanTarget !== '/') warmSharedStylesheet(SHARED_CSS_HREF);
+        fetchPageHtml(url).catch(() => {});
+    }
+
+    document.addEventListener('pointerover', (e) => prefetchLinkTarget(e.target), { passive: true });
+    document.addEventListener('focusin', (e) => prefetchLinkTarget(e.target), { passive: true });
 
     // Global Link Click Interceptor
     document.addEventListener('click', (e) => {
@@ -956,6 +1079,7 @@
         }
 
         reinitializePageEngines(window.location.pathname);
+        scheduleIdlePrefetch();
     }
 
     if (document.readyState === 'loading') {

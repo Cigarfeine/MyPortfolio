@@ -75,7 +75,10 @@
         .home-hero__inner,
         .fp__link,
         .fp__fig,
-        #hands-canvas {
+        #hands-canvas,
+        .page-hero__canvas,
+        .about__fig,
+        .pixel-frame__canvas {
             will-change: transform;
         }
 
@@ -2918,6 +2921,7 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
+    contain: layout paint;
     background: radial-gradient(circle at 65% 35%, rgba(232, 232, 227, 0.04) 0%, transparent 70%);
 }
 
