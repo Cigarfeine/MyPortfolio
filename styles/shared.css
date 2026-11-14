@@ -2997,7 +2997,6 @@
     grid-template-columns: repeat(12, 1fr);
     gap: 32px 24px;
     padding: 96px 0;
-    border-top: 1px solid var(--line-strong);
 }
 
 .faq__group-title {
@@ -3162,6 +3161,10 @@
     grid-template-columns: 460px 1fr;
     gap: 56px;
     border-top: 1px solid var(--line);
+}
+
+main:has(.ap-career) .ap-prose {
+    border-top: none;
 }
 
 .ap-prose--reverse {
@@ -3472,7 +3475,6 @@
     max-width: var(--container);
     margin: 0 auto;
     padding: 100px 25px;
-    border-top: 1px solid var(--line);
 }
 
 .ap-career__list {

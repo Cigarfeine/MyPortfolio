@@ -790,7 +790,7 @@
                 if (sharedCssLink) sharedCssLink.disabled = true;
             } else {
                 const newSharedCss = newDoc.querySelector('link[rel="stylesheet"][href*="/styles/shared.css"]');
-                const sharedHref = (newSharedCss && newSharedCss.getAttribute('href')) || '/styles/shared.css?v=20261114h';
+                const sharedHref = (newSharedCss && newSharedCss.getAttribute('href')) || '/styles/shared.css?v=20261115a';
                 if (sharedCssLink) {
                     sharedCssLink.disabled = false;
                 } else {
