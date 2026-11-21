@@ -1213,7 +1213,10 @@
                 '/news': 'RESEARCH',
                 '/projects/mnemosyne': 'MNEMOSYNE',
                 '/projects/kage-agent': 'KAGE AGENT',
-                '/projects/neuromesh': 'NEUROMESH',
+                '/projects/nemesis': 'NEMESIS',
+                '/projects/rogue': 'ROGUE',
+                '/projects/ieee-mbits': 'IEEE CS MBITS',
+                '/projects/firefox-rebuild': 'FIREFOX REBUILD',
                 '/projects/gesture-gaming': 'GESTURE GAMING'
             };
             const defaultRouteTitle = routeTitles[cleanPath] || title.dataset.defaultText || 'ARSHAD RAFI';

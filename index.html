@@ -1718,15 +1718,15 @@
         }
 
         .fp__card[data-slot="2"] .fp__fig img {
-            scale: 1.05;
+            scale: 1.06;
         }
 
         .fp__fig img {
             object-fit: cover;
             width: 100%;
             height: 100%;
-            scale: 1.15;
-            translate: 0 calc((var(--p, .5) - .5) * 12%);
+            scale: 1.06;
+            translate: 0 calc((var(--p, .5) - .5) * 6%);
             will-change: translate;
             visibility: hidden;
             display: block;
@@ -3025,11 +3025,10 @@
             <!-- Panel 2: Projects Category Filter (/projects/) -->
             <div class="sub-bar__panel" data-bar-panel="projects-filter">
                 <div class="fp-view" role="group" aria-label="Project category filter">
-                    <button type="button" class="fp-view__btn is-active" data-filter="all" aria-pressed="true"><span>All 08</span></button>
-                    <button type="button" class="fp-view__btn" data-filter="agents" aria-pressed="false"><span>Autonomous Agents 02</span></button>
-                    <button type="button" class="fp-view__btn" data-filter="vision" aria-pressed="false"><span>Vision &amp; Hardware 02</span></button>
-                    <button type="button" class="fp-view__btn" data-filter="security" aria-pressed="false"><span>Security &amp; Recon 02</span></button>
-                    <button type="button" class="fp-view__btn" data-filter="ai-nlp" aria-pressed="false"><span>AI &amp; Knowledge 02</span></button>
+                    <button type="button" class="fp-view__btn is-active" data-filter="all" aria-pressed="true"><span>All 07</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="ai-security" aria-pressed="false"><span>AI &amp; Security 02</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="systems" aria-pressed="false"><span>Systems &amp; Hardware 03</span></button>
+                    <button type="button" class="fp-view__btn" data-filter="web-tooling" aria-pressed="false"><span>Web &amp; DevOps 02</span></button>
                 </div>
             </div>
 
@@ -3558,7 +3557,7 @@
                         <span class="reveal__text"><mark>precision.</mark></span>
                     </span>
                 </h2>
-                <p class="fp__intro">Autonomous agent swarms, spatial computer vision, vulnerability intelligence engines, and telemetry hardware: custom systems engineered to perform and scale under extreme workloads.</p>
+                <p class="fp__intro">Spatial computer vision, academic AI synthesis, vulnerability triage, orbital C4ISR telemetry, and native systems engineering: production architectures engineered end-to-end.</p>
             </div>
         </div>
 
@@ -3642,22 +3641,22 @@
                     </a>
                 </li>
 
-                <!-- Slot 4: NeuroMesh (span 8, row 4, aspect 4/5 portrait) -->
+                <!-- Slot 4: Project Nemesis (span 8, row 4, aspect 4/5 portrait) -->
                 <li class="fp__card is-reset" data-fp-card="" data-slot="4" style="--row:4">
-                    <a class="fp__link" href="/projects/neuromesh/">
+                    <a class="fp__link" href="/projects/nemesis/">
                         <figure class="fp__fig" data-fp-fig="">
-                            <img src="/images/neuromesh.svg" alt="NeuroMesh multi-agent topology network nodes" loading="lazy" decoding="async" width="1080" height="1350">
+                            <img src="/images/nemesis.png" alt="Project Nemesis multi-domain C4ISR orbital wireframe and telemetry HUD" loading="lazy" decoding="async" width="1080" height="1350">
                             <figcaption class="fp__tags">
-                                <span class="fp__tag" style="--j:0; --t:3">Multi-Agent Swarms</span>
-                                <span class="fp__tag" style="--j:1; --t:3">Distributed Systems</span>
-                                <span class="fp__tag" style="--j:2; --t:3">Consensus Engine</span>
+                                <span class="fp__tag" style="--j:0; --t:3">Orbital C4ISR</span>
+                                <span class="fp__tag" style="--j:1; --t:3">SGP4 / WebGL</span>
+                                <span class="fp__tag" style="--j:2; --t:3">FastAPI Microservices</span>
                             </figcaption>
                         </figure>
                         <div class="fp__art">
                             <span class="fp__dot" aria-hidden="true"></span>
                             <div class="fp__txt">
-                                <h3 class="fp__title"><span data-scramble-target="">NeuroMesh: distributed multi-agent swarm orchestrator</span></h3>
-                                <p class="fp__text">Decentralized consensus framework for distributed LLM agent task allocation, failover mitigation, and dynamic execution graphs.</p>
+                                <h3 class="fp__title"><span data-scramble-target="">Project Nemesis: multi-domain C4ISR &amp; orbital telemetry</span></h3>
+                                <p class="fp__text">Real-time Space Situational Awareness and tactical HUD fusing SGP4 satellite propagation, ADS-B aviation, AIS maritime streams, and 60fps WebGL rendering.</p>
                             </div>
                             <span class="fp__ic" aria-hidden="true">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -3675,7 +3674,7 @@
                     <img src="/images/gesture-arcade.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
                     <img src="/images/mnemosyne.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
                     <img src="/images/kage.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
-                    <img src="/images/neuromesh.svg" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
+                    <img src="/images/nemesis.png" alt="" width="480" height="320" loading="lazy" decoding="async" data-fp-preview="">
                 </div>
                 <ol class="fp__rows">
                     <li style="--i:0">
@@ -3712,9 +3711,9 @@
                         </a>
                     </li>
                     <li style="--i:3">
-                        <a class="fp__row" href="/projects/neuromesh/" data-fp-row="">
-                            <span class="fp__row-name"><span data-scramble-target="">NeuroMesh</span></span>
-                            <span class="fp__row-meta">Multi-Agent Swarm Orchestrator</span>
+                        <a class="fp__row" href="/projects/nemesis/" data-fp-row="">
+                            <span class="fp__row-name"><span data-scramble-target="">Project Nemesis</span></span>
+                            <span class="fp__row-meta">Orbital C4ISR &amp; WebGL Telemetry</span>
                             <span class="fp__row-ic" aria-hidden="true">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
                                     <path d="M2 10L10 2M4 2h6v6"></path>
@@ -3729,7 +3728,7 @@
         <!-- Bottom CTA -->
         <div class="fp__cta" data-bar-avoid="">
             <a class="fp__cta-btn" href="/projects/">
-                <span data-scramble-target="">See all 8 projects</span>
+                <span data-scramble-target="">See all 7 projects</span>
             </a>
         </div>
 
